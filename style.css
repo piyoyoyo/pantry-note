@@ -6,3 +6,343 @@
   color: #2c3e50;
   margin-top: 60px;
 }
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #f7f7f2;
+  color: #343b35;
+  font-family: -apple-system, BlinkMacSystemFont,
+    "Noto Sans JP", sans-serif;
+}
+
+button, input, select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+.app-shell {
+  width: 100%;
+  max-width: 480px;
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 28px 22px 110px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.eyebrow {
+  color: #829b83;
+  font-size: 10px;
+  letter-spacing: 2px;
+  font-weight: 700;
+}
+
+h1 {
+  font-size: 25px;
+  margin: 5px 0;
+}
+
+h1 span {
+  font-size: 21px;
+}
+
+.subheading {
+  color: #899087;
+  font-size: 11px;
+}
+
+.header-icon {
+  background: #e7ede3;
+  color: #829b83;
+  border-radius: 50%;
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  font-size: 22px;
+}
+
+.summary {
+  background: #829b83;
+  color: white;
+  padding: 22px;
+  border-radius: 18px;
+  margin-bottom: 14px;
+}
+
+.summary-label {
+  font-size: 12px;
+  opacity: .9;
+}
+
+.summary-number {
+  font-size: 38px;
+  font-weight: 700;
+  margin: 4px 0;
+}
+
+.summary-number span {
+  font-size: 14px;
+}
+
+.summary-note {
+  font-size: 11px;
+  opacity: .85;
+}
+
+.expiry-section {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  background: #fff;
+  border-radius: 14px;
+  padding: 15px;
+  margin-bottom: 30px;
+}
+
+.expiry-icon {
+  font-size: 23px;
+}
+
+.expiry-section strong {
+  font-size: 13px;
+}
+
+.expiry-section p {
+  color: #a18b65;
+  font-size: 11px;
+  margin: 5px 0 0;
+}
+
+.section-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.section-heading h2 {
+  font-size: 18px;
+}
+
+.section-heading span {
+  color: #a0a69d;
+  font-size: 10px;
+  letter-spacing: 1px;
+}
+
+.search {
+  width: 100%;
+  padding: 13px 15px;
+  border: 1px solid #e8e9e1;
+  background: white;
+  border-radius: 12px;
+  margin: 8px 0 15px;
+  outline: none;
+}
+
+.search:focus {
+  border-color: #829b83;
+}
+
+.filters {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 15px;
+}
+
+.filter {
+  border: 0;
+  background: #eaece5;
+  color: #737c70;
+  padding: 8px 17px;
+  border-radius: 20px;
+  font-size: 12px;
+}
+
+.filter.active {
+  background: #829b83;
+  color: white;
+}
+
+.food-list {
+  display: grid;
+  gap: 10px;
+}
+
+.food-card {
+  display: flex;
+  align-items: center;
+  background: white;
+  border-radius: 14px;
+  padding: 15px 12px;
+  gap: 12px;
+}
+
+.food-symbol {
+  width: 43px;
+  height: 43px;
+  display: grid;
+  place-items: center;
+  background: #f2f4ed;
+  border-radius: 12px;
+  font-size: 21px;
+}
+
+.food-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.food-name {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.food-detail, .food-date {
+  font-size: 10px;
+  color: #92988e;
+  margin-top: 5px;
+}
+
+.food-status {
+  background: #edf2e9;
+  color: #718b72;
+  border-radius: 20px;
+  padding: 6px 9px;
+  font-size: 10px;
+  white-space: nowrap;
+}
+
+.food-status.warning {
+  background: #f8eee5;
+  color: #b77d51;
+}
+
+.empty {
+  text-align: center;
+  padding: 30px;
+  color: #999;
+  font-size: 13px;
+}
+
+.add-button {
+  width: 100%;
+  border: 0;
+  background: #829b83;
+  color: white;
+  border-radius: 14px;
+  padding: 15px;
+  margin-top: 20px;
+  font-weight: 600;
+}
+
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 480px;
+  background: white;
+  border-top: 1px solid #eeeeea;
+  display: flex;
+  justify-content: space-around;
+  padding: 13px 5px 18px;
+}
+
+.nav-item {
+  display: grid;
+  justify-items: center;
+  gap: 5px;
+  color: #a0a69d;
+  font-size: 10px;
+}
+
+.nav-item span {
+  font-size: 19px;
+}
+
+.nav-item.selected {
+  color: #829b83;
+}
+
+.modal {
+  position: fixed;
+  inset: 0;
+  background: #0006;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  z-index: 10;
+}
+
+.modal.hidden {
+  display: none;
+}
+
+.modal-card {
+  background: #fff;
+  border-radius: 20px;
+  padding: 22px;
+  width: 100%;
+  max-width: 420px;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.modal-header h2 {
+  font-size: 18px;
+}
+
+.close-button {
+  border: 0;
+  background: none;
+  font-size: 25px;
+  color: #888;
+}
+
+#food-form {
+  display: grid;
+  gap: 9px;
+}
+
+#food-form label {
+  font-size: 12px;
+  font-weight: 600;
+  margin-top: 8px;
+}
+
+#food-form input,
+#food-form select {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #e6e8e1;
+  border-radius: 10px;
+  background: #fff;
+}
+
+.submit-button {
+  margin-top: 15px;
+  padding: 14px;
+  background: #829b83;
+  color: white;
+  border: 0;
+  border-radius: 12px;
+}
