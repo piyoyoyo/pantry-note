@@ -68,8 +68,7 @@ async function handleCreateInvite() {
     const token = result.data.token;
 
     const inviteUrl =
-      `https://liff.line.me/${import.meta.env.VITE_LIFF_ID}?
-    invite=${encodeURIComponent(token)}&householdId=${encodeURIComponent(currentHouseholdId)}`;
+      `https://liff.line.me/${import.meta.env.VITE_LIFF_ID}?invite=${encodeURIComponent(token)}&householdId=${encodeURIComponent(currentHouseholdId)}`;
 
     await navigator.clipboard.writeText(inviteUrl);
 
