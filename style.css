@@ -118,6 +118,7 @@ h1 span {
 }
 
 .expired-days {
+  padding-left: 10px;
   font-size: 13px;
   color: #c94b4b;
   font-weight: bold;
