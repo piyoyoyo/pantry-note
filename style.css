@@ -42,13 +42,6 @@ button {
   margin-bottom: 25px;
 }
 
-.eyebrow {
-  color: #829b83;
-  font-size: 10px;
-  letter-spacing: 2px;
-  font-weight: 700;
-}
-
 h1 {
   font-size: 25px;
   margin: 5px 0;
@@ -61,17 +54,6 @@ h1 span {
 .subheading {
   color: #899087;
   font-size: 11px;
-}
-
-.header-icon {
-  background: #e7ede3;
-  color: #829b83;
-  border-radius: 50%;
-  width: 42px;
-  height: 42px;
-  display: grid;
-  place-items: center;
-  font-size: 22px;
 }
 
 .summary {
@@ -97,13 +79,9 @@ h1 span {
   font-size: 14px;
 }
 
-.summary-note {
-  font-size: 11px;
-  opacity: .85;
-}
-
 .expiry-section {
   display: flex;
+  flex-direction: column;
   align-items: center;
   gap: 13px;
   background: #fff;
@@ -120,10 +98,55 @@ h1 span {
   font-size: 13px;
 }
 
-.expiry-section p {
-  color: #a18b65;
-  font-size: 11px;
-  margin: 5px 0 0;
+.expired-list {
+  list-style: none;
+  padding: 0;
+  margin: 12px 0 0;
+}
+
+.expired-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.expired-food-name {
+  font-size: 14px;
+  color: #333;
+}
+
+.expired-days {
+  font-size: 13px;
+  color: #c94b4b;
+  font-weight: bold;
+}
+
+.expiry-list {
+  list-style: none;
+  padding: 0;
+  margin: 12px 0 0;
+}
+
+.expiry-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.expiry-food-name {
+  font-size: 14px;
+  color: #333;
+}
+
+.expiry-days {
+  padding-left: 10px;
+  font-size: 13px;
+  color: #d8755b;
+  font-weight: bold;
 }
 
 .section-heading {

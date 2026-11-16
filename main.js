@@ -255,8 +255,7 @@ function render() {
     <div class="app-shell">
       <header class="header">
         <div>
-          <p class="eyebrow">MY KITCHEN</p>
-          <h1>${currentHouseholdName}の食材</h1>
+          <h1>${currentHouseholdName}の食材メモ</h1>
           <p class="subheading">食材を管理して、毎日のごはんをもっと楽しく。</p>
         </div>
 
@@ -264,25 +263,65 @@ function render() {
           <button id="invite-button" class="invite-button">
             家族を招待する
           </button>
-          <div class="header-icon">⌂</div>
         </div>
       </header>
-
-      <section class="summary">
-        <div class="summary-label">現在の食品ストック</div>
-        <div class="summary-number">
-          ${foods.length}<span> 品</span>
-        </div>
-        <div class="summary-note">おうちにある食材をチェックしましょう</div>
-      </section>
 
       <section class="expiry-section">
         <div class="expiry-icon">⏰</div>
         <div>
+          <strong>期限切れの食品</strong>
+          <ul class="expired-list">
+            ${
+              foods
+                .filter(f =>
+                  f.expiryDate &&
+                  daysLeft(f.expiryDate) < 0
+                )
+                .sort((a, b) =>
+                  daysLeft(a.expiryDate) - daysLeft(b.expiryDate)
+                )
+                .map(f => `
+                  <li>
+                    <span class="expired-food-name">${f.name}</span>
+                    <span class="expired-days">
+                      ${Math.abs(daysLeft(f.expiryDate))}日超過
+                    </span>
+                  </li>
+                `)
+                .join('')
+            }
+          </ul>
+        </div>
+        <div>
           <strong>期限が近い食品</strong>
-          <p>${foods.filter(f => daysLeft(f.expiryDate) <= 3).length} 品の期限が3日以内です</p>
+          <ul class="expiry-list">
+            ${
+              foods
+                .filter(f =>
+                  f.expiryDate && 
+                  daysLeft(f.expiryDate) >= 0 &&
+                  daysLeft(f.expiryDate) <= 3
+                )
+                .sort((a, b) =>
+                  daysLeft(a.expiryDate) - daysLeft(b.expiryDate)
+                )
+                .map(f => `
+                  <li>
+                    <span class="expiry-food-name">${f.name}</span>
+                    <span class="expiry-days">
+                      ${daysLeft(f.expiryDate) === 0
+                        ? '今日まで'
+                        : `${f.expiryDate}まで あと${daysLeft(f.expiryDate)}日`}
+                    </span>
+                  </li>
+                `)
+                .join('')
+            }
+          </ul>
         </div>
       </section>
+
+      <button id="add-button" class="add-button">＋ 食品を追加する</button>
 
       <div class="section-heading">
         <h2>食品リスト</h2>
@@ -299,8 +338,6 @@ function render() {
       </div>
 
       <div id="food-list" class="food-list"></div>
-
-      <button id="add-button" class="add-button">＋ 食品を追加する</button>
 
       <nav class="bottom-nav">
         <div class="nav-item selected"><span>▦</span>食品リスト</div>
