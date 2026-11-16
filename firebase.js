@@ -4,13 +4,12 @@ import { getFirestore } from 'firebase/firestore';
 import { getAuth, signInAnonymously } from 'firebase/auth';
 
 const firebaseConfig = {
-  apiKey: "AIzaSyD1Kt-ekPfx89U6Rph3_-jc6Fz6TzBHwWo",
-  authDomain: "pantrynote-41ad9.firebaseapp.com",
-  projectId: "pantrynote-41ad9",
-  storageBucket: "pantrynote-41ad9.firebasestorage.app",
-  messagingSenderId: "84142387057",
-  appId: "1:84142387057:web:610814f2032c5db0ed50d0",
-  measurementId: "G-TRX88B3RMN"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID
 };
 
 const app = initializeApp(firebaseConfig);
