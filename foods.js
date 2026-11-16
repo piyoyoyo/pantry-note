@@ -4,6 +4,7 @@ import {
   addDoc,
   deleteDoc,
   doc,
+  updateDoc,
   query,
   orderBy,
   serverTimestamp
@@ -49,4 +50,16 @@ export async function deleteFood(userId, foodId) {
   const foodRef = doc(db, 'users', userId, 'foods', foodId);
 
   await deleteDoc(foodRef);
+}
+
+// 食品情報を更新
+export async function updateFood(userId, foodId, food) {
+  const foodRef = doc(db, 'users', userId, 'foods', foodId);
+
+  await updateDoc(foodRef, {
+    name: food.name,
+    quantity: food.quantity,
+    place: food.place,
+    expiryDate: food.expiryDate
+  });
 }

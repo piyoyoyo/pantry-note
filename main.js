@@ -1,4 +1,9 @@
-import { getFoods, addFood, deleteFood } from './foods';
+import {
+  getFoods,
+  addFood,
+  deleteFood,
+  updateFood
+} from './foods';
 import { initializeAuth } from './firebase';
 import './style.css';
 import liff from '@line/liff';
@@ -6,6 +11,7 @@ import liff from '@line/liff';
 let foods = [];
 let currentUser = null;
 let currentFilter = 'すべて';
+let editingFoodId = null;
 
 // Firestoreから食品一覧を取得して画面を更新
 async function loadFoods() {
@@ -74,6 +80,33 @@ async function handleDeleteFood(foodId) {
     alert('食品を削除できませんでした');
   }
 }
+
+// 食品情報の更新
+async function handleUpdateFood(foodId, updatedFood) {
+  if (!currentUser) {
+    console.error('ユーザー認証が完了していません');
+    return;
+  }
+
+  try {
+    await updateFood(currentUser.uid, foodId, updatedFood);
+    console.log('食品情報を更新しました');
+
+    // 編集モードを解除
+    editingFoodId = null;
+
+    // フォームをリセット
+    document.querySelector('#food-form').reset();
+
+    // 一覧を再取得
+    await loadFoods();
+
+  } catch (error) {
+    console.error('食品情報の更新に失敗しました:', error);
+    alert('食品情報を更新できませんでした');
+  }
+}
+
 
 function daysLeft(expiryDate) {
   const today = new Date();
@@ -207,14 +240,24 @@ function renderFoods(keyword = '') {
               <div class="food-date">${escapeHTML(food.expiryDate.replaceAll('-', '/'))}</div>
             </div>
             <div class="food-status ${warning}">${status}</div>
-            <button
-              class="delete-button"
-              data-id="${escapeHTML(food.id)}"
-              type="button"
-              aria-label="${escapeHTML(food.name)}を削除"
-            >
-              ×
-            </button>
+            <div class="food-actions">
+              <button
+                class="edit-button"
+                data-id="${escapeHTML(food.id)}"
+                type="button"
+              >
+                編集
+              </button>
+
+              <button
+                class="delete-button"
+                data-id="${escapeHTML(food.id)}"
+                type="button"
+                aria-label="${escapeHTML(food.name)}を削除"
+              >
+                ×
+              </button>
+            </div>
           </article>
         `;
       }).join('')
@@ -239,25 +282,40 @@ function bindEvents() {
   });
 
   document.querySelector('#close-modal').addEventListener('click', () => {
+    editingFoodId = null;
+
+    document.querySelector('#food-form').reset();
+    document.querySelector('.modal-header h2').textContent = '食品を追加';
+    document.querySelector('.submit-button').textContent = '登録する';
+
     document.querySelector('#modal').classList.add('hidden');
   });
 
-  // 「食材を追加」モーダルで登録ボタンを押したときの処理
+  // 「食材を追加」モーダルで登録ボタンを押したときと、食品一覧で編集ボタンを押した時の処理
   document.querySelector('#food-form').addEventListener('submit', async event => {
     event.preventDefault();
     const form = new FormData(event.target);
 
     // フォームから入力値を取得
-    const newFood = {
+    const foodData = {
       name: form.get('food-name'),
       quantity: form.get('quantity'),
       place: form.get('place'),
-      expiryDate: form.get('expiry-date'),
+      expiryDate: form.get('expiry-date')
     };
 
-    console.log("newFood", newFood);
-    // Firestoreに保存
-    await handleAddFood(newFood);
+    if (editingFoodId) {
+      // 編集モード：既存食品を更新
+      await handleUpdateFood(editingFoodId, foodData);
+    } else {
+      // 新規登録モード：食品を追加
+      await handleAddFood(foodData);
+    }
+
+    // モーダルの表示を初期状態に戻す
+    editingFoodId = null;
+    document.querySelector('.modal-header h2').textContent = '食品を追加';
+    document.querySelector('.submit-button').textContent = '登録する';
 
   });
 
@@ -272,6 +330,42 @@ function bindEvents() {
     const foodId = button.dataset.id;
 
     handleDeleteFood(foodId);
+  });
+
+  // 食品編集ボタン
+  document.querySelector('#food-list').addEventListener('click', event => {
+    const button = event.target.closest('.edit-button');
+
+    if (!button) {
+      return;
+    }
+
+    const foodId = button.dataset.id;
+
+    // 編集対象の食品を取得
+    const food = foods.find(item => item.id === foodId);
+
+    if (!food) {
+      return;
+    }
+
+    // 編集モードにする
+    editingFoodId = foodId;
+
+    // フォームに既存の値をセット
+    const form = document.querySelector('#food-form');
+
+    form.elements.namedItem('food-name').value = food.name;
+    form.elements.namedItem('quantity').value = food.quantity;
+    form.elements.namedItem('place').value = food.place;
+    form.elements.namedItem('expiry-date').value = food.expiryDate;
+
+    // モーダルのタイトルとボタンを変更
+    document.querySelector('.modal-header h2').textContent = '食品を編集';
+    document.querySelector('.submit-button').textContent = '更新する';
+
+    // モーダルを表示
+    document.querySelector('#modal').classList.remove('hidden');
   });
 }
 

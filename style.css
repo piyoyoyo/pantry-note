@@ -364,3 +364,39 @@ h1 span {
   background: #f5eeee;
   color: #c65c5c;
 }
+
+.food-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.edit-button {
+  border: 1px solid #d8dfd5;
+  background: #fff;
+  color: #687c65;
+  font-size: 12px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.edit-button:hover {
+  background: #edf2e9;
+}
+
+.delete-button {
+  border: none;
+  background: transparent;
+  color: #999;
+  font-size: 22px;
+  cursor: pointer;
+  padding: 6px 10px;
+  border-radius: 50%;
+}
+
+.delete-button:hover {
+  background: #f5eeee;
+  color: #c65c5c;
+}
