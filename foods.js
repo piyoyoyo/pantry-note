@@ -2,6 +2,8 @@ import {
   collection,
   getDocs,
   addDoc,
+  deleteDoc,
+  doc,
   query,
   orderBy,
   serverTimestamp
@@ -40,4 +42,11 @@ export async function addFood(userId, food) {
   });
 
   return docRef.id;
+}
+
+// 食品を削除
+export async function deleteFood(userId, foodId) {
+  const foodRef = doc(db, 'users', userId, 'foods', foodId);
+
+  await deleteDoc(foodRef);
 }

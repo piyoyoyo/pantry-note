@@ -1,4 +1,4 @@
-import { getFoods, addFood } from './foods';
+import { getFoods, addFood, deleteFood } from './foods';
 import { initializeAuth } from './firebase';
 import './style.css';
 import liff from '@line/liff';
@@ -24,7 +24,6 @@ async function loadFoods() {
 }
 
 // 食品の追加
-
 async function handleAddFood(newFood) {
   if (!currentUser) {
     console.error('ユーザー認証が完了していません');
@@ -45,6 +44,34 @@ async function handleAddFood(newFood) {
   } catch (error) {
     console.error('食品の保存に失敗しました:', error);
     alert('食品を保存できませんでした');
+  }
+}
+
+// 食品の削除
+async function handleDeleteFood(foodId) {
+  if (!currentUser) {
+    console.error('ユーザー認証が完了していません');
+    return;
+  }
+
+  // 削除前に確認
+  const confirmed = confirm('この食品を削除しますか？');
+
+  if (!confirmed) {
+    return;
+  }
+
+  try {
+    await deleteFood(currentUser.uid, foodId);
+
+    console.log('食品を削除しました');
+
+    // 最新の食品一覧を取得
+    await loadFoods();
+
+  } catch (error) {
+    console.error('食品の削除に失敗しました:', error);
+    alert('食品を削除できませんでした');
   }
 }
 
@@ -180,6 +207,14 @@ function renderFoods(keyword = '') {
               <div class="food-date">${escapeHTML(food.expiryDate.replaceAll('-', '/'))}</div>
             </div>
             <div class="food-status ${warning}">${status}</div>
+            <button
+              class="delete-button"
+              data-id="${escapeHTML(food.id)}"
+              type="button"
+              aria-label="${escapeHTML(food.name)}を削除"
+            >
+              ×
+            </button>
           </article>
         `;
       }).join('')
@@ -207,7 +242,7 @@ function bindEvents() {
     document.querySelector('#modal').classList.add('hidden');
   });
 
-  // 食材を追加モーダルで登録ボタンを押したときの処理
+  // 「食材を追加」モーダルで登録ボタンを押したときの処理
   document.querySelector('#food-form').addEventListener('submit', async event => {
     event.preventDefault();
     const form = new FormData(event.target);
@@ -224,6 +259,19 @@ function bindEvents() {
     // Firestoreに保存
     await handleAddFood(newFood);
 
+  });
+
+  // 食品削除ボタン
+  document.querySelector('#food-list').addEventListener('click', event => {
+    const button = event.target.closest('.delete-button');
+
+    if (!button) {
+      return;
+    }
+
+    const foodId = button.dataset.id;
+
+    handleDeleteFood(foodId);
   });
 }
 
