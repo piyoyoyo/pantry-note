@@ -1,20 +1,57 @@
+import { getFoods, addFood } from './foods';
+import { initializeAuth } from './firebase';
 import './style.css';
 import liff from '@line/liff';
 
-const foods = [
-  { id: 1, name: '牛乳', quantity: '1本', place: '冷蔵', date: '2026-11-14', category: '乳製品' },
-  { id: 2, name: '卵', quantity: '6個', place: '冷蔵', date: '2026-11-18', category: '卵' },
-  { id: 3, name: 'にんじん', quantity: '3本', place: '冷蔵', date: '2026-11-20', category: '野菜' },
-  { id: 4, name: '鶏むね肉', quantity: '300g', place: '冷凍', date: '2026-12-10', category: '肉・魚' },
-  { id: 5, name: '食パン', quantity: '4枚', place: '常温', date: '2026-11-13', category: 'その他' }
-];
-
+let foods = [];
+let currentUser = null;
 let currentFilter = 'すべて';
 
-function daysLeft(date) {
+// Firestoreから食品一覧を取得して画面を更新
+async function loadFoods() {
+   if (!currentUser) {
+    console.error('ユーザー認証が完了していません');
+    return;
+  }
+
+  try {
+    foods = await getFoods(currentUser.uid);
+    render();
+    console.log('食品データの取得に成功しました:', foods);
+  } catch (error) {
+    console.error('食品データの取得に失敗しました:', error);
+  }
+}
+
+// 食品の追加
+
+async function handleAddFood(newFood) {
+  if (!currentUser) {
+    console.error('ユーザー認証が完了していません');
+    return;
+  }
+
+  try {
+    await addFood(currentUser.uid, newFood);
+
+    console.log('食品を保存しました');
+
+    // フォームをリセット
+    document.querySelector('#food-form').reset();
+
+    // Firestoreから最新データを取得して画面更新
+    await loadFoods();
+
+  } catch (error) {
+    console.error('食品の保存に失敗しました:', error);
+    alert('食品を保存できませんでした');
+  }
+}
+
+function daysLeft(expiryDate) {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
-  const target = new Date(date + 'T00:00:00');
+  const target = new Date(expiryDate + 'T00:00:00');
   return Math.ceil((target - today) / 86400000);
 }
 
@@ -54,7 +91,7 @@ function render() {
         <div class="expiry-icon">⏰</div>
         <div>
           <strong>期限が近い食品</strong>
-          <p>${foods.filter(f => daysLeft(f.date) <= 3).length} 品の期限が3日以内です</p>
+          <p>${foods.filter(f => daysLeft(f.expiryDate) <= 3).length} 品の期限が3日以内です</p>
         </div>
       </section>
 
@@ -91,7 +128,7 @@ function render() {
 
           <form id="food-form">
             <label>食品名</label>
-            <input name="name" placeholder="例：トマト" required />
+            <input name="food-name" placeholder="例：トマト" required />
 
             <label>数量</label>
             <input name="quantity" placeholder="例：3個" required />
@@ -104,7 +141,7 @@ function render() {
             </select>
 
             <label>賞味・消費期限</label>
-            <input name="date" type="date" required />
+            <input name="expiry-date" type="date" required />
 
             <button class="submit-button" type="submit">登録する</button>
           </form>
@@ -128,7 +165,7 @@ function renderFoods(keyword = '') {
 
   list.innerHTML = filtered.length
     ? filtered.map(food => {
-        const days = daysLeft(food.date);
+        const days = daysLeft(food.expiryDate);
         let status = days < 0 ? '期限切れ' :
           days === 0 ? '今日まで' : `あと${days}日`;
 
@@ -140,7 +177,7 @@ function renderFoods(keyword = '') {
             <div class="food-info">
               <div class="food-name">${escapeHTML(food.name)}</div>
               <div class="food-detail">${escapeHTML(food.quantity)} ・ ${escapeHTML(food.place)}</div>
-              <div class="food-date">${escapeHTML(food.date.replaceAll('-', '/'))}</div>
+              <div class="food-date">${escapeHTML(food.expiryDate.replaceAll('-', '/'))}</div>
             </div>
             <div class="food-status ${warning}">${status}</div>
           </article>
@@ -161,7 +198,8 @@ function bindEvents() {
     renderFoods(event.target.value);
   });
 
-  document.querySelector('#add-button').addEventListener('click', () => {
+  // モーダルを開く
+  document.querySelector('#add-button').addEventListener('click', async () => {
     document.querySelector('#modal').classList.remove('hidden');
   });
 
@@ -169,44 +207,63 @@ function bindEvents() {
     document.querySelector('#modal').classList.add('hidden');
   });
 
-  document.querySelector('#food-form').addEventListener('submit', event => {
+  // 食材を追加モーダルで登録ボタンを押したときの処理
+  document.querySelector('#food-form').addEventListener('submit', async event => {
     event.preventDefault();
     const form = new FormData(event.target);
 
-    foods.unshift({
-      id: Date.now(),
-      name: form.get('name'),
+    // フォームから入力値を取得
+    const newFood = {
+      name: form.get('food-name'),
       quantity: form.get('quantity'),
       place: form.get('place'),
-      date: form.get('date'),
-      category: 'その他'
-    });
+      expiryDate: form.get('expiry-date'),
+    };
 
-    render();
+    console.log("newFood", newFood);
+    // Firestoreに保存
+    await handleAddFood(newFood);
+
   });
 }
 
-liff
-  .init({
-    liffId: import.meta.env.VITE_LIFF_ID
-  })
-  .then(() => {
-    render();
-  //   document.querySelector('#app').innerHTML = `
-  //   <h1>create-liff-app</h1>
-  //   <p>LIFF init succeeded.</p>
-  //   <a href="https://developers.line.biz/ja/docs/liff/" target="_blank" rel="noreferrer">
-  //     LIFF Documentation
-  //   </a>
-  // `;
-  })
-  .catch((error) => {
-    document.querySelector('#app').innerHTML = `
-    <h1>create-liff-app</h1>
-    <p>LIFF init failed.</p>
-    <p><code>${error}</code></p>
-    <a href="https://developers.line.biz/ja/docs/liff/" target="_blank" rel="noreferrer">
-      LIFF Documentation
-    </a>
-  `;
-  });
+document.addEventListener('DOMContentLoaded', async () => {
+  // 画面を初期表示
+  render();
+
+  try {
+    // ① Firebase認証を先に実行
+    currentUser = await initializeAuth();
+
+    console.log('Firebase authentication success!');
+    console.log('User ID:', currentUser.uid);
+
+    const savedFoods = await getFoods(currentUser.uid);
+    console.log('savedFoods: ', savedFoods);
+
+    // ② 認証成功後に食品一覧を取得
+    await loadFoods();
+
+  } catch (error) {
+    console.error('Firebase authentication error:', error);
+  }
+
+  liff
+    .init({ 
+      liffId: import.meta.env.VITE_LIFF_ID
+    })
+    .then(() => {
+      console.log('LIFF initialized');
+    })
+    .catch((error) => {
+      console.error('LIFF error:', error);
+      document.querySelector('#app').innerHTML = `
+        <h1>create-liff-app</h1>
+        <p>LIFF init failed.</p>
+        <p><code>${error}</code></p>
+        <a href="https://developers.line.biz/ja/docs/liff/" target="_blank" rel="noreferrer">
+          LIFF Documentation
+        </a>
+      `;
+    });
+});
