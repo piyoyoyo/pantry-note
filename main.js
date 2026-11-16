@@ -68,7 +68,8 @@ async function handleCreateInvite() {
     const token = result.data.token;
 
     const inviteUrl =
-      `https://liff.line.me/${import.meta.env.VITE_LIFF_ID}?invite=${encodeURIComponent(token)}`;
+      `https://liff.line.me/${import.meta.env.VITE_LIFF_ID}?
+    invite=${encodeURIComponent(token)}&householdId=${encodeURIComponent(currentHouseholdId)}`;
 
     await navigator.clipboard.writeText(inviteUrl);
 
@@ -503,57 +504,89 @@ function bindEvents() {
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
-  // 認証・家の確認中
   document.querySelector('#app').innerHTML = `
     <p>読み込み中...</p>
   `;
 
   try {
-    // ① Firebase認証
+    // ① LIFFの初期化
+    try {
+      await liff.init({
+        liffId: import.meta.env.VITE_LIFF_ID
+      });
+
+      console.log('LIFF initialized');
+
+    } catch (error) {
+      console.error('LIFF error:', error);
+    }
+
+    // ② 招待URLのパラメータを取得
+    const params = new URLSearchParams(window.location.search);
+
+    const inviteToken = params.get('invite');
+    const inviteHouseholdId = params.get('householdId');
+
+    console.log('Invite token:', inviteToken);
+    console.log('Invite household ID:', inviteHouseholdId);
+
+    // ③ Firebase認証
     currentUser = await initializeAuth();
 
     console.log('Firebase authentication success!');
     console.log('User ID:', currentUser.uid);
 
-    // ② ユーザーが所属している家を取得
+    // ④ 招待URLからアクセスした場合
+    if (inviteToken || inviteHouseholdId) {
+
+      if (!inviteToken || !inviteHouseholdId) {
+        throw new Error('招待URLの情報が不足しています。');
+      }
+
+      const acceptInviteCallable =
+        httpsCallable(functions, 'acceptInvite');
+
+      await acceptInviteCallable({
+        householdId: inviteHouseholdId,
+        token: inviteToken
+      });
+
+      alert('家への参加が完了しました！');
+    }
+
+    // ⑤ 所属している家を取得
     currentHouseholdId = await getUserHousehold(currentUser.uid);
+
     console.log('Household ID:', currentHouseholdId);
 
-    // 家の名前を取得
+    // ⑥ 家の名前を取得
     if (currentHouseholdId) {
-      currentHouseholdName = await getHouseholdName(currentHouseholdId);
+      currentHouseholdName =
+        await getHouseholdName(currentHouseholdId);
+
       console.log('Household Name:', currentHouseholdName);
     }
 
-    // ③ 家があるかどうかで画面を切り替える
+    // ⑦ 画面を表示
     if (currentHouseholdId) {
-      // 家がある場合：食品管理画面
       await loadFoods();
     } else {
-      // 家がない場合：家の作成画面
       render();
     }
 
   } catch (error) {
-    console.error('Firebase authentication error:', error);
-  }
+    console.error('初期化・招待参加エラー:', error);
 
-  liff
-    .init({ 
-      liffId: import.meta.env.VITE_LIFF_ID
-    })
-    .then(() => {
-      console.log('LIFF initialized');
-    })
-    .catch((error) => {
-      console.error('LIFF error:', error);
-      document.querySelector('#app').innerHTML = `
-        <h1>create-liff-app</h1>
-        <p>LIFF init failed.</p>
-        <p><code>${error}</code></p>
-        <a href="https://developers.line.biz/ja/docs/liff/" target="_blank" rel="noreferrer">
-          LIFF Documentation
-        </a>
-      `;
-    });
+    alert(
+      '処理に失敗しました。\n' +
+      (error.message || 'もう一度お試しください。')
+    );
+
+    // すでに家に所属している場合は食品画面を表示
+    if (currentHouseholdId) {
+      await loadFoods();
+    } else {
+      render();
+    }
+  }
 });
