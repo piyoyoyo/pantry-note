@@ -9,7 +9,8 @@ import {
   getUserHousehold,
   getHouseholdName
 } from './households';
-import { initializeAuth } from './firebase';
+import { initializeAuth, functions } from './firebase';
+import { httpsCallable } from 'firebase/functions';
 import './style.css';
 import liff from '@line/liff';
 
@@ -47,6 +48,35 @@ async function handleCreateHousehold(householdName) {
   } catch (error) {
     console.error('家の作成に失敗しました:', error);
     alert('家を作成できませんでした');
+  }
+}
+
+// 家への招待URLを発行する
+async function handleCreateInvite() {
+  try {
+    if (!currentHouseholdId) {
+      alert('家の情報が取得できていません。');
+      return;
+    }
+
+    const createInvite = httpsCallable(functions, 'createInvite');
+
+    const result = await createInvite({
+      householdId: currentHouseholdId
+    });
+
+    const token = result.data.token;
+
+    const inviteUrl =
+      `https://liff.line.me/${import.meta.env.VITE_LIFF_ID}?invite=${encodeURIComponent(token)}`;
+
+    await navigator.clipboard.writeText(inviteUrl);
+
+    alert('招待URLをコピーしました！\n有効期限は発行から7日間です。');
+
+  } catch (error) {
+    console.error('招待URLの発行に失敗しました:', error);
+    alert('招待URLの発行に失敗しました。');
   }
 }
 
@@ -229,7 +259,13 @@ function render() {
           <h1>${currentHouseholdName}の食材</h1>
           <p class="subheading">食材を管理して、毎日のごはんをもっと楽しく。</p>
         </div>
-        <div class="header-icon">⌂</div>
+
+        <div class="header-actions">
+          <button id="invite-button" class="invite-button">
+            家族を招待する
+          </button>
+          <div class="header-icon">⌂</div>
+        </div>
       </header>
 
       <section class="summary">
@@ -358,6 +394,10 @@ function renderFoods(keyword = '') {
 }
 
 function bindEvents() {
+  // 家族招待ボタン
+  document.querySelector('#invite-button')
+    .addEventListener('click', handleCreateInvite);
+
   document.querySelectorAll('.filter').forEach(button => {
     button.addEventListener('click', () => {
       currentFilter = button.dataset.filter;

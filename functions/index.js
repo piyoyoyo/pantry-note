@@ -1,32 +1,88 @@
-/**
- * Import function triggers from their respective submodules:
- *
- * const {onCall} = require("firebase-functions/v2/https");
- * const {onDocumentWritten} = require("firebase-functions/v2/firestore");
- *
- * See a full list of supported triggers at https://firebase.google.com/docs/functions
- */
+const { setGlobalOptions } = require("firebase-functions");
+const { onCall, HttpsError } = require("firebase-functions/v2/https");
+const { initializeApp } = require("firebase-admin/app");
+const { getFirestore, Timestamp } = require("firebase-admin/firestore");
+const { randomBytes } = require("node:crypto");
 
-const {setGlobalOptions} = require("firebase-functions");
-const {onRequest} = require("firebase-functions/https");
-const logger = require("firebase-functions/logger");
+initializeApp();
 
-// For cost control, you can set the maximum number of containers that can be
-// running at the same time. This helps mitigate the impact of unexpected
-// traffic spikes by instead downgrading performance. This limit is a
-// per-function limit. You can override the limit for each function using the
-// `maxInstances` option in the function's options, e.g.
-// `onRequest({ maxInstances: 5 }, (req, res) => { ... })`.
-// NOTE: setGlobalOptions does not apply to functions using the v1 API. V1
-// functions should each use functions.runWith({ maxInstances: 10 }) instead.
-// In the v1 API, each function can only serve one request per container, so
-// this will be the maximum concurrent request count.
-setGlobalOptions({ maxInstances: 10 });
+const db = getFirestore();
 
-// Create and deploy your first functions
-// https://firebase.google.com/docs/functions/get-started
+// 関数の実行リージョンと同時実行数の上限
+setGlobalOptions({
+  region: "asia-northeast1",
+  maxInstances: 5
+});
 
-// exports.helloWorld = onRequest((request, response) => {
-//   logger.info("Hello logs!", {structuredData: true});
-//   response.send("Hello from Firebase!");
-// });
+// 招待トークンを発行する
+exports.createInvite = onCall(async (request) => {
+  // Firebase認証を確認
+  if (!request.auth) {
+    throw new HttpsError(
+      "unauthenticated",
+      "ログインが必要です。"
+    );
+  }
+
+  const userId = request.auth.uid;
+  const householdId = request.data.householdId;
+
+  if (
+    typeof householdId !== "string" ||
+    householdId.length === 0
+  ) {
+    throw new HttpsError(
+      "invalid-argument",
+      "家のIDが正しくありません。"
+    );
+  }
+
+  // 家のメンバー情報を取得
+  const memberRef = db
+    .collection("households")
+    .doc(householdId)
+    .collection("members")
+    .doc(userId);
+
+  const memberSnapshot = await memberRef.get();
+
+  // 管理者かどうか確認
+  if (
+    !memberSnapshot.exists ||
+    memberSnapshot.data().role !== "owner"
+  ) {
+    throw new HttpsError(
+      "permission-denied",
+      "招待URLを発行できるのは家の管理者だけです。"
+    );
+  }
+
+  // 32バイトのランダムな招待トークンを生成
+  const token = randomBytes(32).toString("hex");
+
+  // 有効期限は7日後
+  const expiresAt = Timestamp.fromMillis(
+    Date.now() + 7 * 24 * 60 * 60 * 1000
+  );
+
+  // 招待情報をFirestoreに保存
+  const inviteRef = db
+    .collection("households")
+    .doc(householdId)
+    .collection("invites")
+    .doc(token);
+
+  await inviteRef.set({
+    createdBy: userId,
+    createdAt: Timestamp.now(),
+    expiresAt: expiresAt,
+    maxUses: 1,
+    usedCount: 0
+  });
+
+  // フロントエンドにトークンを返す
+  return {
+    token: token,
+    expiresAt: expiresAt.toMillis()
+  };
+});
