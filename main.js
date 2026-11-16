@@ -4,6 +4,11 @@ import {
   deleteFood,
   updateFood
 } from './foods';
+import {
+  createHousehold,
+  getUserHousehold,
+  getHouseholdName
+} from './households';
 import { initializeAuth } from './firebase';
 import './style.css';
 import liff from '@line/liff';
@@ -12,6 +17,38 @@ let foods = [];
 let currentUser = null;
 let currentFilter = 'すべて';
 let editingFoodId = null;
+let currentHouseholdId = null;
+let currentHouseholdName = "";
+
+// 家の作成
+async function handleCreateHousehold(householdName) {
+
+  if (!currentUser) {
+    alert('ログインが完了していません');
+    return;
+  }
+
+  try {
+    const householdId = await createHousehold(
+      currentUser.uid,
+      householdName
+    );
+
+    // 作成した家のIDを保存
+    currentHouseholdId = householdId;
+    console.log('家を作成しました:', householdId);
+    currentHouseholdName = householdName;
+
+    // 食品管理画面へ切り替え
+    await loadFoods();
+
+    alert('家を作成しました！');
+
+  } catch (error) {
+    console.error('家の作成に失敗しました:', error);
+    alert('家を作成できませんでした');
+  }
+}
 
 // Firestoreから食品一覧を取得して画面を更新
 async function loadFoods() {
@@ -21,7 +58,7 @@ async function loadFoods() {
   }
 
   try {
-    foods = await getFoods(currentUser.uid);
+    foods = await getFoods(currentHouseholdId);
     render();
     console.log('食品データの取得に成功しました:', foods);
   } catch (error) {
@@ -37,7 +74,7 @@ async function handleAddFood(newFood) {
   }
 
   try {
-    await addFood(currentUser.uid, newFood);
+    await addFood(currentHouseholdId, newFood);
 
     console.log('食品を保存しました');
 
@@ -68,7 +105,7 @@ async function handleDeleteFood(foodId) {
   }
 
   try {
-    await deleteFood(currentUser.uid, foodId);
+    await deleteFood(currentHouseholdId, foodId);
 
     console.log('食品を削除しました');
 
@@ -89,7 +126,7 @@ async function handleUpdateFood(foodId, updatedFood) {
   }
 
   try {
-    await updateFood(currentUser.uid, foodId, updatedFood);
+    await updateFood(currentHouseholdId, foodId, updatedFood);
     console.log('食品情報を更新しました');
 
     // 編集モードを解除
@@ -106,7 +143,6 @@ async function handleUpdateFood(foodId, updatedFood) {
     alert('食品情報を更新できませんでした');
   }
 }
-
 
 function daysLeft(expiryDate) {
   const today = new Date();
@@ -126,14 +162,71 @@ function escapeHTML(value) {
 }
 
 function render() {
-  document.querySelector('#app').innerHTML = `
-    <p>LIFF init succeeded.</p>
+  // 家に所属していない場合は家の作成画面を表示
+  if (!currentHouseholdId) {
+    document.querySelector('#app').innerHTML = `
+      <div class="household-setup">
+        <header class="header">
+          <div>
+            <p class="eyebrow">PANTRY NOTE</p>
+            <h1>食材メモ 🥬</h1>
+          </div>
+        </header>
 
+        <section class="household-card">
+          <h2>家を作成しましょう</h2>
+
+          <p>
+            家を作成すると、家族みんなで
+            同じ冷蔵庫・パントリーを共有できるようになります。
+          </p>
+
+          <form id="household-form">
+            <label for="household-name">家の名前</label>
+
+            <input
+              id="household-name"
+              name="household-name"
+              type="text"
+              placeholder="例：Koyama家"
+              required
+              maxlength="30"
+            />
+
+            <button type="submit" class="submit-button">
+              家を作成する
+            </button>
+          </form>
+        </section>
+      </div>
+    `;
+
+    // 家の作成フォーム
+    document.querySelector('#household-form')
+      .addEventListener('submit', async event => {
+        event.preventDefault();
+
+        const householdName = new FormData(event.target)
+          .get('household-name')
+          .trim();
+
+        if (!householdName) {
+          alert('家の名前を入力してください');
+          return;
+        }
+
+        await handleCreateHousehold(householdName);
+      });
+
+    return;
+  }
+
+  document.querySelector('#app').innerHTML = `
     <div class="app-shell">
       <header class="header">
         <div>
           <p class="eyebrow">MY KITCHEN</p>
-          <h1>食材メモ <span>🥬</span></h1>
+          <h1>${currentHouseholdName}の食材</h1>
           <p class="subheading">食材を管理して、毎日のごはんをもっと楽しく。</p>
         </div>
         <div class="header-icon">⌂</div>
@@ -370,21 +463,36 @@ function bindEvents() {
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
-  // 画面を初期表示
-  render();
+  // 認証・家の確認中
+  document.querySelector('#app').innerHTML = `
+    <p>読み込み中...</p>
+  `;
 
   try {
-    // ① Firebase認証を先に実行
+    // ① Firebase認証
     currentUser = await initializeAuth();
 
     console.log('Firebase authentication success!');
     console.log('User ID:', currentUser.uid);
 
-    const savedFoods = await getFoods(currentUser.uid);
-    console.log('savedFoods: ', savedFoods);
+    // ② ユーザーが所属している家を取得
+    currentHouseholdId = await getUserHousehold(currentUser.uid);
+    console.log('Household ID:', currentHouseholdId);
 
-    // ② 認証成功後に食品一覧を取得
-    await loadFoods();
+    // 家の名前を取得
+    if (currentHouseholdId) {
+      currentHouseholdName = await getHouseholdName(currentHouseholdId);
+      console.log('Household Name:', currentHouseholdName);
+    }
+
+    // ③ 家があるかどうかで画面を切り替える
+    if (currentHouseholdId) {
+      // 家がある場合：食品管理画面
+      await loadFoods();
+    } else {
+      // 家がない場合：家の作成画面
+      render();
+    }
 
   } catch (error) {
     console.error('Firebase authentication error:', error);
