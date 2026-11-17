@@ -562,7 +562,7 @@ h1 span {
   margin: 0;
 }
 
-.meal-section .section-heading span {
+.section-heading span {
   font-size: 11px;
   color: #899087;
   letter-spacing: 0;
@@ -681,4 +681,149 @@ h1 span {
 .meal-form .meal-cancel-button {
   background: #f0f1ed;
   color: #687c65;
+}
+
+/* 献立登録モーダル */
+.meal-modal-card {
+  max-height: 85vh;
+  overflow-y: auto;
+}
+
+#meal-form {
+  display: grid;
+  gap: 12px;
+}
+
+#meal-form label {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+#meal-form input {
+  width: 100%;
+  padding: 13px;
+  border: 1px solid #e5e8df;
+  border-radius: 10px;
+  background: #fff;
+}
+
+/* 材料選択タブ */
+.ingredient-filters {
+  display: flex;
+  gap: 7px;
+  flex-wrap: wrap;
+}
+
+.ingredient-filter {
+  border: 0;
+  background: #eaece5;
+  color: #737c70;
+  padding: 8px 15px;
+  border-radius: 20px;
+  font-size: 12px;
+}
+
+.ingredient-filter.active {
+  background: #829b83;
+  color: white;
+}
+
+/* 材料タグ */
+.ingredient-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 12px;
+  background: #f7f8f4;
+  border-radius: 12px;
+  min-height: 70px;
+}
+
+.ingredient-tag {
+  border: 1px solid #dfe4da;
+  border-radius: 20px;
+  background: #fff;
+  color: #596454;
+  padding: 9px 13px;
+  font-size: 12px;
+}
+
+.ingredient-tag.selected {
+  background: #829b83;
+  border-color: #829b83;
+  color: white;
+}
+
+.ingredient-empty {
+  width: 100%;
+  text-align: center;
+  color: #999;
+  font-size: 12px;
+}
+
+.ingredient-selected-count {
+  margin: 0;
+  color: #829b83;
+  font-size: 12px;
+  text-align: right;
+}
+
+.meal-modal-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 10px;
+}
+
+.meal-modal-actions button {
+  padding: 12px 20px;
+  border: 0;
+  border-radius: 10px;
+  font-size: 13px;
+}
+
+.meal-modal-actions .submit-button {
+  margin-top: 0;
+}
+
+/* 献立名の編集ボタン */
+.meal-name-button {
+  border: none;
+  background: transparent;
+  padding: 5px 0;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  flex: 1;
+}
+
+.meal-name-button:hover {
+  color: #829b83;
+}
+
+/* レシピURL */
+.recipe-url-section {
+  display: grid;
+  gap: 10px;
+}
+
+.recipe-url-section input {
+  width: 100%;
+  padding: 13px;
+  border: 1px solid #e5e8df;
+  border-radius: 10px;
+  background: #fff;
+  box-sizing: border-box;
+}
+
+.recipe-search-button {
+  width: fit-content;
+  padding: 10px 15px;
+  border: 1px solid #829b83;
+  border-radius: 20px;
+  background: #fff;
+  color: #829b83;
+  font-size: 12px;
+  cursor: pointer;
 }

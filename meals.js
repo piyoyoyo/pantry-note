@@ -5,6 +5,7 @@ import {
   addDoc,
   doc,
   deleteDoc,
+  updateDoc,
   query,
   where,
   orderBy,
@@ -35,10 +36,20 @@ export async function getMeals(householdId, date) {
 
   const snapshot = await getDocs(q);
 
-  return snapshot.docs.map(doc => ({
-    id: doc.id,
-    ...doc.data()
-  }));
+  return snapshot.docs.map(mealDoc => {
+    const data = mealDoc.data();
+
+    return {
+      id: mealDoc.id,
+      ...data,
+
+      // 以前に登録した献立には材料IDがないため空配列にする
+      ingredientIds: data.ingredientIds || [],
+
+      // レシピURLも未登録の場合は空文字にする
+      recipeUrl: data.recipeUrl || ''
+    };
+  });
 }
 
 // 献立を追加
@@ -49,10 +60,29 @@ export async function addMeal(householdId, meal) {
     date: meal.date,
     type: meal.type,
     name: meal.name,
+    ingredientIds: meal.ingredientIds || [],
+    recipeUrl: meal.recipeUrl || '',
     createdAt: serverTimestamp()
   });
 
   return docRef.id;
+}
+
+// 献立を更新
+export async function updateMeal(householdId, mealId, meal) {
+  const mealRef = doc(
+    db,
+    'households',
+    householdId,
+    'meals',
+    mealId
+  );
+
+  await updateDoc(mealRef, {
+    name: meal.name,
+    ingredientIds: meal.ingredientIds || [],
+    recipeUrl: meal.recipeUrl || ''
+  });
 }
 
 // 献立を削除

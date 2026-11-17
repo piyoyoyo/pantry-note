@@ -1,6 +1,7 @@
 import {
   getMeals,
   addMeal,
+  updateMeal,
   deleteMeal
 } from './meals';
 import {
@@ -21,6 +22,13 @@ import liff from '@line/liff';
 
 let meals = [];
 let currentMealType = null;
+// 献立モーダル用
+let editingMealId = null;
+let selectedIngredientIds = [];
+let ingredientFilter = 'すべて';
+let isMealModalOpen = false;
+let mealNameInput = '';
+let mealRecipeUrlInput = '';
 let foods = [];
 let currentUser = null;
 let currentFilter = 'すべて';
@@ -129,28 +137,71 @@ async function loadMeals() {
   }
 }
 
-// 献立を追加
-async function handleAddMeal(mealType, mealName) {
+// 献立モーダルを開く
+function openMealModal(mealType, meal = null) {
+  editingMealId = meal ? meal.id : null;
+
+  currentMealType = meal ? meal.type : mealType;
+
+  selectedIngredientIds = meal
+    ? [...(meal.ingredientIds || [])]
+    : [];
+
+  mealNameInput = meal ? meal.name : '';
+  mealRecipeUrlInput = meal ? (meal.recipeUrl || '') : '';
+
+  ingredientFilter = 'すべて';
+  isMealModalOpen = true;
+
+  render();
+}
+
+// 献立を保存（新規登録・編集）
+async function handleSaveMeal(mealName, recipeUrl = '') {
   if (!currentHouseholdId) return;
 
-  const date = [
-    selectedMealDate.getFullYear(),
-    String(selectedMealDate.getMonth() + 1).padStart(2, '0'),
-    String(selectedMealDate.getDate()).padStart(2, '0')
-  ].join('-');
+  const date = getMealDateString(selectedMealDate);
+
+  const mealData = {
+    name: mealName,
+    ingredientIds: selectedIngredientIds,
+    recipeUrl
+  };
 
   try {
-    await addMeal(currentHouseholdId, {
-      date,
-      type: mealType,
-      name: mealName
-    });
+    if (editingMealId) {
+      // 既存献立を更新
+      await updateMeal(
+        currentHouseholdId,
+        editingMealId,
+        mealData
+      );
 
+      console.log('献立を更新しました');
+    } else {
+      // 新しい献立を登録
+      await addMeal(currentHouseholdId, {
+        ...mealData,
+        date,
+        type: currentMealType
+      });
+
+      console.log('献立を登録しました');
+    }
+
+    // モーダルを閉じる
+    editingMealId = null;
     currentMealType = null;
+    selectedIngredientIds = [];
+    mealNameInput = '';
+    mealRecipeUrlInput = '';
+    isMealModalOpen = false;
+
     await loadMeals();
+
   } catch (error) {
-    console.error('献立の登録に失敗しました:', error);
-    alert('献立を登録できませんでした。');
+    console.error('献立の保存に失敗しました:', error);
+    alert('献立を保存できませんでした。');
   }
 }
 
@@ -277,6 +328,33 @@ async function changeMealDate(amount) {
   currentMealType = null;
 
   await loadMeals();
+}
+
+// 材料選択用のタグを生成
+function renderIngredientTags() {
+  const filteredFoods = foods.filter(food => {
+    return ingredientFilter === 'すべて'
+      || food.place === ingredientFilter;
+  });
+
+  if (filteredFoods.length === 0) {
+    return '<p class="ingredient-empty">該当する食品がありません。</p>';
+  }
+
+  return filteredFoods.map(food => {
+    const selected = selectedIngredientIds.includes(food.id);
+
+    return `
+      <button
+        type="button"
+        class="ingredient-tag ${selected ? 'selected' : ''}"
+        data-id="${escapeHTML(food.id)}"
+      >
+        ${escapeHTML(food.name)}
+        ${selected ? ' ✓' : ''}
+      </button>
+    `;
+  }).join('');
 }
 
 function escapeHTML(value) {
@@ -432,7 +510,14 @@ function render() {
                   ${typeMeals.length
                     ? typeMeals.map(meal => `
                         <div class="meal-item">
-                          <span>${escapeHTML(meal.name)}</span>
+                          <button
+                            class="meal-name-button"
+                            data-id="${escapeHTML(meal.id)}"
+                            type="button"
+                          >
+                            ${escapeHTML(meal.name)}
+                          </button>
+
                           <button
                             class="meal-delete-button"
                             data-id="${escapeHTML(meal.id)}"
@@ -445,28 +530,11 @@ function render() {
                   }
                 </div>
 
-                ${currentMealType === mealType.type ? `
-                  <form class="meal-form" data-type="${mealType.type}">
-                    <input
-                      name="meal-name"
-                      type="text"
-                      placeholder="献立名を入力（例：車麩の唐揚げ）"
-                      maxlength="50"
-                      required
-                    />
-                    <button type="submit">保存する</button>
-                    <button
-                      class="meal-cancel-button"
-                      type="button"
-                    >キャンセル</button>
-                  </form>
-                ` : `
-                  <button
-                    class="meal-add-button"
-                    data-type="${mealType.type}"
-                    type="button"
-                  >＋ 献立を追加</button>
-                `}
+                <button
+                  class="meal-add-button"
+                  data-type="${mealType.type}"
+                  type="button"
+                >＋ 献立を追加</button>
               </div>
             `;
           }).join('')}
@@ -576,6 +644,85 @@ function render() {
             <input name="expiry-date" type="date" required />
 
             <button class="submit-button" type="submit">登録する</button>
+          </form>
+        </div>
+      </div>
+
+      <div id="meal-modal" class="modal ${isMealModalOpen ? '' : 'hidden'}">
+        <div class="modal-card meal-modal-card">
+          <div class="modal-header">
+            <h2>${editingMealId ? '献立を編集' : '献立を登録'}</h2>
+            <button
+              id="close-meal-modal"
+              class="close-button"
+              type="button"
+            >×</button>
+          </div>
+
+          <form id="meal-form">
+            <label for="meal-name">献立名</label>
+            <input
+              id="meal-name"
+              name="meal-name"
+              type="text"
+              placeholder="例：車麩の唐揚げ"
+              maxlength="50"
+              value="${escapeHTML(mealNameInput)}"
+              required
+            />
+
+            <label>材料</label>
+
+            <div class="ingredient-filters">
+              ${['すべて', '冷蔵', '冷凍', '常温'].map(filter => `
+                <button
+                  type="button"
+                  class="ingredient-filter ${ingredientFilter === filter ? 'active' : ''}"
+                  data-filter="${filter}"
+                >${filter}</button>
+              `).join('')}
+            </div>
+
+            <div class="ingredient-tags">
+              ${renderIngredientTags()}
+            </div>
+
+            <p class="ingredient-selected-count">
+              ${selectedIngredientIds.length}点の食材を選択中
+            </p>
+
+            <div class="recipe-url-section">
+              <label for="meal-recipe-url">レシピURL（任意）</label>
+
+              <input
+                id="meal-recipe-url"
+                name="recipe-url"
+                type="url"
+                placeholder="https://example.com/recipe"
+                value="${escapeHTML(mealRecipeUrlInput)}"
+              />
+
+              <button
+                id="recipe-search-button"
+                type="button"
+                class="recipe-search-button"
+              >
+                🔍 レシピをWebで検索
+              </button>
+            </div>
+
+            <div class="meal-modal-actions">
+              <button
+                id="cancel-meal-modal"
+                type="button"
+                class="meal-cancel-button"
+              >キャンセル</button>
+
+              <button
+                type="submit"
+                class="submit-button"
+              >保存する</button>
+            </div>
           </form>
         </div>
       </div>
@@ -780,10 +927,9 @@ function bindEvents() {
   document.querySelectorAll('.meal-add-button')
     .forEach(button => {
       button.addEventListener('click', () => {
-        currentMealType = button.dataset.type;
-        render();
+        openMealModal(button.dataset.type);
       });
-    });
+    }); 
 
   // 献立の登録フォーム
   document.querySelectorAll('.meal-form')
@@ -801,14 +947,113 @@ function bindEvents() {
       });
     });
 
-  // 献立のキャンセル
-  document.querySelectorAll('.meal-cancel-button')
+    // 登録済み献立をクリックして編集モーダルを開く
+    document.querySelectorAll('.meal-name-button')
+      .forEach(button => {
+        button.addEventListener('click', () => {
+          const mealId = button.dataset.id;
+
+          // クリックされた献立を取得
+          const meal = meals.find(item => item.id === mealId);
+
+          if (!meal) {
+            return;
+          }
+
+          // 編集モーダルを開く
+          openMealModal(meal.type, meal);
+        });
+      });
+
+  // 献立名の入力値を保持
+  document.querySelector('#meal-name')
+    .addEventListener('input', event => {
+      mealNameInput = event.target.value;
+    });
+
+  // レシピURLの入力値を保持
+  document.querySelector('#meal-recipe-url')
+    .addEventListener('input', event => {
+      mealRecipeUrlInput = event.target.value;
+    });
+
+  // レシピをWebで検索
+  document.querySelector('#recipe-search-button')
+    .addEventListener('click', () => {
+      const mealName = mealNameInput.trim();
+
+      if (!mealName) {
+        alert('先に献立名を入力してください。');
+        document.querySelector('#meal-name').focus();
+        return;
+      }
+
+      const searchUrl =
+        `https://www.google.com/search?q=${encodeURIComponent(mealName + ' レシピ')}`;
+
+      window.open(searchUrl, '_blank', 'noopener,noreferrer');
+    });
+
+  // 材料タブの切り替え
+  document.querySelectorAll('.ingredient-filter')
     .forEach(button => {
       button.addEventListener('click', () => {
-        currentMealType = null;
+        ingredientFilter = button.dataset.filter;
         render();
       });
     });
+
+  // 材料タグの選択・解除
+  document.querySelectorAll('.ingredient-tag')
+    .forEach(button => {
+      button.addEventListener('click', () => {
+        const foodId = button.dataset.id;
+
+        if (selectedIngredientIds.includes(foodId)) {
+          selectedIngredientIds =
+            selectedIngredientIds.filter(id => id !== foodId);
+        } else {
+          selectedIngredientIds.push(foodId);
+        }
+
+        render();
+      });
+    });
+
+  // 献立の保存
+  document.querySelector('#meal-form')
+    .addEventListener('submit', async event => {
+      event.preventDefault();
+
+      const mealName = mealNameInput.trim();
+
+      if (!mealName) {
+        alert('献立名を入力してください。');
+        return;
+      }
+
+      await handleSaveMeal(mealName, mealRecipeUrlInput);
+    });
+
+  // モーダルを閉じる共通処理
+  function closeMealModal() {
+    editingMealId = null;
+    currentMealType = null;
+    selectedIngredientIds = [];
+    mealNameInput = '';
+    mealRecipeUrlInput = '';
+    isMealModalOpen = false;
+
+    render();
+  }
+
+  // 閉じるボタン
+  document.querySelector('#close-meal-modal')
+    .addEventListener('click', closeMealModal);
+
+  // キャンセルボタン
+  document.querySelector('#cancel-meal-modal')
+    .addEventListener('click', closeMealModal);
 
   // 献立の削除
   document.querySelectorAll('.meal-delete-button')
@@ -886,6 +1131,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // ⑦ 画面を表示
     if (currentHouseholdId) {
       await loadFoods();
+      await loadMeals();
     } else {
       render();
     }
