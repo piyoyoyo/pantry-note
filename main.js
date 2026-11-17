@@ -14,11 +14,11 @@ import {
   deleteMeal
 } from './meals';
 import {
-  getFoods,
-  addFood,
-  deleteFood,
-  updateFood
-} from './foods';
+  fetchFoods,
+  createFoodData,
+  removeFoodData,
+  saveFoodData
+} from './dataController';
 import {
   createHousehold,
   getUserHousehold,
@@ -118,15 +118,18 @@ async function handleCreateInvite() {
 
 // Firestoreから食品一覧を取得して画面を更新
 async function loadFoods() {
-   if (!currentUser) {
+  if (!currentUser) {
     console.error('ユーザー認証が完了していません');
     return;
   }
 
   try {
-    foods = await getFoods(currentHouseholdId);
+    foods = await fetchFoods(currentHouseholdId);
+
     render();
+
     console.log('食品データの取得に成功しました:', foods);
+
   } catch (error) {
     console.error('食品データの取得に失敗しました:', error);
   }
@@ -257,7 +260,7 @@ async function handleAddFood(newFood) {
   }
 
   try {
-    await addFood(currentHouseholdId, newFood);
+    await createFoodData(currentHouseholdId, newFood);
 
     console.log('食品を保存しました');
 
@@ -288,7 +291,7 @@ async function handleDeleteFood(foodId) {
   }
 
   try {
-    await deleteFood(currentHouseholdId, foodId);
+    await removeFoodData(currentHouseholdId, foodId);
 
     console.log('食品を削除しました');
 
@@ -309,7 +312,7 @@ async function handleUpdateFood(foodId, updatedFood) {
   }
 
   try {
-    await updateFood(currentHouseholdId, foodId, updatedFood);
+    await saveFoodData(currentHouseholdId, foodId, updatedFood);
     console.log('食品情報を更新しました');
 
     // 編集モードを解除
