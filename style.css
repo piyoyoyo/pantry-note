@@ -7,6 +7,11 @@
   margin-top: 60px;
 }
 
+/* アプリ全体の配置 */
+.app-shell {
+  padding-top: 24px;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -38,8 +43,70 @@ button {
 .header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   margin-bottom: 25px;
+}
+
+.header h1 {
+  font-size: 22px;
+  line-height: 1.5;
+}
+
+/* ヘッダー */
+.eyebrow {
+  color: #829b83;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  margin: 0 0 6px;
+}
+
+/* 設定ボタン */
+.header-actions {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.settings-button {
+  width: 40px;
+  height: 40px;
+  border: 1px solid #e5e8df;
+  border-radius: 50%;
+  background: #fff;
+  color: #687c65;
+  font-size: 21px;
+}
+
+.settings-menu {
+  position: absolute;
+  top: 48px;
+  right: 0;
+  z-index: 5;
+  width: 170px;
+  padding: 6px;
+  background: #fff;
+  border: 1px solid #e8e9e1;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+.settings-menu.hidden {
+  display: none;
+}
+
+.settings-menu-item {
+  width: 100%;
+  padding: 12px;
+  border: 0;
+  border-radius: 8px;
+  background: #fff;
+  color: #343b35;
+  text-align: left;
+  font-size: 13px;
+}
+
+.settings-menu-item:hover {
+  background: #f2f4ed;
 }
 
 h1 {
@@ -488,16 +555,75 @@ h1 span {
   gap: 12px;
 }
 
-.invite-button {
-  padding: 9px 14px;
-  border: 1px solid #8b9b78;
-  border-radius: 20px;
-  background: #fff;
-  color: #536747;
-  font-size: 12px;
-  cursor: pointer;
+/* 今日の献立 */
+.meal-section {
+  margin-bottom: 28px;
 }
 
-.invite-button:hover {
-  background: #f1f5ed;
+.meal-section .section-heading {
+  margin-bottom: 12px;
+}
+
+.meal-section .section-heading h2 {
+  margin: 0;
+}
+
+.meal-section .section-heading span {
+  font-size: 11px;
+  color: #899087;
+  letter-spacing: 0;
+}
+
+.meal-card {
+  background: #fff;
+  border-radius: 14px;
+  padding: 16px;
+  margin-bottom: 10px;
+}
+
+.meal-title {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.meal-title span {
+  font-size: 19px;
+}
+
+.meal-title h3 {
+  margin: 0;
+  font-size: 15px;
+}
+
+.meal-empty {
+  margin: 12px 0 0;
+  padding: 12px;
+  border-radius: 9px;
+  background: #f7f8f4;
+  color: #a0a69d;
+  font-size: 12px;
+  text-align: center;
+}
+
+/* 献立の日付切り替え */
+.meal-date-navigation {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  margin: 12px 0 18px;
+}
+
+.meal-date-navigation button {
+  border: 1px solid #e5e8df;
+  background: #fff;
+  color: #687c65;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 12px;
+}
+
+.meal-date-navigation button:hover {
+  background: #edf2e9;
 }

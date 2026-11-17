@@ -20,6 +20,8 @@ let currentFilter = 'すべて';
 let editingFoodId = null;
 let currentHouseholdId = null;
 let currentHouseholdName = "";
+let selectedMealDate = new Date();
+selectedMealDate.setHours(0, 0, 0, 0);
 
 // 家の作成
 async function handleCreateHousehold(householdName) {
@@ -181,6 +183,29 @@ function daysLeft(expiryDate) {
   return Math.ceil((target - today) / 86400000);
 }
 
+// 献立の日付を表示する
+function formatMealDate(date) {
+  return new Intl.DateTimeFormat('ja-JP', {
+    month: 'long',
+    day: 'numeric',
+    weekday: 'short'
+  }).format(date);
+}
+
+// 月日だけを表示する
+function formatMonthDay(date) {
+  return `${date.getMonth() + 1}月${date.getDate()}日`;
+}
+
+// 献立の日付を変更する
+function changeMealDate(amount) {
+  const newDate = new Date(selectedMealDate);
+  newDate.setDate(newDate.getDate() + amount);
+
+  selectedMealDate = newDate;
+  render();
+}
+
 function escapeHTML(value) {
   return String(value).replace(/[&<>"']/g, char => ({
     '&': '&amp;',
@@ -198,8 +223,8 @@ function render() {
       <div class="household-setup">
         <header class="header">
           <div>
-            <p class="eyebrow">PANTRY NOTE</p>
-            <h1>食材メモ 🥬</h1>
+            <p class="eyebrow">MEAL HELPER</p>
+            <h1>ミールヘルパー 🥬</h1>
           </div>
         </header>
 
@@ -208,7 +233,7 @@ function render() {
 
           <p>
             家を作成すると、家族みんなで
-            同じ冷蔵庫・パントリーを共有できるようになります。
+            同じ献立、冷蔵庫・パントリーの食材を共有できるようになります。
           </p>
 
           <form id="household-form">
@@ -251,20 +276,106 @@ function render() {
     return;
   }
 
+
+
+  // 今日の日付
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  // 選択中の日付が今日かどうか
+  const isToday =
+    selectedMealDate.getTime() === today.getTime();
+
+  // 献立セクションのタイトル
+  const mealSectionTitle = isToday
+    ? '今日の献立'
+    : `${formatMonthDay(selectedMealDate)}の献立`;
+
+  // 献立を表示する日付
+  const todayLabel = formatMealDate(selectedMealDate);
+
+  // 前日の日付
+  const previousMealDate = new Date(selectedMealDate);
+  previousMealDate.setDate(previousMealDate.getDate() - 1);
+
+  // 翌日の日付
+  const nextMealDate = new Date(selectedMealDate);
+  nextMealDate.setDate(nextMealDate.getDate() + 1);
+
   document.querySelector('#app').innerHTML = `
     <div class="app-shell">
       <header class="header">
         <div>
-          <h1>${currentHouseholdName}の食材メモ</h1>
-          <p class="subheading">食材を管理して、毎日のごはんをもっと楽しく。</p>
+          <p class="eyebrow">MEAL HELPER</p>
+          <h1>${escapeHTML(currentHouseholdName)}のミールヘルパー</h1>
+          <p class="subheading">毎日の献立と食材を管理しましょう。</p>
         </div>
 
         <div class="header-actions">
-          <button id="invite-button" class="invite-button">
-            家族を招待する
+          <button
+            id="settings-button"
+            class="settings-button"
+            type="button"
+            aria-label="設定メニューを開く"
+          >
+            ⚙
           </button>
+
+          <div id="settings-menu" class="settings-menu hidden">
+            <button
+              id="invite-button"
+              class="settings-menu-item"
+              type="button"
+            >
+              家族を招待する
+            </button>
+          </div>
         </div>
       </header>
+
+      <section class="meal-section">
+        <div class="meal-date-navigation">
+          <button id="previous-meal-date" type="button">
+            ‹ ${formatMonthDay(previousMealDate)}
+          </button>
+
+          <button id="today-meal-date" type="button">
+            ${todayLabel}
+          </button>
+
+          <button id="next-meal-date" type="button">
+            ${formatMonthDay(nextMealDate)} ›
+          </button>
+        </div>
+
+        <div class="section-heading">
+          <h2>${mealSectionTitle}</h2>
+        </div>
+
+        <div class="meal-card">
+          <div class="meal-title">
+            <span>🌅</span>
+            <h3>朝食</h3>
+          </div>
+          <p class="meal-empty">献立はまだ登録されていません</p>
+        </div>
+
+        <div class="meal-card">
+          <div class="meal-title">
+            <span>☀️</span>
+            <h3>昼食</h3>
+          </div>
+          <p class="meal-empty">献立はまだ登録されていません</p>
+        </div>
+
+        <div class="meal-card">
+          <div class="meal-title">
+            <span>🌙</span>
+            <h3>夕食</h3>
+          </div>
+          <p class="meal-empty">献立はまだ登録されていません</p>
+        </div>
+      </section>
 
       <section class="expiry-section">
         <div class="expiry-icon">⏰</div>
@@ -431,9 +542,20 @@ function renderFoods(keyword = '') {
 }
 
 function bindEvents() {
+  // 設定メニューの開閉
+  const settingsButton = document.querySelector('#settings-button');
+  const settingsMenu = document.querySelector('#settings-menu');
+
+  settingsButton.addEventListener('click', () => {
+    settingsMenu.classList.toggle('hidden');
+  });
+
   // 家族招待ボタン
   document.querySelector('#invite-button')
-    .addEventListener('click', handleCreateInvite);
+    .addEventListener('click', () => {
+      settingsMenu.classList.add('hidden');
+      handleCreateInvite();
+    });
 
   document.querySelectorAll('.filter').forEach(button => {
     button.addEventListener('click', () => {
@@ -537,6 +659,24 @@ function bindEvents() {
     // モーダルを表示
     document.querySelector('#modal').classList.remove('hidden');
   });
+
+  // 献立の日付切り替え
+  document.querySelector('#previous-meal-date')
+    .addEventListener('click', () => {
+      changeMealDate(-1);
+    });
+
+  document.querySelector('#today-meal-date')
+    .addEventListener('click', () => {
+      selectedMealDate = new Date();
+      selectedMealDate.setHours(0, 0, 0, 0);
+      render();
+    });
+
+  document.querySelector('#next-meal-date')
+    .addEventListener('click', () => {
+      changeMealDate(1);
+    });
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
