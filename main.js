@@ -650,7 +650,7 @@ function render() {
                                 const ingredientNames = getMealIngredientNames(meal);
 
                                 return ingredientNames.length
-                                  ? `🥬 ${ingredientNames.map(name => escapeHTML(name)).join('、')}`
+                                  ? `使用する食材：${ingredientNames.map(name => escapeHTML(name)).join('、')}`
                                   : '材料は登録されていません';
                               })()}
                             </div>
