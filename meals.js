@@ -52,6 +52,30 @@ export async function getMeals(householdId, date) {
   });
 }
 
+// 今日以降の献立をすべて取得
+export async function getUpcomingMeals(householdId, fromDate) {
+  const mealsRef = getMealsCollection(householdId);
+
+  const q = query(
+    mealsRef,
+    where('date', '>=', fromDate),
+    orderBy('date', 'asc')
+  );
+
+  const snapshot = await getDocs(q);
+
+  return snapshot.docs.map(mealDoc => {
+    const data = mealDoc.data();
+
+    return {
+      id: mealDoc.id,
+      ...data,
+      ingredientIds: data.ingredientIds || [],
+      recipeUrl: data.recipeUrl || ''
+    };
+  });
+}
+
 // 献立を追加
 export async function addMeal(householdId, meal) {
   const mealsRef = getMealsCollection(householdId);

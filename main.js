@@ -1,5 +1,6 @@
 import {
   getMeals,
+  getUpcomingMeals,
   addMeal,
   updateMeal,
   deleteMeal
@@ -21,6 +22,8 @@ import './style.css';
 import liff from '@line/liff';
 
 let meals = [];
+// 今日以降の献立
+let upcomingMeals = [];
 let currentMealType = null;
 // 献立モーダル用
 let editingMealId = null;
@@ -134,6 +137,25 @@ async function loadMeals() {
     render();
   } catch (error) {
     console.error('献立の取得に失敗しました:', error);
+  }
+}
+
+// 今日以降の献立をupcomingMealsに保存する
+async function loadUpcomingMeals() {
+  if (!currentHouseholdId) return;
+
+  try {
+    const today = getMealDateString(new Date());
+
+    upcomingMeals = await getUpcomingMeals(
+      currentHouseholdId,
+      today
+    );
+    if (document.querySelector('#food-list')) {
+      renderFoods();
+    }
+  } catch (error) {
+    console.error('使用予定の献立取得に失敗しました:', error);
   }
 }
 
@@ -340,6 +362,86 @@ function getMealIngredientNames(meal) {
       return food ? food.name : null;
     })
     .filter(name => name !== null);
+}
+
+// 食品の最も近い使用予定を取得
+function getFoodUpcomingMeal(foodId) {
+  // 各食事の予定時刻
+  const mealTimes = {
+    breakfast: '10:00',
+    lunch: '15:00',
+    dinner: '21:00'
+  };
+
+  const now = new Date();
+
+  // 今日の日付
+  const today = getMealDateString(now);
+
+  // 現在時刻
+  const currentTime =
+    `${String(now.getHours()).padStart(2, '0')}:` +
+    `${String(now.getMinutes()).padStart(2, '0')}`;
+
+  const matchingMeals = upcomingMeals
+    .filter(meal => {
+      // この食品が材料に含まれているか
+      if (!(meal.ingredientIds || []).includes(foodId)) {
+        return false;
+      }
+
+      // 今日より未来の日付なら対象
+      if (meal.date > today) {
+        return true;
+      }
+
+      // 今日より過去の日付なら対象外
+      if (meal.date < today) {
+        return false;
+      }
+
+      // 今日の献立は予定時刻がまだ来ていなければ対象
+      const scheduledTime = mealTimes[meal.type];
+
+      return scheduledTime && currentTime < scheduledTime;
+    })
+    .sort((a, b) => {
+      // 日付が早い順
+      if (a.date !== b.date) {
+        return a.date.localeCompare(b.date);
+      }
+
+      // 同じ日なら朝食・昼食・夕食の順
+      const mealTypeOrder = {
+        breakfast: 1,
+        lunch: 2,
+        dinner: 3
+      };
+
+      return (
+        (mealTypeOrder[a.type] || 99) -
+        (mealTypeOrder[b.type] || 99)
+      );
+    });
+
+  return matchingMeals[0] || null;
+}
+
+// 使用予定の表示文字列を作成
+function getFoodUpcomingMealLabel(foodId) {
+  const meal = getFoodUpcomingMeal(foodId);
+
+  if (!meal) return '';
+
+  const [year, month, day] = meal.date.split('-');
+
+  const mealTypeLabels = {
+    breakfast: '朝食',
+    lunch: '昼食',
+    dinner: '夕食'
+  };
+
+  return `${Number(month)}月${Number(day)}日 ${mealTypeLabels[meal.type] || ''}で使用予定`;
 }
 
 // 材料選択用のタグを生成
@@ -781,6 +883,9 @@ function renderFoods(keyword = '') {
               <div class="food-name">${escapeHTML(food.name)}</div>
               <div class="food-detail">${escapeHTML(food.quantity)} ・ ${escapeHTML(food.place)}</div>
               <div class="food-date">${escapeHTML(food.expiryDate.replaceAll('-', '/'))}</div>
+              ${getFoodUpcomingMealLabel(food.id)
+                ? `<div class="food-upcoming-meal">📅 ${escapeHTML(getFoodUpcomingMealLabel(food.id))}</div>`
+                : ''}
             </div>
             <div class="food-status ${warning}">${status}</div>
             <div class="food-actions">
@@ -1156,6 +1261,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (currentHouseholdId) {
       await loadFoods();
       await loadMeals();
+      await loadUpcomingMeals();
     } else {
       render();
     }

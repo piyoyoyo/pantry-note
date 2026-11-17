@@ -849,3 +849,11 @@ h1 span {
 .meal-name-button {
   font-weight: 600;
 }
+
+/* 食品の使用予定 */
+.food-upcoming-meal {
+  margin-top: 5px;
+  color: #71866b;
+  font-size: 11px;
+  line-height: 1.5;
+}
