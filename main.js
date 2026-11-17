@@ -1,4 +1,9 @@
 import {
+  getMeals,
+  addMeal,
+  deleteMeal
+} from './meals';
+import {
   getFoods,
   addFood,
   deleteFood,
@@ -14,6 +19,8 @@ import { httpsCallable } from 'firebase/functions';
 import './style.css';
 import liff from '@line/liff';
 
+let meals = [];
+let currentMealType = null;
 let foods = [];
 let currentUser = null;
 let currentFilter = 'すべて';
@@ -95,6 +102,70 @@ async function loadFoods() {
     console.log('食品データの取得に成功しました:', foods);
   } catch (error) {
     console.error('食品データの取得に失敗しました:', error);
+  }
+}
+
+// 日付を YYYY-MM-DD 形式に変換する関数
+function getMealDateString(date) {
+  return [
+    date.getFullYear(),
+    String(date.getMonth() + 1).padStart(2, '0'),
+    String(date.getDate()).padStart(2, '0')
+  ].join('-');
+}
+
+// 指定した日付の献立を取得
+async function loadMeals() {
+  if (!currentHouseholdId) return;
+
+  try {
+    const date = getMealDateString(selectedMealDate);
+
+    meals = await getMeals(currentHouseholdId, date);
+
+    render();
+  } catch (error) {
+    console.error('献立の取得に失敗しました:', error);
+  }
+}
+
+// 献立を追加
+async function handleAddMeal(mealType, mealName) {
+  if (!currentHouseholdId) return;
+
+  const date = [
+    selectedMealDate.getFullYear(),
+    String(selectedMealDate.getMonth() + 1).padStart(2, '0'),
+    String(selectedMealDate.getDate()).padStart(2, '0')
+  ].join('-');
+
+  try {
+    await addMeal(currentHouseholdId, {
+      date,
+      type: mealType,
+      name: mealName
+    });
+
+    currentMealType = null;
+    await loadMeals();
+  } catch (error) {
+    console.error('献立の登録に失敗しました:', error);
+    alert('献立を登録できませんでした。');
+  }
+}
+
+// 献立を削除
+async function handleDeleteMeal(mealId) {
+  if (!currentHouseholdId) return;
+
+  if (!confirm('この献立を削除しますか？')) return;
+
+  try {
+    await deleteMeal(currentHouseholdId, mealId);
+    await loadMeals();
+  } catch (error) {
+    console.error('献立の削除に失敗しました:', error);
+    alert('献立を削除できませんでした。');
   }
 }
 
@@ -198,12 +269,14 @@ function formatMonthDay(date) {
 }
 
 // 献立の日付を変更する
-function changeMealDate(amount) {
+async function changeMealDate(amount) {
   const newDate = new Date(selectedMealDate);
   newDate.setDate(newDate.getDate() + amount);
 
   selectedMealDate = newDate;
-  render();
+  currentMealType = null;
+
+  await loadMeals();
 }
 
 function escapeHTML(value) {
@@ -276,21 +349,6 @@ function render() {
     return;
   }
 
-
-
-  // 今日の日付
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-
-  // 選択中の日付が今日かどうか
-  const isToday =
-    selectedMealDate.getTime() === today.getTime();
-
-  // 献立セクションのタイトル
-  const mealSectionTitle = isToday
-    ? '今日の献立'
-    : `${formatMonthDay(selectedMealDate)}の献立`;
-
   // 献立を表示する日付
   const todayLabel = formatMealDate(selectedMealDate);
 
@@ -349,32 +407,69 @@ function render() {
         </div>
 
         <div class="section-heading">
-          <h2>${mealSectionTitle}</h2>
+          <h2>${getMealDateString(selectedMealDate) === getMealDateString(new Date())
+            ? '今日の献立'
+            : `${todayLabel}の献立`}</h2>
         </div>
 
-        <div class="meal-card">
-          <div class="meal-title">
-            <span>🌅</span>
-            <h3>朝食</h3>
-          </div>
-          <p class="meal-empty">献立はまだ登録されていません</p>
-        </div>
+        ${[
+            { type: 'breakfast', label: '朝食', icon: '🌅' },
+            { type: 'lunch', label: '昼食', icon: '☀️' },
+            { type: 'dinner', label: '夕食', icon: '🌙' }
+          ].map(mealType => {
+            const typeMeals = meals.filter(
+              meal => meal.type === mealType.type
+            );
 
-        <div class="meal-card">
-          <div class="meal-title">
-            <span>☀️</span>
-            <h3>昼食</h3>
-          </div>
-          <p class="meal-empty">献立はまだ登録されていません</p>
-        </div>
+            return `
+              <div class="meal-card">
+                <div class="meal-title">
+                  <span>${mealType.icon}</span>
+                  <h3>${mealType.label}</h3>
+                </div>
 
-        <div class="meal-card">
-          <div class="meal-title">
-            <span>🌙</span>
-            <h3>夕食</h3>
-          </div>
-          <p class="meal-empty">献立はまだ登録されていません</p>
-        </div>
+                <div class="meal-list">
+                  ${typeMeals.length
+                    ? typeMeals.map(meal => `
+                        <div class="meal-item">
+                          <span>${escapeHTML(meal.name)}</span>
+                          <button
+                            class="meal-delete-button"
+                            data-id="${escapeHTML(meal.id)}"
+                            type="button"
+                            aria-label="${escapeHTML(meal.name)}を削除"
+                          >×</button>
+                        </div>
+                      `).join('')
+                    : '<p class="meal-empty">献立はまだ登録されていません</p>'
+                  }
+                </div>
+
+                ${currentMealType === mealType.type ? `
+                  <form class="meal-form" data-type="${mealType.type}">
+                    <input
+                      name="meal-name"
+                      type="text"
+                      placeholder="献立名を入力（例：車麩の唐揚げ）"
+                      maxlength="50"
+                      required
+                    />
+                    <button type="submit">保存する</button>
+                    <button
+                      class="meal-cancel-button"
+                      type="button"
+                    >キャンセル</button>
+                  </form>
+                ` : `
+                  <button
+                    class="meal-add-button"
+                    data-type="${mealType.type}"
+                    type="button"
+                  >＋ 献立を追加</button>
+                `}
+              </div>
+            `;
+          }).join('')}
       </section>
 
       <section class="expiry-section">
@@ -667,15 +762,60 @@ function bindEvents() {
     });
 
   document.querySelector('#today-meal-date')
-    .addEventListener('click', () => {
+    .addEventListener('click', async () => {
       selectedMealDate = new Date();
       selectedMealDate.setHours(0, 0, 0, 0);
-      render();
+
+      currentMealType = null;
+
+      await loadMeals();
     });
 
   document.querySelector('#next-meal-date')
     .addEventListener('click', () => {
       changeMealDate(1);
+    });
+
+  // 献立の追加ボタン
+  document.querySelectorAll('.meal-add-button')
+    .forEach(button => {
+      button.addEventListener('click', () => {
+        currentMealType = button.dataset.type;
+        render();
+      });
+    });
+
+  // 献立の登録フォーム
+  document.querySelectorAll('.meal-form')
+    .forEach(form => {
+      form.addEventListener('submit', async event => {
+        event.preventDefault();
+
+        const mealName = new FormData(form)
+          .get('meal-name')
+          .trim();
+
+        if (!mealName) return;
+
+        await handleAddMeal(form.dataset.type, mealName);
+      });
+    });
+
+  // 献立のキャンセル
+  document.querySelectorAll('.meal-cancel-button')
+    .forEach(button => {
+      button.addEventListener('click', () => {
+        currentMealType = null;
+        render();
+      });
+    });
+
+  // 献立の削除
+  document.querySelectorAll('.meal-delete-button')
+    .forEach(button => {
+      button.addEventListener('click', () => {
+        handleDeleteMeal(button.dataset.id);
+      });
     });
 }
 

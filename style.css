@@ -227,12 +227,6 @@ h1 span {
   font-size: 18px;
 }
 
-.section-heading span {
-  color: #a0a69d;
-  font-size: 10px;
-  letter-spacing: 1px;
-}
-
 .search {
   width: 100%;
   padding: 13px 15px;
@@ -626,4 +620,65 @@ h1 span {
 
 .meal-date-navigation button:hover {
   background: #edf2e9;
+}
+
+/* 献立リスト */
+.meal-list {
+  margin-top: 12px;
+}
+
+.meal-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px;
+  margin-bottom: 8px;
+  background: #f7f8f4;
+  border-radius: 9px;
+  font-size: 13px;
+}
+
+.meal-delete-button {
+  border: 0;
+  background: transparent;
+  color: #999;
+  font-size: 20px;
+}
+
+.meal-add-button {
+  width: 100%;
+  margin-top: 12px;
+  padding: 11px;
+  border: 1px dashed #b8c5b1;
+  border-radius: 10px;
+  background: #fff;
+  color: #718b72;
+  font-size: 12px;
+}
+
+.meal-form {
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.meal-form input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #e5e8df;
+  border-radius: 9px;
+}
+
+.meal-form button {
+  padding: 10px;
+  border: 0;
+  border-radius: 9px;
+  background: #829b83;
+  color: white;
+  font-size: 12px;
+}
+
+.meal-form .meal-cancel-button {
+  background: #f0f1ed;
+  color: #687c65;
 }
