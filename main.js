@@ -557,8 +557,8 @@ function render() {
       <header class="header">
         <div>
           <p class="eyebrow">MEAL HELPER</p>
-          <h1>${escapeHTML(currentHouseholdName)}のミールヘルパー</h1>
-          <p class="subheading">毎日の献立と食材を管理しましょう。</p>
+          <h1>ミールヘルパー</h1>
+          <p class="subheading">${escapeHTML(currentHouseholdName)}</p>
         </div>
 
         <div class="header-actions">
@@ -752,8 +752,8 @@ function render() {
       <div id="food-list" class="food-list"></div>
 
       <nav class="bottom-nav">
-        <div class="nav-item selected"><span>▦</span>食品リスト</div>
-        <div class="nav-item"><span>♡</span>お気に入り</div>
+        <div class="nav-item selected"><span>▦</span>献立</div>
+        <div class="nav-item"><span>♡</span>食材リスト</div>
         <div class="nav-item"><span>☑</span>買い物リスト</div>
       </nav>
 
