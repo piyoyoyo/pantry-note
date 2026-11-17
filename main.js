@@ -1,18 +1,14 @@
 import { renderApp } from './render';
 import {
-  escapeHTML,
   getMealDateString,
   formatMealDate,
-  formatMonthDay,
-  daysLeft
 } from './utils';
 import {
-  getMeals,
-  getUpcomingMeals,
-  addMeal,
-  updateMeal,
-  deleteMeal
-} from './meals';
+  fetchMeals,
+  fetchUpcomingMeals,
+  saveMealData,
+  removeMealData
+} from './dataController';
 import {
   fetchFoods,
   createFoodData,
@@ -26,7 +22,6 @@ import {
 } from './households';
 import { renderFoods } from './foodView';
 import {
-  renderMealView,
   renderIngredientTags
 } from './mealView';
 import { bindEvents } from './events';
