@@ -770,9 +770,32 @@ function render() {
       ` : ''}
 
       <nav class="bottom-nav">
-        <div class="nav-item selected"><span>▦</span>献立</div>
-        <div class="nav-item"><span>♡</span>食材リスト</div>
-        <div class="nav-item"><span>☑</span>買い物リスト</div>
+        <button
+          class="nav-item ${currentTab === 'meals' ? 'selected' : ''}"
+          data-tab="meals"
+          type="button"
+        >
+          <span>♡</span>
+          献立
+        </button>
+
+        <button
+          class="nav-item ${currentTab === 'foods' ? 'selected' : ''}"
+          data-tab="foods"
+          type="button"
+        >
+          <span>▦</span>
+          食材リスト
+        </button>
+
+        <button
+          class="nav-item ${currentTab === 'shopping' ? 'selected' : ''}"
+          data-tab="shopping"
+          type="button"
+        >
+          <span>☑</span>
+          買い物リスト
+        </button>
       </nav>
 
       <div id="modal" class="modal hidden">
@@ -891,6 +914,9 @@ function render() {
 function renderFoods(keyword = '') {
   const list = document.querySelector('#food-list');
 
+  // 食材リスト画面が表示されていない場合は終了
+  if (!list) return;
+
   const filtered = foods.filter(food => {
     const matchesFilter =
       currentFilter === 'すべて' || food.place === currentFilter;
@@ -951,6 +977,18 @@ function bindEvents() {
     settingsMenu.classList.toggle('hidden');
   });
 
+  // 下部ナビゲーションのタブ切り替え
+  document.querySelectorAll('.nav-item').forEach(button => {
+    button.addEventListener('click', () => {
+      const tab = button.dataset.tab;
+
+      if (currentTab === tab) return;
+
+      currentTab = tab;
+      render();
+    });
+  });
+
   // 家族招待ボタン
   document.querySelector('#invite-button')
     .addEventListener('click', () => {
@@ -965,14 +1003,26 @@ function bindEvents() {
     });
   });
 
-  document.querySelector('#search').addEventListener('input', event => {
-    renderFoods(event.target.value);
-  });
+  const searchInput = document.querySelector('#search');
 
-  // モーダルを開く
-  document.querySelector('#add-button').addEventListener('click', async () => {
-    document.querySelector('#modal').classList.remove('hidden');
-  });
+  if (searchInput) {
+    searchInput.addEventListener('input', event => {
+      renderFoods(event.target.value);
+    });
+  }
+
+  // 食品追加するボタンを押してモーダルを開く
+  const addButton = document.querySelector('#add-button');
+
+  if (addButton) {
+    addButton.addEventListener('click', () => {
+      const modal = document.querySelector('#modal');
+
+      if (modal) {
+        modal.classList.remove('hidden');
+      }
+    });
+  }
 
   document.querySelector('#close-modal').addEventListener('click', () => {
     editingFoodId = null;
@@ -985,90 +1035,125 @@ function bindEvents() {
   });
 
   // 「食材を追加」モーダルで登録ボタンを押したときと、食品一覧で編集ボタンを押した時の処理
-  document.querySelector('#food-form').addEventListener('submit', async event => {
-    event.preventDefault();
-    const form = new FormData(event.target);
+  const foodForm = document.querySelector('#food-form');
 
-    // フォームから入力値を取得
-    const foodData = {
-      name: form.get('food-name'),
-      quantity: form.get('quantity'),
-      place: form.get('place'),
-      expiryDate: form.get('expiry-date')
-    };
+  if (foodForm) {
+    foodForm.addEventListener('submit', async event => {
+      event.preventDefault();
 
-    if (editingFoodId) {
-      // 編集モード：既存食品を更新
-      await handleUpdateFood(editingFoodId, foodData);
-    } else {
-      // 新規登録モード：食品を追加
-      await handleAddFood(foodData);
-    }
+      const form = new FormData(event.target);
 
-    // モーダルの表示を初期状態に戻す
-    editingFoodId = null;
-    document.querySelector('.modal-header h2').textContent = '食品を追加';
-    document.querySelector('.submit-button').textContent = '登録する';
+      // フォームから入力値を取得
+      const foodData = {
+        name: form.get('food-name'),
+        quantity: form.get('quantity'),
+        place: form.get('place'),
+        expiryDate: form.get('expiry-date')
+      };
 
-  });
+      if (editingFoodId) {
+        // 編集モード：既存食品を更新
+        await handleUpdateFood(editingFoodId, foodData);
+      } else {
+        // 新規登録モード：食品を追加
+        await handleAddFood(foodData);
+      }
 
-  // 食品削除ボタン
-  document.querySelector('#food-list').addEventListener('click', event => {
-    const button = event.target.closest('.delete-button');
+      // モーダルの表示を初期状態に戻す
+      editingFoodId = null;
 
-    if (!button) {
-      return;
-    }
+      const modalTitle = document.querySelector('.modal-header h2');
+      const submitButton = document.querySelector('.submit-button');
 
-    const foodId = button.dataset.id;
+      if (modalTitle) {
+        modalTitle.textContent = '食品を追加';
+      }
 
-    handleDeleteFood(foodId);
-  });
+      if (submitButton) {
+        submitButton.textContent = '登録する';
+      }
+    });
+  }
+
+  // 食品一覧のクリックイベント
+  const foodList = document.querySelector('#food-list');
+
+  if (foodList) {
+    foodList.addEventListener('click', event => {
+      const button = event.target.closest('.delete-button');
+
+      if (!button) {
+        return;
+      }
+
+      const foodId = button.dataset.id;
+
+      handleDeleteFood(foodId);
+    });
+  }
 
   // 食品編集ボタン
-  document.querySelector('#food-list').addEventListener('click', event => {
-    const button = event.target.closest('.edit-button');
+  const foodListForEdit = document.querySelector('#food-list');
 
-    if (!button) {
-      return;
-    }
+  if (foodListForEdit) {
+    foodListForEdit.addEventListener('click', event => {
+      const button = event.target.closest('.edit-button');
 
-    const foodId = button.dataset.id;
+      if (!button) {
+        return;
+      }
 
-    // 編集対象の食品を取得
-    const food = foods.find(item => item.id === foodId);
+      const foodId = button.dataset.id;
 
-    if (!food) {
-      return;
-    }
+      // 編集対象の食品を取得
+      const food = foods.find(item => item.id === foodId);
 
-    // 編集モードにする
-    editingFoodId = foodId;
+      if (!food) {
+        return;
+      }
 
-    // フォームに既存の値をセット
-    const form = document.querySelector('#food-form');
+      // 編集モードにする
+      editingFoodId = foodId;
 
-    form.elements.namedItem('food-name').value = food.name;
-    form.elements.namedItem('quantity').value = food.quantity;
-    form.elements.namedItem('place').value = food.place;
-    form.elements.namedItem('expiry-date').value = food.expiryDate;
+      // フォームを取得
+      const form = document.querySelector('#food-form');
+      const modal = document.querySelector('#modal');
+      const modalTitle = document.querySelector('.modal-header h2');
+      const submitButton = document.querySelector('.submit-button');
 
-    // モーダルのタイトルとボタンを変更
-    document.querySelector('.modal-header h2').textContent = '食品を編集';
-    document.querySelector('.submit-button').textContent = '更新する';
+      if (!form || !modal || !modalTitle || !submitButton) {
+        return;
+      }
 
-    // モーダルを表示
-    document.querySelector('#modal').classList.remove('hidden');
-  });
+      // フォームに既存の値をセット
+      form.elements.namedItem('food-name').value = food.name;
+      form.elements.namedItem('quantity').value = food.quantity;
+      form.elements.namedItem('place').value = food.place;
+      form.elements.namedItem('expiry-date').value = food.expiryDate;
+
+      // モーダルのタイトルとボタンを変更
+      modalTitle.textContent = '食品を編集';
+      submitButton.textContent = '更新する';
+
+      // モーダルを表示
+      modal.classList.remove('hidden');
+    });
+  }
 
   // 献立の日付切り替え
-  document.querySelector('#previous-meal-date')
-    .addEventListener('click', () => {
+  const previousMealDateButton = document.querySelector('#previous-meal-date');
+
+  if (previousMealDateButton) {
+    previousMealDateButton.addEventListener('click', () => {
       changeMealDate(-1);
     });
+  }
 
-  document.querySelector('#today-meal-date')
-    .addEventListener('click', async () => {
+  // 今日へ戻る
+  const todayMealDateButton = document.querySelector('#today-meal-date');
+
+  if (todayMealDateButton) {
+    todayMealDateButton.addEventListener('click', async () => {
       selectedMealDate = new Date();
       selectedMealDate.setHours(0, 0, 0, 0);
 
@@ -1076,11 +1161,16 @@ function bindEvents() {
 
       await loadMeals();
     });
+  }
 
-  document.querySelector('#next-meal-date')
-    .addEventListener('click', () => {
+  // 翌日へ
+  const nextMealDateButton = document.querySelector('#next-meal-date');
+
+  if (nextMealDateButton) {
+    nextMealDateButton.addEventListener('click', () => {
       changeMealDate(1);
     });
+  }
 
   // 献立の追加ボタン
   document.querySelectorAll('.meal-add-button')

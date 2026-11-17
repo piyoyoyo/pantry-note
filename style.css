@@ -866,3 +866,9 @@ h1 span {
 .meal-recipe-link:hover {
   text-decoration: underline;
 }
+
+.nav-item {
+  border: none;
+  background: none;
+  cursor: pointer;
+}
