@@ -140,11 +140,13 @@ async function loadMeals() {
   if (!currentHouseholdId) return;
 
   try {
-    const date = getMealDateString(selectedMealDate);
-
-    meals = await getMeals(currentHouseholdId, date);
+    meals = await fetchMeals(
+      currentHouseholdId,
+      selectedMealDate
+    );
 
     render();
+
   } catch (error) {
     console.error('献立の取得に失敗しました:', error);
   }
@@ -155,15 +157,12 @@ async function loadUpcomingMeals() {
   if (!currentHouseholdId) return;
 
   try {
-    const today = getMealDateString(new Date());
+    upcomingMeals = await fetchUpcomingMeals(currentHouseholdId);
 
-    upcomingMeals = await getUpcomingMeals(
-      currentHouseholdId,
-      today
-    );
     if (document.querySelector('#food-list')) {
       renderFoods(foods, currentFilter, upcomingMeals);
     }
+
   } catch (error) {
     console.error('使用予定の献立取得に失敗しました:', error);
   }
@@ -201,23 +200,17 @@ async function handleSaveMeal(mealName, recipeUrl = '') {
   };
 
   try {
-    if (editingMealId) {
-      // 既存献立を更新
-      await updateMeal(
-        currentHouseholdId,
-        editingMealId,
-        mealData
-      );
+    await saveMealData({
+      householdId: currentHouseholdId,
+      editingMealId,
+      mealData,
+      date,
+      mealType: currentMealType
+    });
 
+    if (editingMealId) {
       console.log('献立を更新しました');
     } else {
-      // 新しい献立を登録
-      await addMeal(currentHouseholdId, {
-        ...mealData,
-        date,
-        type: currentMealType
-      });
-
       console.log('献立を登録しました');
     }
 
@@ -244,7 +237,7 @@ async function handleDeleteMeal(mealId) {
   if (!confirm('この献立を削除しますか？')) return;
 
   try {
-    await deleteMeal(currentHouseholdId, mealId);
+    await removeMealData(currentHouseholdId, mealId);
     await loadMeals();
   } catch (error) {
     console.error('献立の削除に失敗しました:', error);
