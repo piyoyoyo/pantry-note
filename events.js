@@ -351,3 +351,25 @@ export function bindEvents({ state, actions }) {
       });
     });
 }
+
+// 家の作成フォームのイベント登録
+export function bindHouseholdEvents({ handleCreateHousehold }) {
+  const householdForm = document.querySelector('#household-form');
+
+  if (!householdForm) return;
+
+  householdForm.addEventListener('submit', async event => {
+    event.preventDefault();
+
+    const householdName = new FormData(event.target)
+      .get('household-name')
+      .trim();
+
+    if (!householdName) {
+      alert('家の名前を入力してください');
+      return;
+    }
+
+    await handleCreateHousehold(householdName);
+  });
+}

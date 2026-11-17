@@ -24,7 +24,10 @@ import { renderFoods } from './foodView';
 import {
   renderIngredientTags
 } from './mealView';
-import { bindEvents } from './events';
+import {
+  bindEvents,
+  bindHouseholdEvents
+} from './events';
 import { initializeAuth, functions } from './firebase';
 import { httpsCallable } from 'firebase/functions';
 import './style.css';
@@ -369,25 +372,9 @@ function render() {
 
   // 家の作成画面の場合
   if (!currentHouseholdId) {
-    const householdForm = document.querySelector('#household-form');
-
-    if (householdForm) {
-      householdForm.addEventListener('submit', async event => {
-        event.preventDefault();
-
-        const householdName = new FormData(event.target)
-          .get('household-name')
-          .trim();
-
-        if (!householdName) {
-          alert('家の名前を入力してください');
-          return;
-        }
-
-        await handleCreateHousehold(householdName);
-      });
-    }
-
+    bindHouseholdEvents({
+      handleCreateHousehold
+    });
     return;
   }
 
