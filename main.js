@@ -602,6 +602,9 @@ function render() {
           <h2>${getMealDateString(selectedMealDate) === getMealDateString(new Date())
             ? '今日の献立'
             : `${todayLabel}の献立`}</h2>
+          <span>${getMealDateString(selectedMealDate) === getMealDateString(new Date())
+            ? `${todayLabel}`
+            : ''}</span>
         </div>
 
         ${[
