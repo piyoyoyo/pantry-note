@@ -632,6 +632,18 @@ function render() {
                             >
                               ${escapeHTML(meal.name)}
                             </button>
+                            ${meal.recipeUrl
+                              ? `
+                                <a
+                                  class="meal-recipe-link"
+                                  href="${escapeHTML(meal.recipeUrl)}"
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                >
+                                  🔗 レシピを見る
+                                </a>
+                              `
+                              : ''}
 
                             <div class="meal-ingredients">
                               ${(() => {
