@@ -4,6 +4,37 @@ import {
   formatMonthDay
 } from './utils';
 
+// 材料選択用のタグを生成
+export function renderIngredientTags({
+  foods,
+  ingredientFilter,
+  selectedIngredientIds
+}) {
+  const filteredFoods = foods.filter(food => {
+    return ingredientFilter === 'すべて'
+      || food.place === ingredientFilter;
+  });
+
+  if (filteredFoods.length === 0) {
+    return '<p class="ingredient-empty">該当する食品がありません。</p>';
+  }
+
+  return filteredFoods.map(food => {
+    const selected = selectedIngredientIds.includes(food.id);
+
+    return `
+      <button
+        type="button"
+        class="ingredient-tag ${selected ? 'selected' : ''}"
+        data-id="${escapeHTML(food.id)}"
+      >
+        ${escapeHTML(food.name)}
+        ${selected ? ' ✓' : ''}
+      </button>
+    `;
+  }).join('');
+}
+
 // 献立に登録されている材料名を取得
 function getMealIngredientNames(meal, foods) {
   const ingredientIds = meal.ingredientIds || [];

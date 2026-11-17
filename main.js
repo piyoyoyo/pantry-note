@@ -25,7 +25,10 @@ import {
   getHouseholdName
 } from './households';
 import { renderFoods } from './foodView';
-import { renderMealView } from './mealView';
+import {
+  renderMealView,
+  renderIngredientTags
+} from './mealView';
 import { bindEvents } from './events';
 import { initializeAuth, functions } from './firebase';
 import { httpsCallable } from 'firebase/functions';
@@ -335,33 +338,6 @@ async function changeMealDate(amount) {
   await loadMeals();
 }
 
-// 材料選択用のタグを生成
-function renderIngredientTags() {
-  const filteredFoods = foods.filter(food => {
-    return ingredientFilter === 'すべて'
-      || food.place === ingredientFilter;
-  });
-
-  if (filteredFoods.length === 0) {
-    return '<p class="ingredient-empty">該当する食品がありません。</p>';
-  }
-
-  return filteredFoods.map(food => {
-    const selected = selectedIngredientIds.includes(food.id);
-
-    return `
-      <button
-        type="button"
-        class="ingredient-tag ${selected ? 'selected' : ''}"
-        data-id="${escapeHTML(food.id)}"
-      >
-        ${escapeHTML(food.name)}
-        ${selected ? ' ✓' : ''}
-      </button>
-    `;
-  }).join('');
-}
-
 function render() {
   // 献立を表示する日付
   const todayLabel = formatMealDate(selectedMealDate);
@@ -393,7 +369,11 @@ function render() {
     mealRecipeUrlInput,
     ingredientFilter,
     selectedIngredientIds,
-    ingredientTagsHtml: renderIngredientTags()
+    ingredientTagsHtml: renderIngredientTags({
+      foods,
+      ingredientFilter,
+      selectedIngredientIds
+    })
   });
 
   // 家の作成画面の場合
