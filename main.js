@@ -330,6 +330,18 @@ async function changeMealDate(amount) {
   await loadMeals();
 }
 
+// 献立に登録されている材料名を取得
+function getMealIngredientNames(meal) {
+  const ingredientIds = meal.ingredientIds || [];
+
+  return ingredientIds
+    .map(id => {
+      const food = foods.find(item => item.id === id);
+      return food ? food.name : null;
+    })
+    .filter(name => name !== null);
+}
+
 // 材料選択用のタグを生成
 function renderIngredientTags() {
   const filteredFoods = foods.filter(food => {
@@ -510,13 +522,25 @@ function render() {
                   ${typeMeals.length
                     ? typeMeals.map(meal => `
                         <div class="meal-item">
-                          <button
-                            class="meal-name-button"
-                            data-id="${escapeHTML(meal.id)}"
-                            type="button"
-                          >
-                            ${escapeHTML(meal.name)}
-                          </button>
+                          <div class="meal-item-info">
+                            <button
+                              class="meal-name-button"
+                              data-id="${escapeHTML(meal.id)}"
+                              type="button"
+                            >
+                              ${escapeHTML(meal.name)}
+                            </button>
+
+                            <div class="meal-ingredients">
+                              ${(() => {
+                                const ingredientNames = getMealIngredientNames(meal);
+
+                                return ingredientNames.length
+                                  ? `🥬 ${ingredientNames.map(name => escapeHTML(name)).join('、')}`
+                                  : '材料は登録されていません';
+                              })()}
+                            </div>
+                          </div>
 
                           <button
                             class="meal-delete-button"
