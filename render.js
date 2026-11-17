@@ -1,6 +1,23 @@
 import { escapeHTML, daysLeft } from './utils';
 import { renderMealView } from './mealView';
 
+// 献立画面に表示する日付情報を生成
+export function createMealDateInfo(selectedMealDate, formatMealDate) {
+  const todayLabel = formatMealDate(selectedMealDate);
+
+  const previousMealDate = new Date(selectedMealDate);
+  previousMealDate.setDate(previousMealDate.getDate() - 1);
+
+  const nextMealDate = new Date(selectedMealDate);
+  nextMealDate.setDate(nextMealDate.getDate() + 1);
+
+  return {
+    todayLabel,
+    previousMealDate,
+    nextMealDate
+  };
+}
+
 // 画面全体を描画
 export function renderApp({
   currentHouseholdId,

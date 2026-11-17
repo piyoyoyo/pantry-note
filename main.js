@@ -1,15 +1,18 @@
-import { renderApp } from './render';
+import {
+  renderApp,
+  createMealDateInfo
+} from './render';
 import {
   getMealDateString,
   formatMealDate,
 } from './utils';
 import {
+  // 献立関連
   fetchMeals,
   fetchUpcomingMeals,
   saveMealData,
-  removeMealData
-} from './dataController';
-import {
+  removeMealData,
+  // 食品関連
   fetchFoods,
   createFoodData,
   removeFoodData,
@@ -158,7 +161,7 @@ async function loadUpcomingMeals() {
     upcomingMeals = await fetchUpcomingMeals(currentHouseholdId);
 
     if (document.querySelector('#food-list')) {
-      renderFoods(foods, currentFilter, upcomingMeals);
+      renderFoodList();
     }
 
   } catch (error) {
@@ -333,16 +336,12 @@ async function changeMealDate(amount) {
 }
 
 function render() {
-  // 献立を表示する日付
-  const todayLabel = formatMealDate(selectedMealDate);
-
-  // 前日の日付
-  const previousMealDate = new Date(selectedMealDate);
-  previousMealDate.setDate(previousMealDate.getDate() - 1);
-
-  // 翌日の日付
-  const nextMealDate = new Date(selectedMealDate);
-  nextMealDate.setDate(nextMealDate.getDate() + 1);
+  // 献立画面に表示する日付情報
+  const {
+    todayLabel,
+    previousMealDate,
+    nextMealDate
+  } = createMealDateInfo(selectedMealDate, formatMealDate);
 
   // 画面を描画
   renderApp({
@@ -379,9 +378,14 @@ function render() {
   }
 
   // 食品一覧を描画
-  renderFoods(foods, currentFilter, upcomingMeals);
+  renderFoodList();
 
   // イベントを登録
+  bindAppEvents();
+}
+
+// アプリのイベントを登録
+function bindAppEvents() {
   bindEvents({
     state: {
       get currentTab() { return currentTab; },
@@ -436,6 +440,11 @@ function render() {
       handleDeleteMeal
     }
   });
+}
+
+// 食品一覧を描画
+function renderFoodList() {
+  renderFoods(foods, currentFilter, upcomingMeals);
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
