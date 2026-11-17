@@ -1,4 +1,11 @@
 import {
+  escapeHTML,
+  getMealDateString,
+  formatMealDate,
+  formatMonthDay,
+  daysLeft
+} from './utils';
+import {
   getMeals,
   getUpcomingMeals,
   addMeal,
@@ -116,15 +123,6 @@ async function loadFoods() {
   } catch (error) {
     console.error('食品データの取得に失敗しました:', error);
   }
-}
-
-// 日付を YYYY-MM-DD 形式に変換する関数
-function getMealDateString(date) {
-  return [
-    date.getFullYear(),
-    String(date.getMonth() + 1).padStart(2, '0'),
-    String(date.getDate()).padStart(2, '0')
-  ].join('-');
 }
 
 // 指定した日付の献立を取得
@@ -322,27 +320,6 @@ async function handleUpdateFood(foodId, updatedFood) {
   }
 }
 
-function daysLeft(expiryDate) {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const target = new Date(expiryDate + 'T00:00:00');
-  return Math.ceil((target - today) / 86400000);
-}
-
-// 献立の日付を表示する
-function formatMealDate(date) {
-  return new Intl.DateTimeFormat('ja-JP', {
-    month: 'long',
-    day: 'numeric',
-    weekday: 'short'
-  }).format(date);
-}
-
-// 月日だけを表示する
-function formatMonthDay(date) {
-  return `${date.getMonth() + 1}月${date.getDate()}日`;
-}
-
 // 献立の日付を変更する
 async function changeMealDate(amount) {
   const newDate = new Date(selectedMealDate);
@@ -471,16 +448,6 @@ function renderIngredientTags() {
       </button>
     `;
   }).join('');
-}
-
-function escapeHTML(value) {
-  return String(value).replace(/[&<>"']/g, char => ({
-    '&': '&amp;',
-    '<': '&lt;',
-    '>': '&gt;',
-    '"': '&quot;',
-    "'": '&#039;'
-  })[char]);
 }
 
 function render() {
