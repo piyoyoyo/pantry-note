@@ -590,7 +590,7 @@ function render() {
           </button>
 
           <button id="today-meal-date" type="button">
-            ${todayLabel}
+            今日に戻る
           </button>
 
           <button id="next-meal-date" type="button">
