@@ -158,7 +158,7 @@ export function bindMealEvents({ state, actions }) {
   }
 
   // キャンセルボタン
-  const cancelMealButton = document.querySelector('#cancel-meal');
+  const cancelMealButton = document.querySelector('#cancel-meal-modal');
   if (cancelMealButton) {
     cancelMealButton.addEventListener('click', closeMealModal);
   }
