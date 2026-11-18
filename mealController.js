@@ -1,7 +1,8 @@
 import {
   fetchMeals,
   fetchUpcomingMeals,
-  saveMealData
+  saveMealData,
+  removeMealData
 } from './dataController';
 
 import { getMealDateString } from './utils';
@@ -105,5 +106,26 @@ export async function handleSaveMeal({
   } catch (error) {
     console.error('献立の保存に失敗しました:', error);
     alert('献立を保存できませんでした。');
+  }
+}
+
+// 献立を削除
+export async function handleDeleteMeal({
+  currentHouseholdId,
+  mealId,
+  loadMeals
+}) {
+  if (!currentHouseholdId) return;
+
+  if (!confirm('この献立を削除しますか？')) return;
+
+  try {
+    await removeMealData(currentHouseholdId, mealId);
+
+    await loadMeals();
+
+  } catch (error) {
+    console.error('献立の削除に失敗しました:', error);
+    alert('献立を削除できませんでした。');
   }
 }

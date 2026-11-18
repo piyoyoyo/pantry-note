@@ -23,7 +23,8 @@ import {
 import {
   loadMeals as loadMealsController,
   loadUpcomingMeals as loadUpcomingMealsController,
-  handleSaveMeal as handleSaveMealController
+  handleSaveMeal as handleSaveMealController,
+  handleDeleteMeal as handleDeleteMealController
 } from './mealController';
 import { renderFoods } from './foodView';
 import {
@@ -220,17 +221,11 @@ async function handleSaveMeal(mealName, recipeUrl = '') {
 
 // 献立を削除
 async function handleDeleteMeal(mealId) {
-  if (!currentHouseholdId) return;
-
-  if (!confirm('この献立を削除しますか？')) return;
-
-  try {
-    await removeMealData(currentHouseholdId, mealId);
-    await loadMeals();
-  } catch (error) {
-    console.error('献立の削除に失敗しました:', error);
-    alert('献立を削除できませんでした。');
-  }
+  await handleDeleteMealController({
+    currentHouseholdId,
+    mealId,
+    loadMeals
+  });
 }
 
 // 食品の追加
