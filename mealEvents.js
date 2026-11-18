@@ -1,3 +1,6 @@
+let currentHandleDeleteMeal = null;
+let mealDeleteEventBound = false;
+
 export function bindMealEvents({ state, actions }) {
   const {
     render,
@@ -7,6 +10,25 @@ export function bindMealEvents({ state, actions }) {
     handleSaveMeal,
     handleDeleteMeal
   } = actions;
+
+  currentHandleDeleteMeal = handleDeleteMeal;
+
+  // 献立削除イベントは一度だけ登録
+  if (!mealDeleteEventBound) {
+    document.addEventListener('click', event => {
+      const deleteButton = event.target.closest('.meal-delete-button');
+
+      if (!deleteButton) return;
+
+      const mealId = deleteButton.dataset.id;
+
+      if (mealId) {
+        currentHandleDeleteMeal(mealId);
+      }
+    });
+
+    mealDeleteEventBound = true;
+  }
 
   // 前日ボタン
   const previousMealDateButton = document.querySelector('#previous-meal-date');
@@ -179,15 +201,5 @@ export function bindMealEvents({ state, actions }) {
   const cancelMealButton = document.querySelector('#cancel-meal-modal');
   if (cancelMealButton) {
     cancelMealButton.addEventListener('click', closeMealModal);
-  }
-
-  // 献立の削除
-  const mealDeleteButton = document.querySelector('#meal-delete-button');
-  if (mealDeleteButton) {
-    mealDeleteButton.addEventListener('click', () => {
-      if (state.editingMealId) {
-        handleDeleteMeal(state.editingMealId);
-      }
-    });
   }
 }
