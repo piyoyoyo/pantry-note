@@ -14,7 +14,8 @@ import {
   loadMeals as loadMealsController,
   loadUpcomingMeals as loadUpcomingMealsController,
   handleSaveMeal as handleSaveMealController,
-  handleDeleteMeal as handleDeleteMealController
+  handleDeleteMeal as handleDeleteMealController,
+  changeMealDate as changeMealDateController
 } from './mealController';
 import { renderFoods } from './foodView';
 import {
@@ -256,13 +257,20 @@ async function handleUpdateFood(foodId, updatedFood) {
 
 // 献立の日付を変更する
 async function changeMealDate(amount) {
-  const newDate = new Date(selectedMealDate);
-  newDate.setDate(newDate.getDate() + amount);
+  await changeMealDateController({
+    amount,
+    selectedMealDate,
 
-  selectedMealDate = newDate;
-  currentMealType = null;
+    setSelectedMealDate(value) {
+      selectedMealDate = value;
+    },
 
-  await loadMeals();
+    setCurrentMealType(value) {
+      currentMealType = value;
+    },
+
+    loadMeals
+  });
 }
 
 function render() {

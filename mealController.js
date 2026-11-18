@@ -129,3 +129,20 @@ export async function handleDeleteMeal({
     alert('献立を削除できませんでした。');
   }
 }
+
+// 献立の日付を変更する
+export async function changeMealDate({
+  amount,
+  selectedMealDate,
+  setSelectedMealDate,
+  setCurrentMealType,
+  loadMeals
+}) {
+  const newDate = new Date(selectedMealDate);
+  newDate.setDate(newDate.getDate() + amount);
+
+  setSelectedMealDate(newDate);
+  setCurrentMealType(null);
+
+  await loadMeals();
+}
