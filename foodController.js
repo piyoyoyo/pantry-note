@@ -1,7 +1,8 @@
 import {
   fetchFoods,
   createFoodData,
-  removeFoodData
+  removeFoodData,
+  saveFoodData
 } from './dataController';
 
 // Firestoreから食品一覧を取得して画面を更新
@@ -88,5 +89,43 @@ export async function handleDeleteFood({
   } catch (error) {
     console.error('食品の削除に失敗しました:', error);
     alert('食品を削除できませんでした');
+  }
+}
+
+// 食品情報の更新
+export async function handleUpdateFood({
+  currentUser,
+  currentHouseholdId,
+  foodId,
+  updatedFood,
+  setEditingFoodId,
+  loadFoods
+}) {
+  if (!currentUser) {
+    console.error('ユーザー認証が完了していません');
+    return;
+  }
+
+  try {
+    await saveFoodData(
+      currentHouseholdId,
+      foodId,
+      updatedFood
+    );
+
+    console.log('食品情報を更新しました');
+
+    // 編集モードを解除
+    setEditingFoodId(null);
+
+    // フォームをリセット
+    document.querySelector('#food-form').reset();
+
+    // 一覧を再取得
+    await loadFoods();
+
+  } catch (error) {
+    console.error('食品情報の更新に失敗しました:', error);
+    alert('食品情報を更新できませんでした');
   }
 }

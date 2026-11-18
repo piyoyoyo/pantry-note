@@ -22,7 +22,8 @@ import { createHousehold } from './households';
 import {
   loadFoods as loadFoodsController,
   handleAddFood as handleAddFoodController,
-  handleDeleteFood as handleDeleteFoodController
+  handleDeleteFood as handleDeleteFoodController,
+  handleUpdateFood as handleUpdateFoodController
 } from './foodController';
 import { renderFoods } from './foodView';
 import {
@@ -264,28 +265,18 @@ async function handleDeleteFood(foodId) {
 
 // 食品情報の更新
 async function handleUpdateFood(foodId, updatedFood) {
-  if (!currentUser) {
-    console.error('ユーザー認証が完了していません');
-    return;
-  }
+  await handleUpdateFoodController({
+    currentUser,
+    currentHouseholdId,
+    foodId,
+    updatedFood,
 
-  try {
-    await saveFoodData(currentHouseholdId, foodId, updatedFood);
-    console.log('食品情報を更新しました');
+    setEditingFoodId(value) {
+      editingFoodId = value;
+    },
 
-    // 編集モードを解除
-    editingFoodId = null;
-
-    // フォームをリセット
-    document.querySelector('#food-form').reset();
-
-    // 一覧を再取得
-    await loadFoods();
-
-  } catch (error) {
-    console.error('食品情報の更新に失敗しました:', error);
-    alert('食品情報を更新できませんでした');
-  }
+    loadFoods
+  });
 }
 
 // 献立の日付を変更する
