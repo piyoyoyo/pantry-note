@@ -24,24 +24,11 @@ import {
 } from './mealView';
 import {
   // 食品関連の状態変数
-  foods,
-  currentFilter,
-  editingFoodId,
   setFoods,
-  setCurrentFilter,
   setEditingFoodId,
   // 献立関連の状態変数
-  meals,
-  upcomingMeals,
   setMeals,
   setUpcomingMeals,
-  currentMealType,
-  editingMealId,
-  selectedIngredientIds,
-  ingredientFilter,
-  isMealModalOpen,
-  mealNameInput,
-  mealRecipeUrlInput,
   setCurrentMealType,
   setEditingMealId,
   setSelectedIngredientIds,
@@ -49,17 +36,7 @@ import {
   setIsMealModalOpen,
   setMealNameInput,
   setMealRecipeUrlInput,
-  // アプリ全体の状態変数
-  currentUser,
-  currentTab,
-  currentHouseholdId,
-  currentHouseholdName,
-  setCurrentUser,
-  setCurrentTab,
-  setCurrentHouseholdId,
-  setCurrentHouseholdName,
   // 表示中の日付の状態変数
-  selectedMealDate,
   setSelectedMealDate,
   // 状態をまとめたstateオブジェクト
   state
@@ -350,12 +327,12 @@ async function startApp() {
     // アプリの初期化
     const appData = await initializeAppServices();
 
-    setCurrentUser(appData.currentUser);
-    setCurrentHouseholdId(appData.currentHouseholdId);
-    setCurrentHouseholdName(appData.currentHouseholdName);
+    state.currentUser = appData.currentUser;
+    state.currentHouseholdId = appData.currentHouseholdId;
+    state.currentHouseholdName = appData.currentHouseholdName;
 
     // 画面を表示
-    if (currentHouseholdId) {
+    if (state.currentHouseholdId) {
       await loadFoods();
       await loadMeals();
       await loadUpcomingMeals();
@@ -372,7 +349,7 @@ async function startApp() {
     );
 
     // すでに家に所属している場合は食品画面を表示
-    if (currentHouseholdId) {
+    if (state.currentHouseholdId) {
       await loadFoods();
     } else {
       render();
