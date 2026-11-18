@@ -23,12 +23,18 @@ import {
   renderIngredientTags
 } from './mealView';
 import {
+  // 食品関連
   foods,
   currentFilter,
   editingFoodId,
   setFoods,
   setCurrentFilter,
-  setEditingFoodId
+  setEditingFoodId,
+  // 献立関連
+  meals,
+  upcomingMeals,
+  setMeals,
+  setUpcomingMeals
 } from './state';
 import {
   bindEvents,
@@ -39,9 +45,6 @@ import { initializeAppServices } from './appInitializer';
 import { httpsCallable } from 'firebase/functions';
 import './style.css';
 
-let meals = [];
-// 今日以降の献立
-let upcomingMeals = [];
 let currentMealType = null;
 // 献立モーダル用
 let editingMealId = null;
@@ -135,9 +138,7 @@ async function loadMeals() {
     currentHouseholdId,
     selectedMealDate,
 
-    setMeals(value) {
-      meals = value;
-    },
+    setMeals,
 
     render
   });
@@ -148,9 +149,7 @@ async function loadUpcomingMeals() {
   await loadUpcomingMealsController({
     currentHouseholdId,
 
-    setUpcomingMeals(value) {
-      upcomingMeals = value;
-    },
+    setUpcomingMeals,
 
     renderFoodList
   });
