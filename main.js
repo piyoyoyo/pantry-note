@@ -34,7 +34,21 @@ import {
   meals,
   upcomingMeals,
   setMeals,
-  setUpcomingMeals
+  setUpcomingMeals,
+  currentMealType,
+  editingMealId,
+  selectedIngredientIds,
+  ingredientFilter,
+  isMealModalOpen,
+  mealNameInput,
+  mealRecipeUrlInput,
+  setCurrentMealType,
+  setEditingMealId,
+  setSelectedIngredientIds,
+  setIngredientFilter,
+  setIsMealModalOpen,
+  setMealNameInput,
+  setMealRecipeUrlInput
 } from './state';
 import {
   bindEvents,
@@ -45,14 +59,6 @@ import { initializeAppServices } from './appInitializer';
 import { httpsCallable } from 'firebase/functions';
 import './style.css';
 
-let currentMealType = null;
-// 献立モーダル用
-let editingMealId = null;
-let selectedIngredientIds = [];
-let ingredientFilter = 'すべて';
-let isMealModalOpen = false;
-let mealNameInput = '';
-let mealRecipeUrlInput = '';
 let currentUser = null;
 // 現在表示しているタブ
 let currentTab = 'meals';
@@ -161,33 +167,13 @@ function openMealModal(mealType, meal = null) {
     mealType,
     meal,
 
-    setEditingMealId(value) {
-      editingMealId = value;
-    },
-
-    setCurrentMealType(value) {
-      currentMealType = value;
-    },
-
-    setSelectedIngredientIds(value) {
-      selectedIngredientIds = value;
-    },
-
-    setMealNameInput(value) {
-      mealNameInput = value;
-    },
-
-    setMealRecipeUrlInput(value) {
-      mealRecipeUrlInput = value;
-    },
-
-    setIngredientFilter(value) {
-      ingredientFilter = value;
-    },
-
-    setIsMealModalOpen(value) {
-      isMealModalOpen = value;
-    },
+    setEditingMealId,
+    setCurrentMealType,
+    setSelectedIngredientIds,
+    setMealNameInput,
+    setMealRecipeUrlInput,
+    setIngredientFilter,
+    setIsMealModalOpen,
 
     render
   });
@@ -204,29 +190,12 @@ async function handleSaveMeal(mealName, recipeUrl = '') {
     mealName,
     recipeUrl,
 
-    setEditingMealId(value) {
-      editingMealId = value;
-    },
-
-    setCurrentMealType(value) {
-      currentMealType = value;
-    },
-
-    setSelectedIngredientIds(value) {
-      selectedIngredientIds = value;
-    },
-
-    setMealNameInput(value) {
-      mealNameInput = value;
-    },
-
-    setMealRecipeUrlInput(value) {
-      mealRecipeUrlInput = value;
-    },
-
-    setIsMealModalOpen(value) {
-      isMealModalOpen = value;
-    },
+    setEditingMealId,
+    setCurrentMealType,
+    setSelectedIngredientIds,
+    setMealNameInput,
+    setMealRecipeUrlInput,
+    setIsMealModalOpen,
 
     loadMeals
   });
@@ -285,9 +254,7 @@ async function changeMealDate(amount) {
       selectedMealDate = value;
     },
 
-    setCurrentMealType(value) {
-      currentMealType = value;
-    },
+    setCurrentMealType,
 
     loadMeals
   });
@@ -362,27 +329,27 @@ function bindAppEvents() {
       set selectedMealDate(value) { selectedMealDate = value; },
 
       get currentMealType() { return currentMealType; },
-      set currentMealType(value) { currentMealType = value; },
+      set currentMealType(value) { setCurrentMealType(value); },
 
       get meals() { return meals; },
 
       get mealNameInput() { return mealNameInput; },
-      set mealNameInput(value) { mealNameInput = value; },
+      set mealNameInput(value) { setMealNameInput(value); },
 
       get mealRecipeUrlInput() { return mealRecipeUrlInput; },
-      set mealRecipeUrlInput(value) { mealRecipeUrlInput = value; },
+      set mealRecipeUrlInput(value) { setMealRecipeUrlInput(value); },
 
       get ingredientFilter() { return ingredientFilter; },
-      set ingredientFilter(value) { ingredientFilter = value; },
+      set ingredientFilter(value) { setIngredientFilter(value); },
 
       get selectedIngredientIds() { return selectedIngredientIds; },
-      set selectedIngredientIds(value) { selectedIngredientIds = value; },
+      set selectedIngredientIds(value) { setSelectedIngredientIds(value); },
 
       get editingMealId() { return editingMealId; },
-      set editingMealId(value) { editingMealId = value; },
+      set editingMealId(value) { setEditingMealId(value); },
 
       get isMealModalOpen() { return isMealModalOpen; },
-      set isMealModalOpen(value) { isMealModalOpen = value; }
+      set isMealModalOpen(value) { setIsMealModalOpen(value); }
     },
 
     actions: {
