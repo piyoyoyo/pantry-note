@@ -21,7 +21,8 @@ import {
   handleUpdateFood as handleUpdateFoodController
 } from './foodController';
 import {
-  loadMeals as loadMealsController
+  loadMeals as loadMealsController,
+  loadUpcomingMeals as loadUpcomingMealsController
 } from './mealController';
 import { renderFoods } from './foodView';
 import {
@@ -145,20 +146,17 @@ async function loadMeals() {
   });
 }
 
-// 今日以降の献立をupcomingMealsに保存する
+// 今日以降の献立を取得（upcomingMealsに保存）する
 async function loadUpcomingMeals() {
-  if (!currentHouseholdId) return;
+  await loadUpcomingMealsController({
+    currentHouseholdId,
 
-  try {
-    upcomingMeals = await fetchUpcomingMeals(currentHouseholdId);
+    setUpcomingMeals(value) {
+      upcomingMeals = value;
+    },
 
-    if (document.querySelector('#food-list')) {
-      renderFoodList();
-    }
-
-  } catch (error) {
-    console.error('使用予定の献立取得に失敗しました:', error);
-  }
+    renderFoodList
+  });
 }
 
 // 献立モーダルを開く
