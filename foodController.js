@@ -1,4 +1,8 @@
-import { fetchFoods, createFoodData } from './dataController';
+import {
+  fetchFoods,
+  createFoodData,
+  removeFoodData
+} from './dataController';
 
 // Firestoreから食品一覧を取得して画面を更新
 export async function loadFoods({
@@ -51,5 +55,38 @@ export async function handleAddFood({
   } catch (error) {
     console.error('食品の保存に失敗しました:', error);
     alert('食品を保存できませんでした');
+  }
+}
+
+// 食品の削除
+export async function handleDeleteFood({
+  currentUser,
+  currentHouseholdId,
+  foodId,
+  loadFoods
+}) {
+  if (!currentUser) {
+    console.error('ユーザー認証が完了していません');
+    return;
+  }
+
+  // 削除前に確認
+  const confirmed = confirm('この食品を削除しますか？');
+
+  if (!confirmed) {
+    return;
+  }
+
+  try {
+    await removeFoodData(currentHouseholdId, foodId);
+
+    console.log('食品を削除しました');
+
+    // 最新の食品一覧を取得
+    await loadFoods();
+
+  } catch (error) {
+    console.error('食品の削除に失敗しました:', error);
+    alert('食品を削除できませんでした');
   }
 }

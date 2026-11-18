@@ -21,7 +21,8 @@ import {
 import { createHousehold } from './households';
 import {
   loadFoods as loadFoodsController,
-  handleAddFood as handleAddFoodController
+  handleAddFood as handleAddFoodController,
+  handleDeleteFood as handleDeleteFoodController
 } from './foodController';
 import { renderFoods } from './foodView';
 import {
@@ -253,30 +254,12 @@ async function handleAddFood(newFood) {
 
 // 食品の削除
 async function handleDeleteFood(foodId) {
-  if (!currentUser) {
-    console.error('ユーザー認証が完了していません');
-    return;
-  }
-
-  // 削除前に確認
-  const confirmed = confirm('この食品を削除しますか？');
-
-  if (!confirmed) {
-    return;
-  }
-
-  try {
-    await removeFoodData(currentHouseholdId, foodId);
-
-    console.log('食品を削除しました');
-
-    // 最新の食品一覧を取得
-    await loadFoods();
-
-  } catch (error) {
-    console.error('食品の削除に失敗しました:', error);
-    alert('食品を削除できませんでした');
-  }
+  await handleDeleteFoodController({
+    currentUser,
+    currentHouseholdId,
+    foodId,
+    loadFoods
+  });
 }
 
 // 食品情報の更新
