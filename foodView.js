@@ -123,7 +123,11 @@ export function renderFoods(foods, currentFilter, upcomingMeals, keyword = '') {
             <div class="food-info">
               <div class="food-name">${escapeHTML(food.name)}</div>
               <div class="food-detail">${escapeHTML(food.quantity)} ・ ${escapeHTML(food.place)}</div>
-              <div class="food-date">${escapeHTML(food.expiryDate.replaceAll('-', '/'))}</div>
+              <div class="food-date">
+                ${food.expiryDate
+                  ? escapeHTML(food.expiryDate.replaceAll('-', '/'))
+                  : '期限未登録'}
+              </div>
               ${upcomingMealLabel
                 ? `<div class="food-upcoming-meal">📅 ${escapeHTML(upcomingMealLabel)}</div>`
                 : ''}
