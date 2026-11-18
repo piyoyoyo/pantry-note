@@ -69,7 +69,7 @@ export function bindFoodEvents({ state, actions }) {
 
       const foodData = {
         name: form.get('food-name'),
-        quantity: form.get('quantity'),
+        stockStatus: form.get('stock-status'),
         place: form.get('place'),
         expiryDate: form.get('expiry-date')
       };
@@ -134,7 +134,7 @@ export function bindFoodEvents({ state, actions }) {
       }
 
       form.elements.namedItem('food-name').value = food.name;
-      form.elements.namedItem('quantity').value = food.quantity;
+      form.elements.namedItem('stock-status').value = food.stockStatus || '在庫あり';
       form.elements.namedItem('place').value = food.place;
       form.elements.namedItem('expiry-date').value = food.expiryDate;
 

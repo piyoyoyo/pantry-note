@@ -123,7 +123,9 @@ export function renderFoods(foods, currentFilter, upcomingMeals, keyword = '') {
             <div class="food-info">
               <div class="food-name">${escapeHTML(food.name)}</div>
             </div>
-            <div class="food-status ${warning}">残り${escapeHTML(food.quantity)}</div>
+            <div class="food-status">
+              ${escapeHTML(food.stockStatus || '在庫あり')}
+            </div>
             <div class="food-status ${warning}">${status}</div>
             <div class="food-actions">
               <button

@@ -36,7 +36,7 @@ export async function addFood(householdId, food) {
 
   const docRef = await addDoc(foodsRef, {
     name: food.name,
-    quantity: food.quantity,
+    stockStatus: food.stockStatus || '在庫あり',
     place: food.place,
     expiryDate: food.expiryDate || '',
     createdAt: serverTimestamp()
@@ -70,8 +70,8 @@ export async function updateFood(householdId, foodId, food) {
 
   await updateDoc(foodRef, {
     name: food.name,
-    quantity: food.quantity,
+    stockStatus: food.stockStatus || '在庫あり',
     place: food.place,
-    expiryDate: food.expiryDate
+    expiryDate: food.expiryDate || ''
   });
 }

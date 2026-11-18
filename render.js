@@ -304,8 +304,12 @@ export function renderApp({
             <label>食品名</label>
             <input name="food-name" placeholder="例：トマト" required />
 
-            <label>数量</label>
-            <input name="quantity" placeholder="例：3個" required />
+            <label>在庫</label>
+            <select name="stock-status">
+              <option value="在庫あり" selected>在庫あり</option>
+              <option value="残りわずか">残りわずか</option>
+              <option value="在庫なし">在庫なし</option>
+            </select>
 
             <label>保存場所</label>
             <select name="place">
