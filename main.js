@@ -443,7 +443,8 @@ function renderFoodList() {
   renderFoods(foods, currentFilter, upcomingMeals);
 }
 
-document.addEventListener('DOMContentLoaded', async () => {
+// アプリを起動
+async function startApp() {
   document.querySelector('#app').innerHTML = `
     <p>読み込み中...</p>
   `;
@@ -480,4 +481,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       render();
     }
   }
-});
+}
+
+// DOMの読み込み完了後にアプリを起動
+document.addEventListener('DOMContentLoaded', startApp);
