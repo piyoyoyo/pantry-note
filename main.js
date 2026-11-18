@@ -15,7 +15,8 @@ import {
   loadUpcomingMeals as loadUpcomingMealsController,
   handleSaveMeal as handleSaveMealController,
   handleDeleteMeal as handleDeleteMealController,
-  changeMealDate as changeMealDateController
+  changeMealDate as changeMealDateController,
+  openMealModal as openMealModalController
 } from './mealController';
 import { renderFoods } from './foodView';
 import {
@@ -154,21 +155,40 @@ async function loadUpcomingMeals() {
 
 // 献立モーダルを開く
 function openMealModal(mealType, meal = null) {
-  editingMealId = meal ? meal.id : null;
+  openMealModalController({
+    mealType,
+    meal,
 
-  currentMealType = meal ? meal.type : mealType;
+    setEditingMealId(value) {
+      editingMealId = value;
+    },
 
-  selectedIngredientIds = meal
-    ? [...(meal.ingredientIds || [])]
-    : [];
+    setCurrentMealType(value) {
+      currentMealType = value;
+    },
 
-  mealNameInput = meal ? meal.name : '';
-  mealRecipeUrlInput = meal ? (meal.recipeUrl || '') : '';
+    setSelectedIngredientIds(value) {
+      selectedIngredientIds = value;
+    },
 
-  ingredientFilter = 'すべて';
-  isMealModalOpen = true;
+    setMealNameInput(value) {
+      mealNameInput = value;
+    },
 
-  render();
+    setMealRecipeUrlInput(value) {
+      mealRecipeUrlInput = value;
+    },
+
+    setIngredientFilter(value) {
+      ingredientFilter = value;
+    },
+
+    setIsMealModalOpen(value) {
+      isMealModalOpen = value;
+    },
+
+    render
+  });
 }
 
 // 献立を保存（新規登録・編集）

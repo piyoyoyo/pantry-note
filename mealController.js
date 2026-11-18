@@ -146,3 +146,33 @@ export async function changeMealDate({
 
   await loadMeals();
 }
+
+// 献立モーダルを開く
+export function openMealModal({
+  mealType,
+  meal,
+  setEditingMealId,
+  setCurrentMealType,
+  setSelectedIngredientIds,
+  setMealNameInput,
+  setMealRecipeUrlInput,
+  setIngredientFilter,
+  setIsMealModalOpen,
+  render
+}) {
+  setEditingMealId(meal ? meal.id : null);
+
+  setCurrentMealType(meal ? meal.type : mealType);
+
+  setSelectedIngredientIds(
+    meal ? [...(meal.ingredientIds || [])] : []
+  );
+
+  setMealNameInput(meal ? meal.name : '');
+  setMealRecipeUrlInput(meal ? (meal.recipeUrl || '') : '');
+
+  setIngredientFilter('すべて');
+  setIsMealModalOpen(true);
+
+  render();
+}
