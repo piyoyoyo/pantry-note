@@ -264,7 +264,55 @@ export function renderApp({
           <div class="section-heading">
             <h2>買い物リスト</h2>
           </div>
-          <p class="empty">買い物リストはまだありません。</p>
+
+          <!-- 商品追加フォーム -->
+          <form id="shopping-form" class="shopping-form">
+            <input
+              type="text"
+              id="shopping-name"
+              placeholder="買うものを入力"
+              required
+            />
+
+            <input
+              type="text"
+              id="shopping-quantity"
+              placeholder="数量（任意）"
+            />
+
+            <button type="submit" class="add-button">
+              ＋ 買うものに追加
+            </button>
+          </form>
+
+          <!-- 未購入の商品 -->
+          <div class="shopping-heading">
+            <h3>買うもの</h3>
+            <span id="shopping-count">0 ITEMS</span>
+          </div>
+
+          <div id="shopping-list" class="shopping-list">
+            <p class="empty">買い物リストはまだありません。</p>
+          </div>
+
+          <!-- 購入済みの商品 -->
+          <div class="shopping-heading purchased-heading">
+            <h3>購入済み</h3>
+            <span id="purchased-count">0 ITEMS</span>
+          </div>
+
+          <div id="purchased-list" class="shopping-list">
+            <p class="empty">購入済みの商品はありません。</p>
+          </div>
+
+          <button
+            type="button"
+            id="clear-purchased-button"
+            class="clear-purchased-button"
+          >
+            購入済みをまとめて削除
+          </button>
+
         </section>
       ` : ''}
 

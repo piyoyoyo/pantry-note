@@ -931,3 +931,111 @@ h1 span {
   background: none;
   cursor: pointer;
 }
+
+/* =========================
+   買い物リスト
+========================= */
+
+.shopping-section {
+  padding-bottom: 30px;
+}
+
+/* 商品追加フォーム */
+.shopping-form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 110px auto;
+  gap: 8px;
+  margin: 20px 0 30px;
+}
+
+.shopping-form input {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  background: #fff;
+  font-size: 14px;
+}
+
+.shopping-form input:focus {
+  outline: none;
+  border-color: #72977b;
+}
+
+.shopping-form .add-button {
+  width: auto;
+  margin: 0;
+  padding: 10px 16px;
+  white-space: nowrap;
+}
+
+/* 買うもの・購入済みの見出し */
+.shopping-heading {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 24px 0 12px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #72977b;
+}
+
+.shopping-heading h3 {
+  margin: 0;
+  font-size: 20px;
+}
+
+.shopping-heading span {
+  color: #72977b;
+  font-size: 13px;
+  font-weight: bold;
+}
+
+/* 商品リスト */
+.shopping-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.shopping-list .empty {
+  padding: 20px 10px;
+  text-align: center;
+  color: #999;
+  font-size: 14px;
+}
+
+/* 購入済みエリア */
+.purchased-heading {
+  margin-top: 36px;
+}
+
+/* 購入済み一括削除ボタン */
+.clear-purchased-button {
+  display: block;
+  margin: 20px 0 0 auto;
+  padding: 10px 16px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: #fff;
+  color: #777;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.clear-purchased-button:hover {
+  background: #f5f5f5;
+}
+
+/* スマートフォン対応 */
+@media (max-width: 480px) {
+  .shopping-form {
+    grid-template-columns: 1fr 100px;
+  }
+
+  .shopping-form .add-button {
+    grid-column: 1 / -1;
+    width: 100%;
+  }
+}
