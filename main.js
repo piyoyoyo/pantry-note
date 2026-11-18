@@ -48,7 +48,16 @@ import {
   setIngredientFilter,
   setIsMealModalOpen,
   setMealNameInput,
-  setMealRecipeUrlInput
+  setMealRecipeUrlInput,
+  // アプリ全体の状態変数
+  currentUser,
+  currentTab,
+  currentHouseholdId,
+  currentHouseholdName,
+  setCurrentUser,
+  setCurrentTab,
+  setCurrentHouseholdId,
+  setCurrentHouseholdName
 } from './state';
 import {
   bindEvents,
@@ -59,11 +68,6 @@ import { initializeAppServices } from './appInitializer';
 import { httpsCallable } from 'firebase/functions';
 import './style.css';
 
-let currentUser = null;
-// 現在表示しているタブ
-let currentTab = 'meals';
-let currentHouseholdId = null;
-let currentHouseholdName = "";
 let selectedMealDate = new Date();
 selectedMealDate.setHours(0, 0, 0, 0);
 
@@ -82,9 +86,9 @@ async function handleCreateHousehold(householdName) {
     );
 
     // 作成した家のIDを保存
-    currentHouseholdId = householdId;
+    setCurrentHouseholdId(householdId);
     console.log('家を作成しました:', householdId);
-    currentHouseholdName = householdName;
+    setCurrentHouseholdName(householdName);
 
     // 食品管理画面へ切り替え
     await loadFoods();
@@ -314,7 +318,7 @@ function bindAppEvents() {
   bindEvents({
     state: {
       get currentTab() { return currentTab; },
-      set currentTab(value) { currentTab = value; },
+      set currentTab(value) { setCurrentTab(value); },
 
       get currentFilter() { return currentFilter; },
       set currentFilter(value) { setCurrentFilter(value); },
@@ -382,9 +386,9 @@ async function startApp() {
     // アプリの初期化
     const appData = await initializeAppServices();
 
-    currentUser = appData.currentUser;
-    currentHouseholdId = appData.currentHouseholdId;
-    currentHouseholdName = appData.currentHouseholdName;
+    setCurrentUser(appData.currentUser);
+    setCurrentHouseholdId(appData.currentHouseholdId);
+    setCurrentHouseholdName(appData.currentHouseholdName);
 
     // 画面を表示
     if (currentHouseholdId) {
