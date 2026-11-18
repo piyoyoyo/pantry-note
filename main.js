@@ -23,14 +23,14 @@ import {
   renderIngredientTags
 } from './mealView';
 import {
-  // 食品関連
+  // 食品関連の状態変数
   foods,
   currentFilter,
   editingFoodId,
   setFoods,
   setCurrentFilter,
   setEditingFoodId,
-  // 献立関連
+  // 献立関連の状態変数
   meals,
   upcomingMeals,
   setMeals,
@@ -57,7 +57,10 @@ import {
   setCurrentUser,
   setCurrentTab,
   setCurrentHouseholdId,
-  setCurrentHouseholdName
+  setCurrentHouseholdName,
+  // 表示中の日付の状態変数
+  selectedMealDate,
+  setSelectedMealDate
 } from './state';
 import {
   bindEvents,
@@ -67,9 +70,6 @@ import { functions } from './firebase';
 import { initializeAppServices } from './appInitializer';
 import { httpsCallable } from 'firebase/functions';
 import './style.css';
-
-let selectedMealDate = new Date();
-selectedMealDate.setHours(0, 0, 0, 0);
 
 // 家の作成
 async function handleCreateHousehold(householdName) {
@@ -254,10 +254,7 @@ async function changeMealDate(amount) {
     amount,
     selectedMealDate,
 
-    setSelectedMealDate(value) {
-      selectedMealDate = value;
-    },
-
+    setSelectedMealDate,
     setCurrentMealType,
 
     loadMeals
@@ -330,7 +327,7 @@ function bindAppEvents() {
       get upcomingMeals() { return upcomingMeals; },
 
       get selectedMealDate() { return selectedMealDate; },
-      set selectedMealDate(value) { selectedMealDate = value; },
+      set selectedMealDate(value) { setSelectedMealDate(value); },
 
       get currentMealType() { return currentMealType; },
       set currentMealType(value) { setCurrentMealType(value); },
