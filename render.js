@@ -134,25 +134,30 @@ export function renderApp({
             <strong>期限切れの食品</strong>
             <ul class="expired-list">
               ${
-                foods
-                  .filter(f =>
-                    f.expiryDate &&
-                    daysLeft(f.expiryDate) < 0
-                  )
-                  .sort((a, b) =>
-                    daysLeft(a.expiryDate) - daysLeft(b.expiryDate)
-                  )
-                  .map(f => `
-                    <li>
-                      <span class="expired-food-name">
-                        ${escapeHTML(f.name)}
-                      </span>
-                      <span class="expired-days">
-                        ${Math.abs(daysLeft(f.expiryDate))}日超過
-                      </span>
-                    </li>
-                  `)
-                  .join('')
+                foods.filter(f =>
+                  f.expiryDate &&
+                  daysLeft(f.expiryDate) < 0
+                ).length === 0
+                  ? '<li class="empty">食材はありません</li>'
+                  : foods
+                      .filter(f =>
+                        f.expiryDate &&
+                        daysLeft(f.expiryDate) < 0
+                      )
+                      .sort((a, b) =>
+                        daysLeft(a.expiryDate) - daysLeft(b.expiryDate)
+                      )
+                      .map(f => `
+                        <li>
+                          <span class="expired-food-name">
+                            ${escapeHTML(f.name)}
+                          </span>
+                          <span class="expired-days">
+                            ${Math.abs(daysLeft(f.expiryDate))}日超過
+                          </span>
+                        </li>
+                      `)
+                      .join('')
               }
             </ul>
           </div>
@@ -161,28 +166,34 @@ export function renderApp({
             <strong>期限が近い食品</strong>
             <ul class="expiry-list">
               ${
-                foods
-                  .filter(f =>
-                    f.expiryDate &&
-                    daysLeft(f.expiryDate) >= 0 &&
-                    daysLeft(f.expiryDate) <= 3
-                  )
-                  .sort((a, b) =>
-                    daysLeft(a.expiryDate) - daysLeft(b.expiryDate)
-                  )
-                  .map(f => `
-                    <li>
-                      <span class="expiry-food-name">
-                        ${escapeHTML(f.name)}
-                      </span>
-                      <span class="expiry-days">
-                        ${daysLeft(f.expiryDate) === 0
-                          ? '今日まで'
-                          : `${escapeHTML(f.expiryDate)}まで あと${daysLeft(f.expiryDate)}日`}
-                      </span>
-                    </li>
-                  `)
-                  .join('')
+                foods.filter(f =>
+                  f.expiryDate &&
+                  daysLeft(f.expiryDate) >= 0 &&
+                  daysLeft(f.expiryDate) <= 3
+                ).length === 0
+                  ? '<li class="empty">食材はありません</li>'
+                  : foods
+                      .filter(f =>
+                        f.expiryDate &&
+                        daysLeft(f.expiryDate) >= 0 &&
+                        daysLeft(f.expiryDate) <= 3
+                      )
+                      .sort((a, b) =>
+                        daysLeft(a.expiryDate) - daysLeft(b.expiryDate)
+                      )
+                      .map(f => `
+                        <li>
+                          <span class="expiry-food-name">
+                            ${escapeHTML(f.name)}
+                          </span>
+                          <span class="expiry-days">
+                            ${daysLeft(f.expiryDate) === 0
+                              ? '今日まで'
+                              : `${escapeHTML(f.expiryDate)}まで あと${daysLeft(f.expiryDate)}日`}
+                          </span>
+                        </li>
+                      `)
+                      .join('')
               }
             </ul>
           </div>
