@@ -199,6 +199,29 @@ export function renderApp({
               }
             </ul>
           </div>
+
+          <div>
+            <strong>期限未登録の食品</strong>
+            <ul class="expiry-list">
+              ${
+                foods.filter(f => !f.expiryDate).length === 0
+                  ? '<li class="empty">食材はありません</li>'
+                  : foods
+                      .filter(f => !f.expiryDate)
+                      .map(f => `
+                        <li>
+                          <span class="expiry-food-name">
+                            ${escapeHTML(f.name)}
+                          </span>
+                          <span class="expiry-days">
+                            期限未登録
+                          </span>
+                        </li>
+                      `)
+                      .join('')
+              }
+            </ul>
+          </div>
         </section>
 
         <button id="add-button" class="add-button">
