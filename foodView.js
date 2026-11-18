@@ -100,11 +100,19 @@ export function renderFoods(foods, currentFilter, upcomingMeals, keyword = '') {
 
   list.innerHTML = filtered.length
     ? filtered.map(food => {
-        const days = daysLeft(food.expiryDate);
-        let status = days < 0 ? '期限切れ' :
-          days === 0 ? '今日まで' : `あと${days}日`;
+        let status;
+        let warning = '';
 
-        const warning = days <= 3 ? 'warning' : '';
+        if (!food.expiryDate) {
+          status = '期限未登録';
+        } else {
+          const days = daysLeft(food.expiryDate);
+
+          status = days < 0 ? '期限切れ' :
+            days === 0 ? '今日まで' : `あと${days}日`;
+
+          warning = days <= 3 ? 'warning' : '';
+        }
 
         const upcomingMealLabel =
           getFoodUpcomingMealLabel(food.id, upcomingMeals);

@@ -292,7 +292,7 @@ export function renderApp({
             </select>
 
             <label>賞味・消費期限</label>
-            <input name="expiry-date" type="date" required />
+            <input name="expiry-date" type="date" />
 
             <button class="submit-button" type="submit">登録する</button>
           </form>
