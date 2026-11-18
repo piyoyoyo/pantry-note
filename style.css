@@ -1039,3 +1039,73 @@ h1 span {
     width: 100%;
   }
 }
+
+/* 買い物リストの商品カード */
+.shopping-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px;
+  border: 1px solid #e8e8e8;
+  border-radius: 12px;
+  background: #fff;
+}
+
+.shopping-card-info {
+  min-width: 0;
+}
+
+.shopping-item-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: #444;
+  overflow-wrap: anywhere;
+}
+
+.shopping-item-quantity {
+  margin-top: 4px;
+  font-size: 13px;
+  color: #888;
+}
+
+.shopping-card-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.shopping-edit-button,
+.shopping-delete-button {
+  border: none;
+  border-radius: 7px;
+  padding: 7px 10px;
+  background: #f2f2f2;
+  color: #666;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.shopping-delete-button {
+  font-size: 18px;
+}
+
+/* 購入済みカード */
+.shopping-card.purchased {
+  background: #f7f8f7;
+}
+
+.shopping-card.purchased .shopping-item-name {
+  color: #999;
+  text-decoration: line-through;
+}
+
+/* 購入チェックボックス */
+.shopping-check-button {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  accent-color: #72977b;
+  cursor: pointer;
+}

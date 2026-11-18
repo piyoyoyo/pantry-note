@@ -13,6 +13,14 @@ import {
   updateFood
 } from './foods';
 
+import {
+  getShoppingItems,
+  addShoppingItem,
+  deleteShoppingItem,
+  updateShoppingItem,
+  updateShoppingItemStatus
+} from './shopping';
+
 import { getMealDateString } from './utils';
 
 // 食品一覧を取得
@@ -73,4 +81,29 @@ export async function removeFoodData(householdId, foodId) {
 // 食品情報を更新
 export async function saveFoodData(householdId, foodId, updatedFood) {
   await updateFood(householdId, foodId, updatedFood);
+}
+
+// 買い物リストを取得
+export async function fetchShoppingItems(householdId) {
+  return await getShoppingItems(householdId);
+}
+
+// 買い物リストに商品を追加
+export async function createShoppingItemData(householdId, newItem) {
+  await addShoppingItem(householdId, newItem);
+}
+
+// 買い物リストの商品を削除
+export async function removeShoppingItemData(householdId, itemId) {
+  await deleteShoppingItem(householdId, itemId);
+}
+
+// 買い物リストの商品情報を更新
+export async function saveShoppingItemData(householdId, itemId, updatedItem) {
+  await updateShoppingItem(householdId, itemId, updatedItem);
+}
+
+// 商品の購入状態を更新
+export async function updateShoppingStatusData(householdId, itemId, isPurchased) {
+  await updateShoppingItemStatus(householdId, itemId, isPurchased);
 }

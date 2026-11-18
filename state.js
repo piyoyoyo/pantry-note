@@ -18,6 +18,9 @@ export let currentFilter = 'すべて';
 export let editingFoodId = null;
 export let hideNoStock = false;
 
+// 買い物データ
+export let shoppingItems = [];
+
 // アプリ全体
 export let currentUser = null;
 export let currentTab = 'meals';
@@ -85,6 +88,10 @@ export function setHideNoStock(value) {
   hideNoStock = value;
 }
 
+export function setShoppingItems(value) {
+  shoppingItems = value;
+}
+
 export function setCurrentUser(value) {
   currentUser = value;
 }
@@ -148,6 +155,9 @@ export const state = {
 
   get hideNoStock() { return hideNoStock; },
   set hideNoStock(value) { setHideNoStock(value); },
+
+  get shoppingItems() { return shoppingItems; },
+  set shoppingItems(value) { setShoppingItems(value); },
 
   get currentUser() { return currentUser; },
   set currentUser(value) { setCurrentUser(value); },

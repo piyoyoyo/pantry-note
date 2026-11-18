@@ -8,12 +8,6 @@ import {
 } from './householdController';
 import { formatMealDate } from './utils';
 import {
-  loadFoods as loadFoodsController,
-  handleAddFood as handleAddFoodController,
-  handleDeleteFood as handleDeleteFoodController,
-  handleUpdateFood as handleUpdateFoodController
-} from './foodController';
-import {
   loadMeals as loadMealsController,
   loadUpcomingMeals as loadUpcomingMealsController,
   handleSaveMeal as handleSaveMealController,
@@ -21,14 +15,27 @@ import {
   changeMealDate as changeMealDateController,
   openMealModal as openMealModalController
 } from './mealController';
-import { renderFoods } from './foodView';
 import {
-  renderIngredientTags
-} from './mealView';
+  loadFoods as loadFoodsController,
+  handleAddFood as handleAddFoodController,
+  handleDeleteFood as handleDeleteFoodController,
+  handleUpdateFood as handleUpdateFoodController
+} from './foodController';
+import {
+  loadShoppingItems as loadShoppingItemsController,
+  handleAddShoppingItem as handleAddShoppingItemController,
+  handleUpdateShoppingStatus as handleUpdateShoppingStatusController
+} from './shoppingController';
+import { renderIngredientTags } from './mealView';
+import { renderFoods } from './foodView';
+import { renderShoppingList } from './shoppingView';
+import { fetchShoppingItems } from './dataController';
 import {
   // 食品関連の状態変数
   setFoods,
   setEditingFoodId,
+  // 買い物リストの状態変数
+  setShoppingItems,
   // 献立関連の状態変数
   setMeals,
   setMealDateInput,
@@ -84,6 +91,25 @@ async function loadFoods() {
     setFoods,
 
     render
+  });
+}
+
+// Firestoreから買い物リストを取得
+async function loadShoppingItems() {
+  const items = await fetchShoppingItems(state.currentHouseholdId);
+
+  setShoppingItems(items);
+
+  renderShoppingList(items);
+}
+
+async function handleUpdateShoppingStatus({ itemId, isPurchased }) {
+  await handleUpdateShoppingStatusController({
+    currentUser: state.currentUser,
+    currentHouseholdId: state.currentHouseholdId,
+    itemId,
+    isPurchased,
+    loadShoppingItems
   });
 }
 
@@ -212,6 +238,16 @@ async function changeMealDate(amount) {
   });
 }
 
+// 買い物リストに商品を追加
+async function handleAddShoppingItem(newItem) {
+  await handleAddShoppingItemController({
+    currentUser: state.currentUser,
+    currentHouseholdId: state.currentHouseholdId,
+    newItem,
+    loadShoppingItems
+  });
+}
+
 function render() {
   // 献立画面に表示する日付情報
   const {
@@ -248,6 +284,9 @@ function render() {
     })
   });
 
+  // 買い物リストを描画
+  renderShoppingList(state.shoppingItems);
+
   // 家の作成画面の場合
   if (!state.currentHouseholdId) {
     bindHouseholdEvents({
@@ -270,14 +309,16 @@ function bindAppEvents() {
     actions: {
       render,
       handleCreateInvite,
+      loadMeals,
+      openMealModal,
+      handleSaveMeal,
+      handleDeleteMeal,
       handleAddFood,
       handleUpdateFood,
       handleDeleteFood,
       changeMealDate,
-      loadMeals,
-      openMealModal,
-      handleSaveMeal,
-      handleDeleteMeal
+      handleAddShoppingItem,
+      handleUpdateShoppingStatus: handleUpdateShoppingStatus,
     }
   });
 }
@@ -312,6 +353,7 @@ async function startApp() {
       await loadFoods();
       await loadMeals();
       await loadUpcomingMeals();
+      await loadShoppingItems();
     } else {
       render();
     }

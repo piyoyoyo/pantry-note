@@ -1,17 +1,21 @@
-import { bindFoodEvents } from './foodEvents';
 import { bindMealEvents } from './mealEvents';
+import { bindFoodEvents } from './foodEvents';
+import { bindShoppingEvents } from './shoppingEvents';
 
 export function bindEvents({ state, actions }) {
   const {
     render,
     handleCreateInvite
   } = actions;
+  
+  // 献立関連のイベント登録
+  bindMealEvents({ state, actions });
 
   // 食品関連のイベント登録
   bindFoodEvents({ state, actions });
 
-  // 献立関連のイベント登録
-  bindMealEvents({ state, actions });
+  // 買い物リスト関連のイベント登録
+  bindShoppingEvents({ actions });
 
   // 設定メニューの開閉
   const settingsButton = document.querySelector('#settings-button');
