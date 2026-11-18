@@ -76,21 +76,21 @@ import './style.css';
 // 家の作成
 async function handleCreateHousehold(householdName) {
 
-  if (!currentUser) {
+  if (!state.currentUser) {
     alert('ログインが完了していません');
     return;
   }
 
   try {
     const householdId = await createHousehold(
-      currentUser.uid,
+      state.currentUser.uid,
       householdName
     );
 
     // 作成した家のIDを保存
-    setCurrentHouseholdId(householdId);
+    state.currentHouseholdId = householdId;
     console.log('家を作成しました:', householdId);
-    setCurrentHouseholdName(householdName);
+    state.currentHouseholdName = householdName;
 
     // 食品管理画面へ切り替え
     await loadFoods();
@@ -106,7 +106,7 @@ async function handleCreateHousehold(householdName) {
 // 家への招待URLを発行する
 async function handleCreateInvite() {
   try {
-    if (!currentHouseholdId) {
+    if (!state.currentHouseholdId) {
       alert('家の情報が取得できていません。');
       return;
     }
@@ -114,13 +114,13 @@ async function handleCreateInvite() {
     const createInvite = httpsCallable(functions, 'createInvite');
 
     const result = await createInvite({
-      householdId: currentHouseholdId
+      householdId: state.currentHouseholdId
     });
 
     const token = result.data.token;
 
     const inviteUrl =
-      `https://liff.line.me/${import.meta.env.VITE_LIFF_ID}?invite=${encodeURIComponent(token)}&householdId=${encodeURIComponent(currentHouseholdId)}`;
+      `https://liff.line.me/${import.meta.env.VITE_LIFF_ID}?invite=${encodeURIComponent(token)}&householdId=${encodeURIComponent(state.currentHouseholdId)}`;
 
     await navigator.clipboard.writeText(inviteUrl);
 
@@ -135,8 +135,8 @@ async function handleCreateInvite() {
 // Firestoreから食品一覧を取得して画面を更新
 async function loadFoods() {
   await loadFoodsController({
-    currentUser,
-    currentHouseholdId,
+    currentUser: state.currentUser,
+    currentHouseholdId: state.currentHouseholdId,
 
     setFoods,
 
@@ -147,8 +147,8 @@ async function loadFoods() {
 // 指定した日付の献立を取得
 async function loadMeals() {
   await loadMealsController({
-    currentHouseholdId,
-    selectedMealDate,
+    currentHouseholdId: state.currentHouseholdId,
+    selectedMealDate: state.selectedMealDate,
 
     setMeals,
 
@@ -159,7 +159,7 @@ async function loadMeals() {
 // 今日以降の献立を取得（upcomingMealsに保存）する
 async function loadUpcomingMeals() {
   await loadUpcomingMealsController({
-    currentHouseholdId,
+    currentHouseholdId: state.currentHouseholdId,
 
     setUpcomingMeals,
 
@@ -188,11 +188,11 @@ function openMealModal(mealType, meal = null) {
 // 献立を保存（新規登録・編集）
 async function handleSaveMeal(mealName, recipeUrl = '') {
   await handleSaveMealController({
-    currentHouseholdId,
-    selectedMealDate,
-    selectedIngredientIds,
-    editingMealId,
-    currentMealType,
+    currentHouseholdId: state.currentHouseholdId,
+    selectedMealDate: state.selectedMealDate,
+    selectedIngredientIds: state.selectedIngredientIds,
+    editingMealId: state.editingMealId,
+    currentMealType: state.currentMealType,
     mealName,
     recipeUrl,
 
@@ -210,7 +210,7 @@ async function handleSaveMeal(mealName, recipeUrl = '') {
 // 献立を削除
 async function handleDeleteMeal(mealId) {
   await handleDeleteMealController({
-    currentHouseholdId,
+    currentHouseholdId: state.currentHouseholdId,
     mealId,
     loadMeals
   });
@@ -219,8 +219,8 @@ async function handleDeleteMeal(mealId) {
 // 食品の追加
 async function handleAddFood(newFood) {
   await handleAddFoodController({
-    currentUser,
-    currentHouseholdId,
+    currentUser: state.currentUser,
+    currentHouseholdId: state.currentHouseholdId,
     newFood,
     loadFoods
   });
@@ -229,8 +229,8 @@ async function handleAddFood(newFood) {
 // 食品の削除
 async function handleDeleteFood(foodId) {
   await handleDeleteFoodController({
-    currentUser,
-    currentHouseholdId,
+    currentUser: state.currentUser,
+    currentHouseholdId: state.currentHouseholdId,
     foodId,
     loadFoods
   });
@@ -239,8 +239,8 @@ async function handleDeleteFood(foodId) {
 // 食品情報の更新
 async function handleUpdateFood(foodId, updatedFood) {
   await handleUpdateFoodController({
-    currentUser,
-    currentHouseholdId,
+    currentUser: state.currentUser,
+    currentHouseholdId: state.currentHouseholdId,
     foodId,
     updatedFood,
 
@@ -254,7 +254,7 @@ async function handleUpdateFood(foodId, updatedFood) {
 async function changeMealDate(amount) {
   await changeMealDateController({
     amount,
-    selectedMealDate,
+    selectedMealDate: state.selectedMealDate,
 
     setSelectedMealDate,
     setCurrentMealType,
@@ -269,36 +269,36 @@ function render() {
     todayLabel,
     previousMealDate,
     nextMealDate
-  } = createMealDateInfo(selectedMealDate, formatMealDate);
+  } = createMealDateInfo(state.selectedMealDate, formatMealDate);
 
   // 画面を描画
   renderApp({
-    currentHouseholdId,
-    currentHouseholdName,
-    currentTab,
-    currentFilter,
-    foods,
-    meals,
-    upcomingMeals,
-    selectedMealDate,
+    currentHouseholdId: state.currentHouseholdId,
+    currentHouseholdName: state.currentHouseholdName,
+    currentTab: state.currentTab,
+    currentFilter: state.currentFilter,
+    foods: state.foods,
+    meals: state.meals,
+    upcomingMeals: state.upcomingMeals,
+    selectedMealDate: state.selectedMealDate,
     previousMealDate,
     nextMealDate,
     todayLabel,
-    isMealModalOpen,
-    editingMealId,
-    mealNameInput,
-    mealRecipeUrlInput,
-    ingredientFilter,
-    selectedIngredientIds,
+    isMealModalOpen: state.isMealModalOpen,
+    editingMealId: state.editingMealId,
+    mealNameInput: state.mealNameInput,
+    mealRecipeUrlInput: state.mealRecipeUrlInput,
+    ingredientFilter: state.ingredientFilter,
+    selectedIngredientIds: state.selectedIngredientIds,
     ingredientTagsHtml: renderIngredientTags({
-      foods,
-      ingredientFilter,
-      selectedIngredientIds
+      foods: state.foods,
+      ingredientFilter: state.ingredientFilter,
+      selectedIngredientIds: state.selectedIngredientIds
     })
   });
 
   // 家の作成画面の場合
-  if (!currentHouseholdId) {
+  if (!state.currentHouseholdId) {
     bindHouseholdEvents({
       handleCreateHousehold
     });
@@ -333,7 +333,11 @@ function bindAppEvents() {
 
 // 食品一覧を描画
 function renderFoodList() {
-  renderFoods(foods, currentFilter, upcomingMeals);
+  renderFoods(
+    state.foods,
+    state.currentFilter,
+    state.upcomingMeals
+  );
 }
 
 // アプリを起動
