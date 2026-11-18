@@ -2,17 +2,7 @@ import {
   renderApp,
   createMealDateInfo
 } from './render';
-import {
-  getMealDateString,
-  formatMealDate,
-} from './utils';
-import {
-  // 献立関連
-  fetchMeals,
-  fetchUpcomingMeals,
-  saveMealData,
-  removeMealData,
-} from './dataController';
+import { formatMealDate } from './utils';
 import { createHousehold } from './households';
 import {
   loadFoods as loadFoodsController,
