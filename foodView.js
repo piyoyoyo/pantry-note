@@ -119,7 +119,6 @@ export function renderFoods(foods, currentFilter, upcomingMeals, keyword = '') {
 
         return `
           <article class="food-card">
-            <div class="food-symbol">${food.place === '冷凍' ? '❄️' : food.place === '常温' ? '🥫' : '🥬'}</div>
             <div class="food-info">
               <div class="food-name">${escapeHTML(food.name)}</div>
             </div>

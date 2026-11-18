@@ -268,16 +268,6 @@ h1 span {
   gap: 12px;
 }
 
-.food-symbol {
-  width: 43px;
-  height: 43px;
-  display: grid;
-  place-items: center;
-  background: #f2f4ed;
-  border-radius: 12px;
-  font-size: 21px;
-}
-
 .food-info {
   flex: 1;
   min-width: 0;
