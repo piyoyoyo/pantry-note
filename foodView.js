@@ -123,7 +123,11 @@ export function renderFoods(foods, currentFilter, upcomingMeals, keyword = '') {
             <div class="food-info">
               <div class="food-name">${escapeHTML(food.name)}</div>
             </div>
-            <div class="food-status">
+            <div class="food-status stock-${food.stockStatus === '残りわずか'
+              ? 'low'
+              : food.stockStatus === '在庫なし'
+                ? 'none'
+                : 'available'}">
               ${escapeHTML(food.stockStatus || '在庫あり')}
             </div>
             <div class="food-status ${warning}">${status}</div>

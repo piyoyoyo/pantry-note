@@ -302,6 +302,22 @@ h1 span {
   color: #b77d51;
 }
 
+/* 在庫状態 */
+.food-status.stock-available {
+  background-color: #d8f0df;
+  color: #287a43;
+}
+
+.food-status.stock-low {
+  background-color: #f8dada;
+  color: #c0392b;
+}
+
+.food-status.stock-none {
+  background-color: #e5e5e5;
+  color: #777;
+}
+
 .empty {
   text-align: center;
   padding: 30px;
