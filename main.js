@@ -9,7 +9,6 @@ import {
 import { formatMealDate } from './utils';
 import {
   loadMeals as loadMealsController,
-  loadUpcomingMeals as loadUpcomingMealsController,
   handleSaveMeal as handleSaveMealController,
   handleDeleteMeal as handleDeleteMealController,
   changeMealDate as changeMealDateController,
@@ -122,17 +121,6 @@ async function loadMeals() {
     setMeals,
 
     render
-  });
-}
-
-// 今日以降の献立を取得（upcomingMealsに保存）する
-async function loadUpcomingMeals() {
-  await loadUpcomingMealsController({
-    currentHouseholdId: state.currentHouseholdId,
-
-    setUpcomingMeals,
-
-    renderFoodList
   });
 }
 
@@ -352,7 +340,6 @@ async function startApp() {
     if (state.currentHouseholdId) {
       await loadFoods();
       await loadMeals();
-      await loadUpcomingMeals();
       await loadShoppingItems();
     } else {
       render();
