@@ -274,8 +274,17 @@ h1 span {
 }
 
 .food-name {
+  margin-bottom: 10px;
   font-size: 14px;
   font-weight: 700;
+  text-align: left;
+}
+
+.food-badges {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
 }
 
 .food-status {

@@ -121,15 +121,17 @@ export function renderFoods(foods, currentFilter, upcomingMeals, keyword = '') {
           <article class="food-card">
             <div class="food-info">
               <div class="food-name">${escapeHTML(food.name)}</div>
+              <div class="food-badges">
+                <div class="food-status stock-${food.stockStatus === '残りわずか'
+                  ? 'low'
+                  : food.stockStatus === '在庫なし'
+                    ? 'none'
+                    : 'available'}">
+                  ${escapeHTML(food.stockStatus || '在庫あり')}
+                </div>
+                <div class="food-status ${warning}">${status}</div>
+              </div>
             </div>
-            <div class="food-status stock-${food.stockStatus === '残りわずか'
-              ? 'low'
-              : food.stockStatus === '在庫なし'
-                ? 'none'
-                : 'available'}">
-              ${escapeHTML(food.stockStatus || '在庫あり')}
-            </div>
-            <div class="food-status ${warning}">${status}</div>
             <div class="food-actions">
               <button
                 class="edit-button"
