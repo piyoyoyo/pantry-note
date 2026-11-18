@@ -60,7 +60,9 @@ import {
   setCurrentHouseholdName,
   // 表示中の日付の状態変数
   selectedMealDate,
-  setSelectedMealDate
+  setSelectedMealDate,
+  // 状態をまとめたstateオブジェクト
+  state
 } from './state';
 import {
   bindEvents,
@@ -313,46 +315,7 @@ function render() {
 // アプリのイベントを登録
 function bindAppEvents() {
   bindEvents({
-    state: {
-      get currentTab() { return currentTab; },
-      set currentTab(value) { setCurrentTab(value); },
-
-      get currentFilter() { return currentFilter; },
-      set currentFilter(value) { setCurrentFilter(value); },
-
-      get editingFoodId() { return editingFoodId; },
-      set editingFoodId(value) { setEditingFoodId(value); },
-
-      get foods() { return foods; },
-      get upcomingMeals() { return upcomingMeals; },
-
-      get selectedMealDate() { return selectedMealDate; },
-      set selectedMealDate(value) { setSelectedMealDate(value); },
-
-      get currentMealType() { return currentMealType; },
-      set currentMealType(value) { setCurrentMealType(value); },
-
-      get meals() { return meals; },
-
-      get mealNameInput() { return mealNameInput; },
-      set mealNameInput(value) { setMealNameInput(value); },
-
-      get mealRecipeUrlInput() { return mealRecipeUrlInput; },
-      set mealRecipeUrlInput(value) { setMealRecipeUrlInput(value); },
-
-      get ingredientFilter() { return ingredientFilter; },
-      set ingredientFilter(value) { setIngredientFilter(value); },
-
-      get selectedIngredientIds() { return selectedIngredientIds; },
-      set selectedIngredientIds(value) { setSelectedIngredientIds(value); },
-
-      get editingMealId() { return editingMealId; },
-      set editingMealId(value) { setEditingMealId(value); },
-
-      get isMealModalOpen() { return isMealModalOpen; },
-      set isMealModalOpen(value) { setIsMealModalOpen(value); }
-    },
-
+    state,
     actions: {
       render,
       handleCreateInvite,

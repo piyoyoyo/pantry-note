@@ -94,3 +94,57 @@ export function setCurrentHouseholdName(value) {
 export function setSelectedMealDate(value) {
   selectedMealDate = value;
 }
+
+// 状態をまとめたオブジェクト
+export const state = {
+  get meals() { return meals; },
+  set meals(value) { setMeals(value); },
+
+  get upcomingMeals() { return upcomingMeals; },
+  set upcomingMeals(value) { setUpcomingMeals(value); },
+
+  get currentMealType() { return currentMealType; },
+  set currentMealType(value) { setCurrentMealType(value); },
+
+  get editingMealId() { return editingMealId; },
+  set editingMealId(value) { setEditingMealId(value); },
+
+  get selectedIngredientIds() { return selectedIngredientIds; },
+  set selectedIngredientIds(value) { setSelectedIngredientIds(value); },
+
+  get ingredientFilter() { return ingredientFilter; },
+  set ingredientFilter(value) { setIngredientFilter(value); },
+
+  get isMealModalOpen() { return isMealModalOpen; },
+  set isMealModalOpen(value) { setIsMealModalOpen(value); },
+
+  get mealNameInput() { return mealNameInput; },
+  set mealNameInput(value) { setMealNameInput(value); },
+
+  get mealRecipeUrlInput() { return mealRecipeUrlInput; },
+  set mealRecipeUrlInput(value) { setMealRecipeUrlInput(value); },
+
+  get foods() { return foods; },
+  set foods(value) { setFoods(value); },
+
+  get currentFilter() { return currentFilter; },
+  set currentFilter(value) { setCurrentFilter(value); },
+
+  get editingFoodId() { return editingFoodId; },
+  set editingFoodId(value) { setEditingFoodId(value); },
+
+  get currentUser() { return currentUser; },
+  set currentUser(value) { setCurrentUser(value); },
+
+  get currentTab() { return currentTab; },
+  set currentTab(value) { setCurrentTab(value); },
+
+  get currentHouseholdId() { return currentHouseholdId; },
+  set currentHouseholdId(value) { setCurrentHouseholdId(value); },
+
+  get currentHouseholdName() { return currentHouseholdName; },
+  set currentHouseholdName(value) { setCurrentHouseholdName(value); },
+
+  get selectedMealDate() { return selectedMealDate; },
+  set selectedMealDate(value) { setSelectedMealDate(value); }
+};
