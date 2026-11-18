@@ -33,6 +33,8 @@ export function renderApp({
   todayLabel,
   isMealModalOpen,
   editingMealId,
+  mealDateInput,
+  currentMealType,
   mealNameInput,
   mealRecipeUrlInput,
   ingredientFilter,
@@ -309,6 +311,19 @@ export function renderApp({
           </div>
 
           <form id="meal-form">
+            <label for="meal-date">日付</label>
+              <input
+                id="meal-date"
+                type="date"
+                value="${escapeHTML(mealDateInput)}"
+                required
+              />
+            <label for="meal-type">食事区分</label>
+            <select id="meal-type" required>
+              <option value="breakfast" ${currentMealType === 'breakfast' ? 'selected' : ''}>朝食</option>
+              <option value="lunch" ${currentMealType === 'lunch' ? 'selected' : ''}>昼食</option>
+              <option value="dinner" ${currentMealType === 'dinner' ? 'selected' : ''}>夕食</option>
+            </select>
             <label for="meal-name">献立名</label>
             <input
               id="meal-name"

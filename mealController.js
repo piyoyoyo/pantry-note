@@ -54,23 +54,31 @@ export async function loadUpcomingMeals({
 // 献立を保存（新規登録・編集）
 export async function handleSaveMeal({
   currentHouseholdId,
-  selectedMealDate,
   selectedIngredientIds,
   editingMealId,
   currentMealType,
   mealName,
   recipeUrl,
+  mealDateInput,
+  setSelectedMealDate,
   setEditingMealId,
   setCurrentMealType,
   setSelectedIngredientIds,
   setMealNameInput,
   setMealRecipeUrlInput,
+  setMealDateInput,
   setIsMealModalOpen,
   loadMeals
 }) {
   if (!currentHouseholdId) return;
 
-  const date = getMealDateString(selectedMealDate);
+  if (!mealDateInput) {
+    alert('日付を選択してください。');
+    console.log('setSelectedMealDate', setSelectedMealDate);
+    return;
+  }
+
+  const date = mealDateInput;
 
   const mealData = {
     name: mealName,
@@ -93,12 +101,17 @@ export async function handleSaveMeal({
       console.log('献立を登録しました');
     }
 
+    // 保存した日付に表示を切り替える
+    const newSelectedDate = new Date(`${date}T00:00:00`);
+    setSelectedMealDate(newSelectedDate);
+
     // モーダルを閉じて状態をリセット
     setEditingMealId(null);
     setCurrentMealType(null);
     setSelectedIngredientIds([]);
     setMealNameInput('');
     setMealRecipeUrlInput('');
+    setMealDateInput('');
     setIsMealModalOpen(false);
 
     await loadMeals();
@@ -151,15 +164,18 @@ export async function changeMealDate({
 export function openMealModal({
   mealType,
   meal,
+  selectedMealDate,
   setEditingMealId,
   setCurrentMealType,
   setSelectedIngredientIds,
   setMealNameInput,
   setMealRecipeUrlInput,
+  setMealDateInput,
   setIngredientFilter,
   setIsMealModalOpen,
   render
 }) {
+  console.log('Controller側:', setMealDateInput);
   setEditingMealId(meal ? meal.id : null);
 
   setCurrentMealType(meal ? meal.type : mealType);
@@ -170,6 +186,13 @@ export function openMealModal({
 
   setMealNameInput(meal ? meal.name : '');
   setMealRecipeUrlInput(meal ? (meal.recipeUrl || '') : '');
+
+  // 日付欄の初期値を設定
+  setMealDateInput(
+    meal
+      ? meal.date
+      : getMealDateString(selectedMealDate)
+  );
 
   setIngredientFilter('すべて');
   setIsMealModalOpen(true);

@@ -42,6 +42,22 @@ export function bindMealEvents({ state, actions }) {
     });
   });
 
+    // 日付の入力
+  const mealDateInput = document.querySelector('#meal-date');
+  if (mealDateInput) {
+    mealDateInput.addEventListener('change', event => {
+      state.mealDateInput = event.target.value;
+    });
+  }
+
+  // 食事区分の選択
+  const mealTypeSelect = document.querySelector('#meal-type');
+  if (mealTypeSelect) {
+    mealTypeSelect.addEventListener('change', event => {
+      state.currentMealType = event.target.value;
+    });
+  }
+
   // 献立名をクリックして編集
   document.querySelectorAll('.meal-name-button').forEach(button => {
     button.addEventListener('click', () => {
@@ -133,6 +149,7 @@ export function bindMealEvents({ state, actions }) {
       }
 
       await handleSaveMeal(
+        state.mealDateInput,
         mealName,
         state.mealRecipeUrlInput
       );
@@ -144,6 +161,7 @@ export function bindMealEvents({ state, actions }) {
     state.editingMealId = null;
     state.currentMealType = null;
     state.selectedIngredientIds = [];
+    state.mealDateInput = '';
     state.mealNameInput = '';
     state.mealRecipeUrlInput = '';
     state.isMealModalOpen = false;

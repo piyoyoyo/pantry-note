@@ -31,6 +31,7 @@ import {
   setEditingFoodId,
   // 献立関連の状態変数
   setMeals,
+  setMealDateInput,
   setUpcomingMeals,
   setCurrentMealType,
   setEditingMealId,
@@ -114,13 +115,16 @@ function openMealModal(mealType, meal = null) {
   openMealModalController({
     mealType,
     meal,
+    selectedMealDate: state.selectedMealDate,
 
     setEditingMealId,
     setCurrentMealType,
     setSelectedIngredientIds,
+    setSelectedMealDate,
     setMealNameInput,
     setMealRecipeUrlInput,
-    setIngredientFilter,
+    setMealDateInput,
+    setIngredientFilter, // ← ここを追加
     setIsMealModalOpen,
 
     render
@@ -128,19 +132,22 @@ function openMealModal(mealType, meal = null) {
 }
 
 // 献立を保存（新規登録・編集）
-async function handleSaveMeal(mealName, recipeUrl = '') {
+async function handleSaveMeal(mealDate = '', mealName, recipeUrl = '') {
   await handleSaveMealController({
     currentHouseholdId: state.currentHouseholdId,
     selectedMealDate: state.selectedMealDate,
     selectedIngredientIds: state.selectedIngredientIds,
     editingMealId: state.editingMealId,
     currentMealType: state.currentMealType,
+    mealDateInput: mealDate,
     mealName,
     recipeUrl,
 
     setEditingMealId,
     setCurrentMealType,
     setSelectedIngredientIds,
+    setSelectedMealDate,
+    setMealDateInput,
     setMealNameInput,
     setMealRecipeUrlInput,
     setIsMealModalOpen,
@@ -228,6 +235,8 @@ function render() {
     todayLabel,
     isMealModalOpen: state.isMealModalOpen,
     editingMealId: state.editingMealId,
+    mealDateInput: state.mealDateInput,
+    currentMealType: state.currentMealType,
     mealNameInput: state.mealNameInput,
     mealRecipeUrlInput: state.mealRecipeUrlInput,
     ingredientFilter: state.ingredientFilter,

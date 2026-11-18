@@ -102,6 +102,8 @@ export async function updateMeal(householdId, mealId, meal) {
   );
 
   await updateDoc(mealRef, {
+    date: meal.date,
+    type: meal.type,
     name: meal.name,
     ingredientIds: meal.ingredientIds || [],
     recipeUrl: meal.recipeUrl || ''

@@ -42,18 +42,16 @@ export async function saveMealData({
   date,
   mealType
 }) {
+  const data = {
+    ...mealData,
+    date,
+    type: mealType
+  };
+
   if (editingMealId) {
-    await updateMeal(
-      householdId,
-      editingMealId,
-      mealData
-    );
+    await updateMeal(householdId, editingMealId, data);
   } else {
-    await addMeal(householdId, {
-      ...mealData,
-      date,
-      type: mealType
-    });
+    await addMeal(householdId, data);
   }
 }
 

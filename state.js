@@ -10,6 +10,7 @@ export let ingredientFilter = 'すべて';
 export let isMealModalOpen = false;
 export let mealNameInput = '';
 export let mealRecipeUrlInput = '';
+export let mealDateInput = '';
 
 // 食品データ
 export let foods = [];
@@ -29,6 +30,10 @@ selectedMealDate.setHours(0, 0, 0, 0);
 // 状態を更新する関数
 export function setMeals(value) {
   meals = value;
+}
+
+export function setMealDateInput(value) {
+  mealDateInput = value;
 }
 
 export function setUpcomingMeals(value) {
@@ -99,6 +104,9 @@ export function setSelectedMealDate(value) {
 export const state = {
   get meals() { return meals; },
   set meals(value) { setMeals(value); },
+
+  get mealDateInput() { return mealDateInput; },
+  set mealDateInput(value) { setMealDateInput(value); },
 
   get upcomingMeals() { return upcomingMeals; },
   set upcomingMeals(value) { setUpcomingMeals(value); },
