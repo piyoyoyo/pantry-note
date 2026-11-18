@@ -23,6 +23,14 @@ import {
   renderIngredientTags
 } from './mealView';
 import {
+  foods,
+  currentFilter,
+  editingFoodId,
+  setFoods,
+  setCurrentFilter,
+  setEditingFoodId
+} from './state';
+import {
   bindEvents,
   bindHouseholdEvents
 } from './events';
@@ -42,12 +50,9 @@ let ingredientFilter = 'すべて';
 let isMealModalOpen = false;
 let mealNameInput = '';
 let mealRecipeUrlInput = '';
-let foods = [];
 let currentUser = null;
-let currentFilter = 'すべて';
 // 現在表示しているタブ
 let currentTab = 'meals';
-let editingFoodId = null;
 let currentHouseholdId = null;
 let currentHouseholdName = "";
 let selectedMealDate = new Date();
@@ -118,9 +123,7 @@ async function loadFoods() {
     currentUser,
     currentHouseholdId,
 
-    setFoods(value) {
-      foods = value;
-    },
+    setFoods,
 
     render
   });
@@ -267,9 +270,7 @@ async function handleUpdateFood(foodId, updatedFood) {
     foodId,
     updatedFood,
 
-    setEditingFoodId(value) {
-      editingFoodId = value;
-    },
+    setEditingFoodId,
 
     loadFoods
   });
@@ -350,10 +351,10 @@ function bindAppEvents() {
       set currentTab(value) { currentTab = value; },
 
       get currentFilter() { return currentFilter; },
-      set currentFilter(value) { currentFilter = value; },
+      set currentFilter(value) { setCurrentFilter(value); },
 
       get editingFoodId() { return editingFoodId; },
-      set editingFoodId(value) { editingFoodId = value; },
+      set editingFoodId(value) { setEditingFoodId(value); },
 
       get foods() { return foods; },
       get upcomingMeals() { return upcomingMeals; },
