@@ -2,8 +2,11 @@ import {
   renderApp,
   createMealDateInfo
 } from './render';
+import {
+  handleCreateHousehold as handleCreateHouseholdController,
+  handleCreateInvite as handleCreateInviteController
+} from './householdController';
 import { formatMealDate } from './utils';
-import { createHousehold } from './households';
 import {
   loadFoods as loadFoodsController,
   handleAddFood as handleAddFoodController,
@@ -38,6 +41,9 @@ import {
   setMealRecipeUrlInput,
   // 表示中の日付の状態変数
   setSelectedMealDate,
+  // 家の状態変数
+  setCurrentHouseholdId,
+  setCurrentHouseholdName,
   // 状態をまとめたstateオブジェクト
   state
 } from './state';
@@ -45,68 +51,27 @@ import {
   bindEvents,
   bindHouseholdEvents
 } from './events';
-import { functions } from './firebase';
 import { initializeAppServices } from './appInitializer';
-import { httpsCallable } from 'firebase/functions';
 import './style.css';
 
 // 家の作成
 async function handleCreateHousehold(householdName) {
+  await handleCreateHouseholdController({
+    currentUser: state.currentUser,
+    householdName,
 
-  if (!state.currentUser) {
-    alert('ログインが完了していません');
-    return;
-  }
+    setCurrentHouseholdId,
+    setCurrentHouseholdName,
 
-  try {
-    const householdId = await createHousehold(
-      state.currentUser.uid,
-      householdName
-    );
-
-    // 作成した家のIDを保存
-    state.currentHouseholdId = householdId;
-    console.log('家を作成しました:', householdId);
-    state.currentHouseholdName = householdName;
-
-    // 食品管理画面へ切り替え
-    await loadFoods();
-
-    alert('家を作成しました！');
-
-  } catch (error) {
-    console.error('家の作成に失敗しました:', error);
-    alert('家を作成できませんでした');
-  }
+    loadFoods
+  });
 }
 
 // 家への招待URLを発行する
 async function handleCreateInvite() {
-  try {
-    if (!state.currentHouseholdId) {
-      alert('家の情報が取得できていません。');
-      return;
-    }
-
-    const createInvite = httpsCallable(functions, 'createInvite');
-
-    const result = await createInvite({
-      householdId: state.currentHouseholdId
-    });
-
-    const token = result.data.token;
-
-    const inviteUrl =
-      `https://liff.line.me/${import.meta.env.VITE_LIFF_ID}?invite=${encodeURIComponent(token)}&householdId=${encodeURIComponent(state.currentHouseholdId)}`;
-
-    await navigator.clipboard.writeText(inviteUrl);
-
-    alert('招待URLをコピーしました！\n有効期限は発行から7日間です。');
-
-  } catch (error) {
-    console.error('招待URLの発行に失敗しました:', error);
-    alert('招待URLの発行に失敗しました。');
-  }
+  await handleCreateInviteController({
+    currentHouseholdId: state.currentHouseholdId
+  });
 }
 
 // Firestoreから食品一覧を取得して画面を更新
