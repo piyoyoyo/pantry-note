@@ -48,6 +48,17 @@ export async function initializeAppServices() {
       token: inviteToken
     });
 
+    // URLから招待情報を削除
+    const url = new URL(window.location.href);
+    url.searchParams.delete('invite');
+    url.searchParams.delete('householdId');
+
+    window.history.replaceState(
+      {},
+      '',
+      url.pathname + url.search + url.hash
+    );
+
     alert('家への参加が完了しました！');
   }
 
