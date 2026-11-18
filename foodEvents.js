@@ -25,7 +25,28 @@ export function bindFoodEvents({ state, actions }) {
         state.foods,
         state.currentFilter,
         state.upcomingMeals,
-        event.target.value
+        event.target.value,
+        state.hideNoStock
+      );
+    });
+  }
+
+  // 在庫なし食品の表示切り替え
+  const hideNoStockCheckbox =
+    document.querySelector('#hide-no-stock');
+
+  if (hideNoStockCheckbox) {
+    hideNoStockCheckbox.checked = state.hideNoStock;
+
+    hideNoStockCheckbox.addEventListener('change', event => {
+      state.hideNoStock = event.target.checked;
+
+      renderFoods(
+        state.foods,
+        state.currentFilter,
+        state.upcomingMeals,
+        searchInput ? searchInput.value : '',
+        state.hideNoStock
       );
     });
   }

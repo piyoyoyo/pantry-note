@@ -16,6 +16,7 @@ export let mealDateInput = '';
 export let foods = [];
 export let currentFilter = 'すべて';
 export let editingFoodId = null;
+export let hideNoStock = false;
 
 // アプリ全体
 export let currentUser = null;
@@ -80,6 +81,10 @@ export function setEditingFoodId(value) {
   editingFoodId = value;
 }
 
+export function setHideNoStock(value) {
+  hideNoStock = value;
+}
+
 export function setCurrentUser(value) {
   currentUser = value;
 }
@@ -140,6 +145,9 @@ export const state = {
 
   get editingFoodId() { return editingFoodId; },
   set editingFoodId(value) { setEditingFoodId(value); },
+
+  get hideNoStock() { return hideNoStock; },
+  set hideNoStock(value) { setHideNoStock(value); },
 
   get currentUser() { return currentUser; },
   set currentUser(value) { setCurrentUser(value); },

@@ -85,17 +85,23 @@ function getFoodUpcomingMealLabel(foodId, upcomingMeals) {
 }
 
 // 食品一覧を描画
-export function renderFoods(foods, currentFilter, upcomingMeals, keyword = '') {
+export function renderFoods(
+  foods,
+  currentFilter,
+  upcomingMeals,
+  keyword = '',
+  hideNoStock = false
+) {
   const list = document.querySelector('#food-list');
 
   // 食材リスト画面が表示されていない場合は終了
   if (!list) return;
 
   const filtered = foods.filter(food => {
-    const matchesFilter =
-      currentFilter === 'すべて' || food.place === currentFilter;
+    const matchesFilter = currentFilter === 'すべて' || food.place === currentFilter;
     const matchesKeyword = food.name.includes(keyword);
-    return matchesFilter && matchesKeyword;
+    const matchesStock = !hideNoStock || food.stockStatus !== '在庫なし';
+    return matchesFilter && matchesKeyword && matchesStock;
   });
 
   list.innerHTML = filtered.length

@@ -248,6 +248,14 @@ export function renderApp({
           `).join('')}
         </div>
 
+        <label class="stock-filter">
+          <input
+            type="checkbox"
+            id="hide-no-stock"
+          />
+          在庫なしを非表示
+        </label>
+
         <div id="food-list" class="food-list"></div>
       ` : ''}
 

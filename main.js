@@ -287,7 +287,9 @@ function renderFoodList() {
   renderFoods(
     state.foods,
     state.currentFilter,
-    state.upcomingMeals
+    state.upcomingMeals,
+    document.querySelector('#search')?.value || '',
+    state.hideNoStock
   );
 }
 

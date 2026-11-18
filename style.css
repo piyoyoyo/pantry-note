@@ -253,6 +253,30 @@ h1 span {
   color: white;
 }
 
+/* 在庫なし非表示フィルター */
+.stock-filter {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 12px 0 16px;
+  font-size: 13px;
+  color: #666;
+  cursor: pointer;
+  width: fit-content;
+}
+
+.stock-filter input {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  accent-color: #6b9b7a;
+  cursor: pointer;
+}
+
+.stock-filter:hover {
+  color: #333;
+}
+
 .food-list {
   display: grid;
   gap: 10px;
