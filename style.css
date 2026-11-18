@@ -288,12 +288,6 @@ h1 span {
   font-weight: 700;
 }
 
-.food-detail, .food-date {
-  font-size: 10px;
-  color: #92988e;
-  margin-top: 5px;
-}
-
 .food-status {
   background: #edf2e9;
   color: #718b72;
