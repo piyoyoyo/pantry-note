@@ -19,6 +19,7 @@ import {
   saveFoodData
 } from './dataController';
 import { createHousehold } from './households';
+import { loadFoods as loadFoodsController } from './foodController';
 import { renderFoods } from './foodView';
 import {
   renderIngredientTags
@@ -115,21 +116,16 @@ async function handleCreateInvite() {
 
 // Firestoreから食品一覧を取得して画面を更新
 async function loadFoods() {
-  if (!currentUser) {
-    console.error('ユーザー認証が完了していません');
-    return;
-  }
+  await loadFoodsController({
+    currentUser,
+    currentHouseholdId,
 
-  try {
-    foods = await fetchFoods(currentHouseholdId);
+    setFoods(value) {
+      foods = value;
+    },
 
-    render();
-
-    console.log('食品データの取得に成功しました:', foods);
-
-  } catch (error) {
-    console.error('食品データの取得に失敗しました:', error);
-  }
+    render
+  });
 }
 
 // 指定した日付の献立を取得
