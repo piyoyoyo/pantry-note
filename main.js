@@ -22,7 +22,8 @@ import {
 } from './foodController';
 import {
   loadMeals as loadMealsController,
-  loadUpcomingMeals as loadUpcomingMealsController
+  loadUpcomingMeals as loadUpcomingMealsController,
+  handleSaveMeal as handleSaveMealController
 } from './mealController';
 import { renderFoods } from './foodView';
 import {
@@ -180,45 +181,41 @@ function openMealModal(mealType, meal = null) {
 
 // 献立を保存（新規登録・編集）
 async function handleSaveMeal(mealName, recipeUrl = '') {
-  if (!currentHouseholdId) return;
+  await handleSaveMealController({
+    currentHouseholdId,
+    selectedMealDate,
+    selectedIngredientIds,
+    editingMealId,
+    currentMealType,
+    mealName,
+    recipeUrl,
 
-  const date = getMealDateString(selectedMealDate);
+    setEditingMealId(value) {
+      editingMealId = value;
+    },
 
-  const mealData = {
-    name: mealName,
-    ingredientIds: selectedIngredientIds,
-    recipeUrl
-  };
+    setCurrentMealType(value) {
+      currentMealType = value;
+    },
 
-  try {
-    await saveMealData({
-      householdId: currentHouseholdId,
-      editingMealId,
-      mealData,
-      date,
-      mealType: currentMealType
-    });
+    setSelectedIngredientIds(value) {
+      selectedIngredientIds = value;
+    },
 
-    if (editingMealId) {
-      console.log('献立を更新しました');
-    } else {
-      console.log('献立を登録しました');
-    }
+    setMealNameInput(value) {
+      mealNameInput = value;
+    },
 
-    // モーダルを閉じる
-    editingMealId = null;
-    currentMealType = null;
-    selectedIngredientIds = [];
-    mealNameInput = '';
-    mealRecipeUrlInput = '';
-    isMealModalOpen = false;
+    setMealRecipeUrlInput(value) {
+      mealRecipeUrlInput = value;
+    },
 
-    await loadMeals();
+    setIsMealModalOpen(value) {
+      isMealModalOpen = value;
+    },
 
-  } catch (error) {
-    console.error('献立の保存に失敗しました:', error);
-    alert('献立を保存できませんでした。');
-  }
+    loadMeals
+  });
 }
 
 // 献立を削除

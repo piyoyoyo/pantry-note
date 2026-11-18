@@ -1,7 +1,10 @@
 import {
   fetchMeals,
-  fetchUpcomingMeals
+  fetchUpcomingMeals,
+  saveMealData
 } from './dataController';
+
+import { getMealDateString } from './utils';
 
 // 指定した日付の献立を取得
 export async function loadMeals({
@@ -44,5 +47,63 @@ export async function loadUpcomingMeals({
 
   } catch (error) {
     console.error('使用予定の献立取得に失敗しました:', error);
+  }
+}
+
+// 献立を保存（新規登録・編集）
+export async function handleSaveMeal({
+  currentHouseholdId,
+  selectedMealDate,
+  selectedIngredientIds,
+  editingMealId,
+  currentMealType,
+  mealName,
+  recipeUrl,
+  setEditingMealId,
+  setCurrentMealType,
+  setSelectedIngredientIds,
+  setMealNameInput,
+  setMealRecipeUrlInput,
+  setIsMealModalOpen,
+  loadMeals
+}) {
+  if (!currentHouseholdId) return;
+
+  const date = getMealDateString(selectedMealDate);
+
+  const mealData = {
+    name: mealName,
+    ingredientIds: selectedIngredientIds,
+    recipeUrl
+  };
+
+  try {
+    await saveMealData({
+      householdId: currentHouseholdId,
+      editingMealId,
+      mealData,
+      date,
+      mealType: currentMealType
+    });
+
+    if (editingMealId) {
+      console.log('献立を更新しました');
+    } else {
+      console.log('献立を登録しました');
+    }
+
+    // モーダルを閉じて状態をリセット
+    setEditingMealId(null);
+    setCurrentMealType(null);
+    setSelectedIngredientIds([]);
+    setMealNameInput('');
+    setMealRecipeUrlInput('');
+    setIsMealModalOpen(false);
+
+    await loadMeals();
+
+  } catch (error) {
+    console.error('献立の保存に失敗しました:', error);
+    alert('献立を保存できませんでした。');
   }
 }
