@@ -20,6 +20,9 @@ import {
   handleDeleteFood as handleDeleteFoodController,
   handleUpdateFood as handleUpdateFoodController
 } from './foodController';
+import {
+  loadMeals as loadMealsController
+} from './mealController';
 import { renderFoods } from './foodView';
 import {
   renderIngredientTags
@@ -130,19 +133,16 @@ async function loadFoods() {
 
 // 指定した日付の献立を取得
 async function loadMeals() {
-  if (!currentHouseholdId) return;
+  await loadMealsController({
+    currentHouseholdId,
+    selectedMealDate,
 
-  try {
-    meals = await fetchMeals(
-      currentHouseholdId,
-      selectedMealDate
-    );
+    setMeals(value) {
+      meals = value;
+    },
 
-    render();
-
-  } catch (error) {
-    console.error('献立の取得に失敗しました:', error);
-  }
+    render
+  });
 }
 
 // 今日以降の献立をupcomingMealsに保存する
