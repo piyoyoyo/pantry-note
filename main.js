@@ -19,7 +19,10 @@ import {
   saveFoodData
 } from './dataController';
 import { createHousehold } from './households';
-import { loadFoods as loadFoodsController } from './foodController';
+import {
+  loadFoods as loadFoodsController,
+  handleAddFood as handleAddFoodController
+} from './foodController';
 import { renderFoods } from './foodView';
 import {
   renderIngredientTags
@@ -240,26 +243,12 @@ async function handleDeleteMeal(mealId) {
 
 // 食品の追加
 async function handleAddFood(newFood) {
-  if (!currentUser) {
-    console.error('ユーザー認証が完了していません');
-    return;
-  }
-
-  try {
-    await createFoodData(currentHouseholdId, newFood);
-
-    console.log('食品を保存しました');
-
-    // フォームをリセット
-    document.querySelector('#food-form').reset();
-
-    // Firestoreから最新データを取得して画面更新
-    await loadFoods();
-
-  } catch (error) {
-    console.error('食品の保存に失敗しました:', error);
-    alert('食品を保存できませんでした');
-  }
+  await handleAddFoodController({
+    currentUser,
+    currentHouseholdId,
+    newFood,
+    loadFoods
+  });
 }
 
 // 食品の削除
