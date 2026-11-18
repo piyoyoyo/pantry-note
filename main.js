@@ -12,11 +12,6 @@ import {
   fetchUpcomingMeals,
   saveMealData,
   removeMealData,
-  // 食品関連
-  fetchFoods,
-  createFoodData,
-  removeFoodData,
-  saveFoodData
 } from './dataController';
 import { createHousehold } from './households';
 import {
