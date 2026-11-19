@@ -45,7 +45,7 @@ export function renderFoods(
             <div class="food-info">
               <div class="food-name">${escapeHTML(food.name)}</div>
               <div class="food-badges">
-                <div class="food-status stock-${food.stockStatus === '残りわずか'
+                <div class="food-status stock-${food.stockStatus === '在庫わずか'
                   ? 'low'
                   : food.stockStatus === '在庫なし'
                     ? 'none'

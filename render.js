@@ -402,7 +402,7 @@ export function renderApp({
             <label>在庫</label>
             <select name="stock-status">
               <option value="在庫あり" selected>在庫あり</option>
-              <option value="残りわずか">残りわずか</option>
+              <option value="在庫わずか">在庫わずか</option>
               <option value="在庫なし">在庫なし</option>
             </select>
 
