@@ -116,13 +116,6 @@ export function bindShoppingEvents({ state, actions }) {
     });
   }
 
-  // 閉じるボタン
-  document.querySelector('#close-shopping-edit')
-    ?.addEventListener('click', closeShoppingEditModal);
-
-  document.querySelector('#cancel-shopping-edit')
-    ?.addEventListener('click', closeShoppingEditModal);
-
   // 背景クリックで閉じる
   editModal?.addEventListener('click', event => {
     if (event.target === editModal) {

@@ -311,17 +311,6 @@ export function renderApp({
           <!-- 商品編集モーダル -->
           <div id="shopping-edit-modal" class="shopping-edit-modal" hidden>
             <div class="shopping-edit-content">
-              <div class="shopping-edit-header">
-                <button
-                  type="button"
-                  id="close-shopping-edit"
-                  class="modal-close"
-                  aria-label="閉じる"
-                >
-                  ×
-                </button>
-              </div>
-
               <form id="shopping-edit-form">
                 <label for="shopping-edit-name">商品名</label>
                 <input
@@ -338,14 +327,6 @@ export function renderApp({
                 />
 
                 <div class="shopping-edit-actions">
-                  <button
-                    type="button"
-                    id="cancel-shopping-edit"
-                    class="cancel-button"
-                  >
-                    キャンセル
-                  </button>
-
                   <button
                     type="submit"
                     id="shopping-modal-submit"

@@ -1262,23 +1262,6 @@ h1 span {
   box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
 }
 
-.shopping-edit-header {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-}
-
-.shopping-edit-header .modal-close {
-  width: 32px;
-  height: 32px;
-  border: none;
-  border-radius: 50%;
-  background: #f2f2f2;
-  color: #777;
-  font-size: 22px;
-  cursor: pointer;
-}
-
 #shopping-edit-form {
   display: flex;
   flex-direction: column;
@@ -1321,13 +1304,10 @@ h1 span {
   cursor: pointer;
 }
 
-.shopping-edit-actions .cancel-button {
-  border: 1px solid #ddd;
-  background: #fff;
-  color: #666;
-}
-
 .shopping-edit-actions .add-button {
   width: auto;
   margin: 0;
+  border-style: none;
+  background-color: #829b83;
+  color: #fff;
 }
