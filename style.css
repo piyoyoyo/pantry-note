@@ -256,7 +256,7 @@ h1 span {
 .stock-filter {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 5px;
   margin: 12px 0 16px;
   font-size: 13px;
   color: #666;
@@ -268,8 +268,31 @@ h1 span {
   width: 16px;
   height: 16px;
   margin: 0;
-  accent-color: #6b9b7a;
+  background-color: #fff;
   cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+  border: 1px solid #e8e8e8;
+  border-radius: 50%;
+  cursor: pointer;
+  position: relative;
+}
+
+.stock-filter input:checked {
+  background-color: #72977b;
+  border-color: #72977b;
+}
+
+.stock-filter input:checked::after {
+  content: "";
+  position: absolute;
+  left: 4px;
+  top: 1px;
+  width: 4px;
+  height: 8px;
+  border: solid #fff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(40deg);
 }
 
 .stock-filter:hover {
