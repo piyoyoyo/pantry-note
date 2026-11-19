@@ -312,23 +312,36 @@ h1 span {
 }
 
 .food-status {
-  background: #edf2e9;
-  color: #718b72;
   border-radius: 20px;
   padding: 6px 9px;
   font-size: 10px;
   white-space: nowrap;
 }
 
-.food-status.warning {
-  background: #f8eee5;
+.food-status.expiry-normal {
+  background-color: #edf2e9;
+  color: #718b72;
+}
+
+.food-status.expiry-none {
+  background-color: #e5e5e5;
+  color: #777;
+}
+
+.food-status.expiry-expired {
+  background-color: #f8dada;
+  color: #c0392b;
+}
+
+.food-status.expiry-warning {
+  background-color: #f8eee5;
   color: #b77d51;
 }
 
 /* 在庫状態 */
 .food-status.stock-available {
-  background-color: #d8f0df;
-  color: #287a43;
+  background-color: #edf2e9;;
+  color: #718b72;
 }
 
 .food-status.stock-low {
@@ -336,14 +349,14 @@ h1 span {
   color: #c0392b;
 }
 
-/* 在庫なしの食品の期限バッジは非表示 */
-.food-status.stock-none + .food-status {
-  display: none;
-}
-
 .food-status.stock-none {
   background-color: #e5e5e5;
   color: #777;
+}
+
+/* 在庫なしの食品の期限バッジは非表示 */
+.food-status.stock-none + .food-status {
+  display: none;
 }
 
 .empty {

@@ -31,13 +31,15 @@ export function renderFoods(
 
         if (!food.expiryDate) {
           status = '期限未登録';
+          warning = 'none';
         } else {
           const days = daysLeft(food.expiryDate);
 
           status = days < 0 ? '期限切れ' :
             days === 0 ? '今日まで' : `期限まであと${days}日`;
 
-          warning = days <= 3 ? 'warning' : '';
+          warning = days < 0 ? 'expired' :
+            days <= 3 ? 'warning' : 'normal';
         }
 
         return `
@@ -52,7 +54,7 @@ export function renderFoods(
                     : 'available'}">
                   ${escapeHTML(food.stockStatus || '在庫あり')}
                 </div>
-                <div class="food-status ${warning}">${status}</div>
+                <div class="food-status expiry-${warning}">${status}</div>
               </div>
             </div>
             <div class="food-actions">
