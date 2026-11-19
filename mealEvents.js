@@ -80,11 +80,17 @@ export function bindMealEvents({ state, actions }) {
     });
   }
 
-  // 献立名をクリックして編集
-  document.querySelectorAll('.meal-name-button').forEach(button => {
-    button.addEventListener('click', () => {
+  // 献立カードをクリックして編集
+  document.querySelectorAll('.meal-item').forEach(card => {
+    card.addEventListener('click', event => {
+      // レシピリンクをクリックした場合は編集しない
+      if (event.target.closest('.meal-recipe-link')) return;
+
+      // 削除ボタンをクリックした場合は編集しない
+      if (event.target.closest('.meal-delete-button')) return;
+
       const meal = state.meals.find(
-        item => item.id === button.dataset.id
+        item => item.id === card.dataset.id
       );
 
       if (!meal) return;

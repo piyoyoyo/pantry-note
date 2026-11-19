@@ -104,7 +104,10 @@ export function renderMealView({
                       getMealIngredientNames(meal, foods);
 
                     return `
-                      <div class="meal-item">
+                      <div
+                        class="meal-item"
+                        data-id="${escapeHTML(meal.id)}"
+                      >
                         <button
                           class="meal-delete-button"
                           data-id="${escapeHTML(meal.id)}"
@@ -113,26 +116,24 @@ export function renderMealView({
                         >×</button>
 
                         <div class="meal-item-info">
-                          <button
-                            class="meal-name-button"
-                            data-id="${escapeHTML(meal.id)}"
-                            type="button"
-                          >
-                            ${escapeHTML(meal.name)}
-                          </button>
+                          <div class="meal-name-row">
+                            <div class="meal-name">
+                              ${escapeHTML(meal.name)}
+                            </div>
 
-                          ${meal.recipeUrl
-                            ? `
-                              <a
-                                class="meal-recipe-link"
-                                href="${escapeHTML(meal.recipeUrl)}"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                              >
-                                🔗 レシピを見る
-                              </a>
-                            `
-                            : ''}
+                            ${meal.recipeUrl
+                              ? `
+                                <a
+                                  class="meal-recipe-link"
+                                  href="${escapeHTML(meal.recipeUrl)}"
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                >
+                                  🔗 レシピを見る
+                                </a>
+                              `
+                              : ''}
+                          </div>
 
                           <div class="meal-ingredients">
                             ${ingredientNames.length

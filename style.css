@@ -998,6 +998,19 @@ h1 span {
   font-weight: 600;
 }
 
+.meal-name-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+}
+
+.meal-name {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
 /* レシピリンク */
 .meal-recipe-link {
   display: inline-block;
@@ -1005,6 +1018,9 @@ h1 span {
   color: #71866b;
   font-size: 11px;
   text-decoration: none;
+  flex-shrink: 0;
+  margin-left: auto;
+  white-space: nowrap;
 }
 
 .meal-recipe-link:hover {
