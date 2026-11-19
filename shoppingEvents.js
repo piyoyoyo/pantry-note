@@ -49,11 +49,24 @@ export function bindShoppingEvents({ state, actions }) {
     });
   });
 
-  // 商品編集ボタン
+  // 商品編集モーダル
+  const editModal = document.querySelector('#shopping-edit-modal');
+  const editForm = document.querySelector('#shopping-edit-form');
+  const editNameInput = document.querySelector('#shopping-edit-name');
+  const editQuantityInput = document.querySelector('#shopping-edit-quantity');
+
+  let editingShoppingItemId = null;
+
+  // モーダルを閉じる
+  function closeShoppingEditModal() {
+    editModal.hidden = true;
+    editingShoppingItemId = null;
+  }
+
   shoppingLists.forEach(list => {
     if (!list) return;
 
-    list.addEventListener('click', async event => {
+    list.addEventListener('click', event => {
       const editButton = event.target.closest('.shopping-edit-button');
 
       if (!editButton) return;
@@ -66,31 +79,54 @@ export function bindShoppingEvents({ state, actions }) {
 
       if (!item) return;
 
-      // 商品名を入力
-      const name = prompt('商品名を入力してください', item.name);
+      editingShoppingItemId = itemId;
 
-      if (name === null) return;
+      editNameInput.value = item.name;
+      editQuantityInput.value = item.quantity || '';
 
-      if (!name.trim()) {
+      editModal.hidden = false;
+      editNameInput.focus();
+    });
+  });
+
+  // 保存ボタン
+  if (editForm) {
+    editForm.addEventListener('submit', async event => {
+      event.preventDefault();
+
+      const name = editNameInput.value.trim();
+      const quantity = editQuantityInput.value.trim();
+
+      if (!name) {
         alert('商品名を入力してください');
         return;
       }
 
-      // 数量を入力
-      const quantity = prompt(
-        '数量を入力してください（任意）',
-        item.quantity || ''
-      );
-
-      if (quantity === null) return;
+      if (!editingShoppingItemId) return;
 
       await handleUpdateShoppingItem({
-        itemId,
+        itemId: editingShoppingItemId,
         updatedItem: {
-          name: name.trim(),
-          quantity: quantity.trim()
+          name,
+          quantity
         }
       });
+
+      closeShoppingEditModal();
     });
+  }
+
+  // キャンセル・閉じるボタン
+  document.querySelector('#close-shopping-edit')
+    ?.addEventListener('click', closeShoppingEditModal);
+
+  document.querySelector('#cancel-shopping-edit')
+    ?.addEventListener('click', closeShoppingEditModal);
+
+  // 背景部分をクリックして閉じる
+  editModal?.addEventListener('click', event => {
+    if (event.target === editModal) {
+      closeShoppingEditModal();
+    }
   });
 }

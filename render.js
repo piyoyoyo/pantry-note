@@ -313,6 +313,55 @@ export function renderApp({
             購入済みをまとめて削除
           </button>
 
+          <!-- 商品編集モーダル -->
+          <div id="shopping-edit-modal" class="shopping-edit-modal" hidden>
+            <div class="shopping-edit-content">
+              <div class="shopping-edit-header">
+                <h3>商品を編集</h3>
+                <button
+                  type="button"
+                  id="close-shopping-edit"
+                  class="modal-close"
+                  aria-label="閉じる"
+                >
+                  ×
+                </button>
+              </div>
+
+              <form id="shopping-edit-form">
+                <label for="shopping-edit-name">商品名</label>
+                <input
+                  type="text"
+                  id="shopping-edit-name"
+                  required
+                />
+
+                <label for="shopping-edit-quantity">数量（任意）</label>
+                <input
+                  type="text"
+                  id="shopping-edit-quantity"
+                  placeholder="例：2個、1袋、200g"
+                />
+
+                <div class="shopping-edit-actions">
+                  <button
+                    type="button"
+                    id="cancel-shopping-edit"
+                    class="cancel-button"
+                  >
+                    キャンセル
+                  </button>
+
+                  <button
+                    type="submit"
+                    class="add-button"
+                  >
+                    保存
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
         </section>
       ` : ''}
 

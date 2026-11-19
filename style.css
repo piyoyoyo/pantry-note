@@ -1101,3 +1101,109 @@ h1 span {
   accent-color: #72977b;
   cursor: pointer;
 }
+
+/* =========================
+   買い物リスト編集モーダル
+========================= */
+
+.shopping-edit-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.45);
+}
+
+.shopping-edit-modal[hidden] {
+  display: none;
+}
+
+.shopping-edit-content {
+  width: 100%;
+  max-width: 400px;
+  padding: 24px;
+  border-radius: 16px;
+  background: #fff;
+  box-sizing: border-box;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+}
+
+.shopping-edit-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.shopping-edit-header h3 {
+  margin: 0;
+  font-size: 20px;
+  color: #444;
+}
+
+.shopping-edit-header .modal-close {
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 50%;
+  background: #f2f2f2;
+  color: #777;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+#shopping-edit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+#shopping-edit-form label {
+  margin-top: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #555;
+}
+
+#shopping-edit-form input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 9px;
+  background: #fff;
+  font-size: 15px;
+}
+
+#shopping-edit-form input:focus {
+  outline: none;
+  border-color: #72977b;
+}
+
+.shopping-edit-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.shopping-edit-actions button {
+  padding: 11px 18px;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.shopping-edit-actions .cancel-button {
+  border: 1px solid #ddd;
+  background: #fff;
+  color: #666;
+}
+
+.shopping-edit-actions .add-button {
+  width: auto;
+  margin: 0;
+}
