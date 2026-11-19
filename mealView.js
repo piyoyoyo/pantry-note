@@ -151,7 +151,7 @@ export function renderMealView({
               class="meal-add-button"
               data-type="${mealType.type}"
               type="button"
-            >＋ 献立を追加</button>
+            >＋ メニューを追加</button>
           </div>
         `;
       }).join('')}

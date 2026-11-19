@@ -75,7 +75,7 @@ export async function getUpcomingMeals(householdId, fromDate) {
   });
 }
 
-// 献立を追加
+// メニューを追加
 export async function addMeal(householdId, meal) {
   const mealsRef = getMealsCollection(householdId);
 
