@@ -59,6 +59,13 @@ export function renderFoods(
             </div>
             <div class="food-actions">
               <button
+                class="add-to-shopping-button"
+                data-id="${escapeHTML(food.id)}"
+                type="button"
+              >
+                買い物リストに追加
+              </button>
+              <button
                 class="edit-button"
                 data-id="${escapeHTML(food.id)}"
                 type="button"

@@ -5,7 +5,8 @@ export function bindFoodEvents({ state, actions }) {
   const {
     handleAddFood,
     handleUpdateFood,
-    handleDeleteFood
+    handleDeleteFood,
+    handleAddShoppingItem
   } = actions;
 
   // 食品フィルターの切り替え
@@ -163,6 +164,27 @@ export function bindFoodEvents({ state, actions }) {
       submitButton.textContent = '更新する';
 
       modal.classList.remove('hidden');
+    });
+  }
+
+  // 食品リストから買い物リストに追加
+  if (foodList) {
+    foodList.addEventListener('click', async event => {
+      const button = event.target.closest('.add-to-shopping-button');
+
+      if (!button) return;
+
+      const foodId = button.dataset.id;
+      const food = state.foods.find(item => item.id === foodId);
+
+      if (!food) return;
+
+      await handleAddShoppingItem({
+        name: food.name,
+        quantity: ''
+      });
+
+      alert(`${food.name}を買い物リストに追加しました。`);
     });
   }
 }
