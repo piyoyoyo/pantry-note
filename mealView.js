@@ -105,6 +105,13 @@ export function renderMealView({
 
                     return `
                       <div class="meal-item">
+                        <button
+                          class="meal-delete-button"
+                          data-id="${escapeHTML(meal.id)}"
+                          type="button"
+                          aria-label="${escapeHTML(meal.name)}を削除"
+                        >×</button>
+
                         <div class="meal-item-info">
                           <button
                             class="meal-name-button"
@@ -133,13 +140,6 @@ export function renderMealView({
                               : '材料は登録されていません'}
                           </div>
                         </div>
-
-                        <button
-                          class="meal-delete-button"
-                          data-id="${escapeHTML(meal.id)}"
-                          type="button"
-                          aria-label="${escapeHTML(meal.name)}を削除"
-                        >×</button>
                       </div>
                     `;
                   }).join('')
