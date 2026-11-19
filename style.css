@@ -456,6 +456,10 @@ h1 span {
   right: 0;
 }
 
+.food-menu-container.hidden {
+  display: none;
+}
+
 .food-menu-button {
   width: 40px;
   height: 40px;

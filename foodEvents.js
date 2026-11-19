@@ -58,13 +58,24 @@ export function bindFoodEvents({ state, actions }) {
   if (addButton) {
     addButton.addEventListener('click', () => {
       const modal = document.querySelector('#modal');
-      const deleteFoodButton = document.querySelector('#delete-food-button');
-      if (deleteFoodButton) {
-        deleteFoodButton.hidden = true;
-      }
-      if (modal) {
-        modal.classList.remove('hidden');
-      }
+      const modalTitle = document.querySelector('.modal-header h2');
+      const submitButton = document.querySelector('.submit-button');
+
+      // 新規登録状態にする
+      state.editingFoodId = null;
+
+      // フォームを初期化
+      document.querySelector('#food-form').reset();
+
+      // タイトルとボタン表示を戻す
+      modalTitle.textContent = '食品を追加';
+      submitButton.textContent = '登録する';
+
+      // 3点メニューを非表示にする
+      document.querySelector('.food-menu-container').classList.add('hidden');
+      foodMenu?.classList.add('hidden');
+      // モーダルを表示
+      modal.classList.remove('hidden');
     });
   }
 
@@ -180,12 +191,11 @@ export function bindFoodEvents({ state, actions }) {
 
       modalTitle.textContent = '食品を編集';
       submitButton.textContent = '更新する';
-      const deleteFoodButton = document.querySelector('#delete-food-button');
+      // 3点メニューを表示
+      document.querySelector('.food-menu-container').classList.remove('hidden');
 
-      if (deleteFoodButton) {
-        deleteFoodButton.hidden = false;
-      }
-
+      // 削除メニューは閉じておく
+      foodMenu.classList.add('hidden');
       modal.classList.remove('hidden');
     });
   }
