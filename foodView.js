@@ -63,7 +63,7 @@ export function renderFoods(
                 data-id="${escapeHTML(food.id)}"
                 type="button"
               >
-                買い物リストに追加
+                ＋ 買い物リストに追加
               </button>
 
               <button

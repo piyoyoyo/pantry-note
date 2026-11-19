@@ -499,6 +499,28 @@ h1 span {
   flex-shrink: 0;
 }
 
+.add-to-shopping-button {
+  border: 1px solid #72977b;
+  background: #fff;
+  color: #72977b;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 7px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.2s, color 0.2s;
+}
+
+.add-to-shopping-button:hover {
+  background: #72977b;
+  color: #fff;
+}
+
+.add-to-shopping-button:active {
+  transform: scale(0.97);
+}
+
 .edit-button {
   border: 1px solid #d8dfd5;
   background: #fff;
