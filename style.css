@@ -365,15 +365,34 @@ h1 span {
   font-size: 13px;
 }
 
-.add-button {
-  width: 100%;
-  border: 0;
-  background: #829b83;
-  color: white;
-  border-radius: 14px;
-  padding: 15px;
-  margin-top: 20px;
-  font-weight: 600;
+/* 食品追加フロートボタン */
+.food-add-float {
+  position: fixed;
+  right: 24px;
+  bottom: 90px;
+  z-index: 1;
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 50%;
+  background: #72977b;
+  color: #fff;
+  font-size: 32px;
+  font-weight: 300;
+  line-height: 1;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+}
+
+.food-add-float:hover {
+  background: #5f8569;
+}
+
+.food-add-float:active {
+  transform: scale(0.95);
 }
 
 .bottom-nav {

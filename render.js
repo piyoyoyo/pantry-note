@@ -224,8 +224,13 @@ export function renderApp({
           </div>
         </section>
 
-        <button id="add-button" class="add-button">
-          ＋ 食品を追加する
+        <button
+          type="button"
+          id="add-button"
+          class="food-add-float"
+          aria-label="食品を追加"
+        >
+          ＋
         </button>
 
         <div class="section-heading">
