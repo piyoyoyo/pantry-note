@@ -829,6 +829,76 @@ h1 span {
   overflow-y: auto;
 }
 
+/* スマホでは献立モーダルを画面下部に表示 */
+@media (max-width: 600px) {
+  #meal-modal {
+    align-items: flex-end;
+    padding: 0;
+  }
+
+  #meal-modal .meal-modal-card {
+    width: 100%;
+    max-width: none;
+    max-height: 85vh;
+    overflow-y: auto;
+    border-radius: 20px 20px 0 0;
+    padding: 24px 20px calc(24px + env(safe-area-inset-bottom));
+    box-sizing: border-box;
+  }
+}
+
+/* スマホでは食品・買い物モーダルを画面下部に表示 */
+@media (max-width: 600px) {
+
+  /* 食品モーダル */
+  #modal {
+    align-items: flex-end;
+    padding: 0;
+  }
+
+  #modal .modal-card {
+    width: 100%;
+    max-width: none;
+    max-height: 85vh;
+    overflow-y: auto;
+    border-radius: 20px 20px 0 0;
+    padding: 24px 20px calc(24px + env(safe-area-inset-bottom));
+    box-sizing: border-box;
+  }
+
+  /* 買い物モーダル */
+  #shopping-edit-modal {
+    align-items: flex-end;
+    padding: 0;
+  }
+
+  #shopping-edit-modal .shopping-edit-content {
+    width: 100%;
+    max-width: none;
+    max-height: 85vh;
+    overflow-y: auto;
+    border-radius: 20px 20px 0 0;
+    padding: 24px 20px calc(24px + env(safe-area-inset-bottom));
+    box-sizing: border-box;
+  }
+}
+
+/* ボトムシートの表示アニメーション */
+@media (max-width: 600px) {
+  #meal-modal .meal-modal-card,
+  #modal .modal-card,
+  #shopping-edit-modal .shopping-edit-content {
+    transform: translateY(100%);
+    transition: transform 0.3s ease-out;
+  }
+
+  #meal-modal.show-sheet .meal-modal-card,
+  #modal.show-sheet .modal-card,
+  #shopping-edit-modal.show-sheet .shopping-edit-content {
+    transform: translateY(0);
+  }
+}
+
 #meal-form {
   display: grid;
   gap: 12px;

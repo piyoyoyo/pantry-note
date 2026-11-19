@@ -13,6 +13,21 @@ export function bindMealEvents({ state, actions }) {
 
   currentHandleDeleteMeal = handleDeleteMeal;
 
+  // 献立モーダルの表示アニメーション
+  function showMealModal() {
+    const modal = document.querySelector('#meal-modal');
+
+    if (!modal) return;
+
+    modal.classList.remove('show-sheet');
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        modal.classList.add('show-sheet');
+      });
+    });
+  }
+
   // 献立削除イベントは一度だけ登録
   if (!mealDeleteEventBound) {
     document.addEventListener('click', event => {
@@ -61,6 +76,7 @@ export function bindMealEvents({ state, actions }) {
   document.querySelectorAll('.meal-add-button').forEach(button => {
     button.addEventListener('click', () => {
       openMealModal(button.dataset.type);
+      showMealModal();
     });
   });
 
@@ -96,6 +112,7 @@ export function bindMealEvents({ state, actions }) {
       if (!meal) return;
 
       openMealModal(meal.type, meal);
+      showMealModal();
     });
   });
 
@@ -195,6 +212,9 @@ export function bindMealEvents({ state, actions }) {
     state.isMealModalOpen = false;
 
     render();
+
+    const modal = document.querySelector('#meal-modal');
+    modal?.classList.remove('show-sheet');
   }
 
   // モーダル背景をクリックしたら閉じる

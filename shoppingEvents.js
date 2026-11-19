@@ -75,13 +75,27 @@ export function bindShoppingEvents({ state, actions }) {
     // メニューを閉じた状態にする
     shoppingMenu?.classList.add('hidden');
 
+    // アニメーションクラスをいったん解除
+    editModal.classList.remove('show-sheet');
+
+    // モーダルを表示
     editModal.hidden = false;
+
+    // 表示状態が描画されてからアニメーション開始
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        editModal.classList.add('show-sheet');
+      });
+    });
+
     editNameInput.focus();
   }
 
   // モーダルを閉じる
   function closeShoppingEditModal() {
     editModal.hidden = true;
+    editModal.classList.remove('show-sheet');
+
     editingShoppingItemId = null;
     editForm.reset();
 

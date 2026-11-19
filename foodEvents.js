@@ -52,6 +52,20 @@ export function bindFoodEvents({ state, actions }) {
     });
   }
 
+  // 食品モーダルの表示アニメーション
+  function showFoodModal(modal) {
+    modal.classList.remove('show-sheet');
+
+    // モーダルを表示
+    modal.classList.remove('hidden');
+
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        modal.classList.add('show-sheet');
+      });
+    });
+  }
+
   // 食品追加ボタン
   const addButton = document.querySelector('#add-button');
 
@@ -75,7 +89,7 @@ export function bindFoodEvents({ state, actions }) {
       document.querySelector('.food-menu-container').classList.add('hidden');
       foodMenu?.classList.add('hidden');
       // モーダルを表示
-      modal.classList.remove('hidden');
+      showFoodModal(modal);
     });
   }
 
@@ -116,6 +130,7 @@ export function bindFoodEvents({ state, actions }) {
 
       foodMenu?.classList.add('hidden');
       foodModal.classList.add('hidden');
+      foodModal.classList.remove('show-sheet');
     });
   }
 
@@ -196,7 +211,7 @@ export function bindFoodEvents({ state, actions }) {
 
       // 削除メニューは閉じておく
       foodMenu.classList.add('hidden');
-      modal.classList.remove('hidden');
+      showFoodModal(modal);
     });
   }
 
@@ -216,8 +231,11 @@ export function bindFoodEvents({ state, actions }) {
         document.querySelector('.modal-header h2').textContent = '食品を追加';
         document.querySelector('.submit-button').textContent = '登録する';
 
-        foodMenu.classList.add('hidden');
-        document.querySelector('#modal').classList.add('hidden');
+        foodMenu?.classList.add('hidden');
+
+        const modal = document.querySelector('#modal');
+        modal.classList.add('hidden');
+        modal.classList.remove('show-sheet');
       }
     });
   }
