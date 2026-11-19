@@ -137,12 +137,14 @@ export function renderApp({
             <ul class="expired-list">
               ${
                 foods.filter(f =>
+                  f.stockStatus !== '在庫なし' &&
                   f.expiryDate &&
                   daysLeft(f.expiryDate) < 0
                 ).length === 0
                   ? '<li class="empty">食材はありません</li>'
                   : foods
                       .filter(f =>
+                        f.stockStatus !== '在庫なし' &&
                         f.expiryDate &&
                         daysLeft(f.expiryDate) < 0
                       )
@@ -169,6 +171,7 @@ export function renderApp({
             <ul class="expiry-list">
               ${
                 foods.filter(f =>
+                  f.stockStatus !== '在庫なし' &&
                   f.expiryDate &&
                   daysLeft(f.expiryDate) >= 0 &&
                   daysLeft(f.expiryDate) <= 3
@@ -176,6 +179,7 @@ export function renderApp({
                   ? '<li class="empty">食材はありません</li>'
                   : foods
                       .filter(f =>
+                        f.stockStatus !== '在庫なし' &&
                         f.expiryDate &&
                         daysLeft(f.expiryDate) >= 0 &&
                         daysLeft(f.expiryDate) <= 3
@@ -204,10 +208,10 @@ export function renderApp({
             <strong>期限未登録の食品</strong>
             <ul class="expiry-list">
               ${
-                foods.filter(f => !f.expiryDate).length === 0
+                foods.filter(f => f.stockStatus !== '在庫なし' && !f.expiryDate).length === 0
                   ? '<li class="empty">食材はありません</li>'
                   : foods
-                      .filter(f => !f.expiryDate)
+                      .filter(f => f.stockStatus !== '在庫なし' && !f.expiryDate)
                       .map(f => `
                         <li>
                           <span class="expiry-food-name">
