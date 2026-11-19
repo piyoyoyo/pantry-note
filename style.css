@@ -1228,12 +1228,31 @@ h1 span {
 
 /* 購入チェックボックス */
 .shopping-check-button {
+  appearance: none;
+  -webkit-appearance: none;
   width: 20px;
   height: 20px;
-  flex-shrink: 0;
-  accent-color: #72977b;
+  border: 1px solid #e8e8e8;
+  border-radius: 50%;
   cursor: pointer;
-  border-radius: 100%;
+  position: relative;
+}
+
+.shopping-check-button:checked {
+  background-color: #72977b;
+  border-color: #72977b;
+}
+
+.shopping-check-button:checked::after {
+  content: "";
+  position: absolute;
+  left: 5px;
+  top: 2px;
+  width: 5px;
+  height: 9px;
+  border: solid #fff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(40deg);
 }
 
 /* =========================
