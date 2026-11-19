@@ -388,11 +388,27 @@ export function renderApp({
         <div class="modal-card">
           <div class="modal-header">
             <h2>食品を追加</h2>
-            <button
-              id="close-modal"
-              class="close-button"
-              type="button"
-            >×</button>
+
+            <div class="food-menu-container">
+              <button
+                id="food-menu-button"
+                class="food-menu-button"
+                type="button"
+                aria-label="メニュー"
+              >
+                ⋯
+              </button>
+
+              <div id="food-menu" class="food-menu hidden">
+                <button
+                  id="delete-food-button"
+                  class="delete-food-button"
+                  type="button"
+                >
+                  この食品を削除
+                </button>
+              </div>
+            </div>
           </div>
 
           <form id="food-form">
@@ -418,15 +434,6 @@ export function renderApp({
 
             <button class="submit-button" type="submit">登録する</button>
           </form>
-
-          <button
-            id="delete-food-button"
-            class="delete-food-button"
-            type="button"
-            hidden
-          >
-            この食品を削除
-          </button>
         </div>
       </div>
 

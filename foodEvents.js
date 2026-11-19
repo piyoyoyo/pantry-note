@@ -68,18 +68,43 @@ export function bindFoodEvents({ state, actions }) {
     });
   }
 
-  // 食品モーダルを閉じる
-  const closeFoodModalButton = document.querySelector('#close-modal');
+  // 食品モーダルの3点メニュー
+  const foodMenuButton = document.querySelector('#food-menu-button');
+  const foodMenu = document.querySelector('#food-menu');
 
-  if (closeFoodModalButton) {
-    closeFoodModalButton.addEventListener('click', () => {
+  if (foodMenuButton && foodMenu) {
+    foodMenuButton.addEventListener('click', event => {
+      event.stopPropagation();
+      foodMenu.classList.toggle('hidden');
+    });
+
+    // メニュー以外をクリックしたら閉じる
+    document.addEventListener('click', event => {
+      if (
+        !foodMenu.contains(event.target) &&
+        !foodMenuButton.contains(event.target)
+      ) {
+        foodMenu.classList.add('hidden');
+      }
+    });
+  }
+
+  // 食品モーダルの背景クリックで閉じる
+  const foodModal = document.querySelector('#modal');
+
+  if (foodModal) {
+    foodModal.addEventListener('click', event => {
+      // モーダル本体をクリックした場合は閉じない
+      if (event.target !== foodModal) return;
+
       state.editingFoodId = null;
 
       document.querySelector('#food-form').reset();
       document.querySelector('.modal-header h2').textContent = '食品を追加';
       document.querySelector('.submit-button').textContent = '登録する';
 
-      document.querySelector('#modal').classList.add('hidden');
+      foodMenu?.classList.add('hidden');
+      foodModal.classList.add('hidden');
     });
   }
 
@@ -181,7 +206,7 @@ export function bindFoodEvents({ state, actions }) {
         document.querySelector('.modal-header h2').textContent = '食品を追加';
         document.querySelector('.submit-button').textContent = '登録する';
 
-        deleteFoodButton.hidden = true;
+        foodMenu.classList.add('hidden');
         document.querySelector('#modal').classList.add('hidden');
       }
     });
