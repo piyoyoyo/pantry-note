@@ -265,25 +265,15 @@ export function renderApp({
             <h2>買い物リスト</h2>
           </div>
 
-          <!-- 商品追加フォーム -->
-          <form id="shopping-form" class="shopping-form">
-            <input
-              type="text"
-              id="shopping-name"
-              placeholder="買うものを入力"
-              required
-            />
-
-            <input
-              type="text"
-              id="shopping-quantity"
-              placeholder="数量（任意）"
-            />
-
-            <button type="submit" class="add-button">
-              ＋ 買うものに追加
-            </button>
-          </form>
+          <!-- 商品追加フロートボタン -->
+          <button
+            type="button"
+            id="open-shopping-add"
+            class="shopping-add-float"
+            aria-label="商品を追加"
+          >
+            ＋
+          </button>
 
           <!-- 未購入の商品 -->
           <div class="shopping-heading">
@@ -317,7 +307,6 @@ export function renderApp({
           <div id="shopping-edit-modal" class="shopping-edit-modal" hidden>
             <div class="shopping-edit-content">
               <div class="shopping-edit-header">
-                <h3>商品を編集</h3>
                 <button
                   type="button"
                   id="close-shopping-edit"
@@ -354,6 +343,7 @@ export function renderApp({
 
                   <button
                     type="submit"
+                    id="shopping-modal-submit"
                     class="add-button"
                   >
                     保存

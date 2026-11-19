@@ -1103,6 +1103,44 @@ h1 span {
 }
 
 /* =========================
+   商品追加フロートボタン
+========================= */
+
+.shopping-add-float {
+  position: fixed;
+  right: 24px;
+  bottom: 90px;
+  z-index: 900;
+
+  width: 56px;
+  height: 56px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border: none;
+  border-radius: 50%;
+  background: #72977b;
+  color: #fff;
+
+  font-size: 32px;
+  font-weight: 300;
+  line-height: 1;
+
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+}
+
+.shopping-add-float:hover {
+  background: #5f8569;
+}
+
+.shopping-add-float:active {
+  transform: scale(0.95);
+}
+
+/* =========================
    買い物リスト編集モーダル
 ========================= */
 
@@ -1134,14 +1172,7 @@ h1 span {
 .shopping-edit-header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  margin-bottom: 24px;
-}
-
-.shopping-edit-header h3 {
-  margin: 0;
-  font-size: 20px;
-  color: #444;
+  justify-content: flex-end;
 }
 
 .shopping-edit-header .modal-close {

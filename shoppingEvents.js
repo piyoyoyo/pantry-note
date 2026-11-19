@@ -5,34 +5,12 @@ export function bindShoppingEvents({ state, actions }) {
     handleUpdateShoppingItem
   } = actions;
 
-  // 商品追加フォーム
-  const shoppingForm = document.querySelector('#shopping-form');
-
-  if (shoppingForm) {
-    shoppingForm.addEventListener('submit', async event => {
-      event.preventDefault();
-
-      const name = document.querySelector('#shopping-name').value.trim();
-      const quantity = document.querySelector('#shopping-quantity').value.trim();
-
-      if (!name) {
-        alert('商品名を入力してください');
-        return;
-      }
-
-      await handleAddShoppingItem({
-        name,
-        quantity
-      });
-    });
-  }
-
-  // 購入チェックボックス
   const shoppingLists = [
     document.querySelector('#shopping-list'),
     document.querySelector('#purchased-list')
   ];
 
+  // 購入チェックボックス
   shoppingLists.forEach(list => {
     if (!list) return;
 
@@ -49,7 +27,7 @@ export function bindShoppingEvents({ state, actions }) {
     });
   });
 
-  // 商品編集モーダル
+    // 商品追加・編集モーダル
   const editModal = document.querySelector('#shopping-edit-modal');
   const editForm = document.querySelector('#shopping-edit-form');
   const editNameInput = document.querySelector('#shopping-edit-name');
@@ -57,12 +35,31 @@ export function bindShoppingEvents({ state, actions }) {
 
   let editingShoppingItemId = null;
 
+  // モーダルを開く
+  function openShoppingModal(item = null) {
+    editingShoppingItemId = item ? item.id : null;
+
+    editNameInput.value = item ? item.name : '';
+    editQuantityInput.value = item ? (item.quantity || '') : '';
+
+    editModal.hidden = false;
+    editNameInput.focus();
+  }
+
   // モーダルを閉じる
   function closeShoppingEditModal() {
     editModal.hidden = true;
     editingShoppingItemId = null;
+    editForm.reset();
   }
 
+  // 新規追加ボタン
+  document.querySelector('#open-shopping-add')
+    ?.addEventListener('click', () => {
+      openShoppingModal();
+    });
+
+  // 編集ボタン
   shoppingLists.forEach(list => {
     if (!list) return;
 
@@ -71,21 +68,13 @@ export function bindShoppingEvents({ state, actions }) {
 
       if (!editButton) return;
 
-      const itemId = editButton.dataset.id;
-
       const item = state.shoppingItems.find(
-        item => item.id === itemId
+        item => item.id === editButton.dataset.id
       );
 
       if (!item) return;
 
-      editingShoppingItemId = itemId;
-
-      editNameInput.value = item.name;
-      editQuantityInput.value = item.quantity || '';
-
-      editModal.hidden = false;
-      editNameInput.focus();
+      openShoppingModal(item);
     });
   });
 
@@ -102,28 +91,37 @@ export function bindShoppingEvents({ state, actions }) {
         return;
       }
 
-      if (!editingShoppingItemId) return;
-
-      await handleUpdateShoppingItem({
-        itemId: editingShoppingItemId,
-        updatedItem: {
-          name,
-          quantity
+      try {
+        if (editingShoppingItemId) {
+          // 商品編集
+          await handleUpdateShoppingItem({
+            itemId: editingShoppingItemId,
+            updatedItem: { name, quantity }
+          });
+        } else {
+          // 新規追加
+          await handleAddShoppingItem({
+            name,
+            quantity
+          });
         }
-      });
 
-      closeShoppingEditModal();
+        closeShoppingEditModal();
+
+      } catch (error) {
+        console.error('商品の保存に失敗しました:', error);
+      }
     });
   }
 
-  // キャンセル・閉じるボタン
+  // 閉じるボタン
   document.querySelector('#close-shopping-edit')
     ?.addEventListener('click', closeShoppingEditModal);
 
   document.querySelector('#cancel-shopping-edit')
     ?.addEventListener('click', closeShoppingEditModal);
 
-  // 背景部分をクリックして閉じる
+  // 背景クリックで閉じる
   editModal?.addEventListener('click', event => {
     if (event.target === editModal) {
       closeShoppingEditModal();

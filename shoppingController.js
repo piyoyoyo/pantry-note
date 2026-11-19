@@ -47,9 +47,6 @@ export async function handleAddShoppingItem({
 
     console.log('買い物リストに商品を追加しました');
 
-    // フォームをリセット
-    document.querySelector('#shopping-form').reset();
-
     // 最新の買い物リストを取得
     await loadShoppingItems();
 
