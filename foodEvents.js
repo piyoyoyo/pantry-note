@@ -130,16 +130,17 @@ export function bindFoodEvents({ state, actions }) {
     });
   }
 
-  // 食品の編集
-  const foodListForEdit = document.querySelector('#food-list');
+  // 食品カードをクリックして編集
+  if (foodList) {
+    foodList.addEventListener('click', event => {
+      // カード内のボタンや操作部分を押した場合は編集しない
+      if (event.target.closest('button')) return;
 
-  if (foodListForEdit) {
-    foodListForEdit.addEventListener('click', event => {
-      const button = event.target.closest('.edit-button');
+      const card = event.target.closest('.food-card');
 
-      if (!button) return;
+      if (!card) return;
 
-      const foodId = button.dataset.id;
+      const foodId = card.dataset.id;
       const food = state.foods.find(item => item.id === foodId);
 
       if (!food) return;

@@ -43,7 +43,7 @@ export function renderFoods(
         }
 
         return `
-          <article class="food-card">
+          <article class="food-card" data-id="${escapeHTML(food.id)}">
             <div class="food-info">
               <div class="food-name">${escapeHTML(food.name)}</div>
               <div class="food-badges">
@@ -64,13 +64,6 @@ export function renderFoods(
                 type="button"
               >
                 買い物リストに追加
-              </button>
-              <button
-                class="edit-button"
-                data-id="${escapeHTML(food.id)}"
-                type="button"
-              >
-                編集
               </button>
 
               <button
