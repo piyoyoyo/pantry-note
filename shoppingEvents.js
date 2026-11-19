@@ -1,7 +1,8 @@
-export function bindShoppingEvents({ actions }) {
+export function bindShoppingEvents({ state, actions }) {
   const {
     handleAddShoppingItem,
-    handleUpdateShoppingStatus
+    handleUpdateShoppingStatus,
+    handleUpdateShoppingItem
   } = actions;
 
   // 商品追加フォーム
@@ -44,6 +45,51 @@ export function bindShoppingEvents({ actions }) {
       await handleUpdateShoppingStatus({
         itemId,
         isPurchased
+      });
+    });
+  });
+
+  // 商品編集ボタン
+  shoppingLists.forEach(list => {
+    if (!list) return;
+
+    list.addEventListener('click', async event => {
+      const editButton = event.target.closest('.shopping-edit-button');
+
+      if (!editButton) return;
+
+      const itemId = editButton.dataset.id;
+
+      const item = state.shoppingItems.find(
+        item => item.id === itemId
+      );
+
+      if (!item) return;
+
+      // 商品名を入力
+      const name = prompt('商品名を入力してください', item.name);
+
+      if (name === null) return;
+
+      if (!name.trim()) {
+        alert('商品名を入力してください');
+        return;
+      }
+
+      // 数量を入力
+      const quantity = prompt(
+        '数量を入力してください（任意）',
+        item.quantity || ''
+      );
+
+      if (quantity === null) return;
+
+      await handleUpdateShoppingItem({
+        itemId,
+        updatedItem: {
+          name: name.trim(),
+          quantity: quantity.trim()
+        }
       });
     });
   });

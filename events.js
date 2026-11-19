@@ -15,7 +15,7 @@ export function bindEvents({ state, actions }) {
   bindFoodEvents({ state, actions });
 
   // 買い物リスト関連のイベント登録
-  bindShoppingEvents({ actions });
+  bindShoppingEvents({ state, actions });
 
   // 設定メニューの開閉
   const settingsButton = document.querySelector('#settings-button');
