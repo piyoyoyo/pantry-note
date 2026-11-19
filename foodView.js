@@ -35,7 +35,7 @@ export function renderFoods(
           const days = daysLeft(food.expiryDate);
 
           status = days < 0 ? '期限切れ' :
-            days === 0 ? '今日まで' : `あと${days}日`;
+            days === 0 ? '今日まで' : `期限まであと${days}日`;
 
           warning = days <= 3 ? 'warning' : '';
         }
