@@ -34,8 +34,30 @@ export function bindShoppingEvents({ state, actions }) {
   const editForm = document.querySelector('#shopping-edit-form');
   const editNameInput = document.querySelector('#shopping-edit-name');
   const editQuantityInput = document.querySelector('#shopping-edit-quantity');
+  const shoppingMenuContainer = document.querySelector('.shopping-menu-container');
+  const shoppingMenu = document.querySelector('#shopping-menu');
 
   let editingShoppingItemId = null;
+
+  // 3点メニューの開閉
+  const shoppingMenuButton = document.querySelector('#shopping-menu-button');
+
+  if (shoppingMenuButton && shoppingMenu) {
+    shoppingMenuButton.addEventListener('click', event => {
+      event.stopPropagation();
+      shoppingMenu.classList.toggle('hidden');
+    });
+
+    // メニュー以外をクリックしたら閉じる
+    document.addEventListener('click', event => {
+      if (
+        !shoppingMenu.contains(event.target) &&
+        !shoppingMenuButton.contains(event.target)
+      ) {
+        shoppingMenu.classList.add('hidden');
+      }
+    });
+  }
 
   // モーダルを開く
   function openShoppingModal(item = null) {
@@ -43,6 +65,15 @@ export function bindShoppingEvents({ state, actions }) {
 
     editNameInput.value = item ? item.name : '';
     editQuantityInput.value = item ? (item.quantity || '') : '';
+
+    // 新規追加時は3点メニューを非表示
+    // 編集時は3点メニューを表示
+    if (shoppingMenuContainer) {
+      shoppingMenuContainer.classList.toggle('hidden', !item);
+    }
+
+    // メニューを閉じた状態にする
+    shoppingMenu?.classList.add('hidden');
 
     editModal.hidden = false;
     editNameInput.focus();
@@ -53,6 +84,9 @@ export function bindShoppingEvents({ state, actions }) {
     editModal.hidden = true;
     editingShoppingItemId = null;
     editForm.reset();
+
+    shoppingMenuContainer?.classList.add('hidden');
+    shoppingMenu?.classList.add('hidden');
   }
 
   // 新規追加ボタン
@@ -126,35 +160,37 @@ export function bindShoppingEvents({ state, actions }) {
     }
   });
 
-  // 商品削除ボタン
-  shoppingLists.forEach(list => {
-    if (!list) return;
+  // 編集モーダル内の商品削除
+  const deleteShoppingButton = document.querySelector('#delete-shopping-button');
 
-    list.addEventListener('click', async event => {
-      const deleteButton = event.target.closest('.shopping-delete-button');
-
-      if (!deleteButton) return;
-
-      const itemId = deleteButton.dataset.id;
+  if (deleteShoppingButton) {
+    deleteShoppingButton.addEventListener('click', async () => {
+      if (!editingShoppingItemId) return;
 
       const item = state.shoppingItems.find(
-        item => item.id === itemId
+        item => item.id === editingShoppingItemId
       );
 
       if (!item) return;
 
-      // 削除確認
       const confirmed = confirm(
         `「${item.name}」を削除しますか？`
       );
 
       if (!confirmed) return;
 
-      await handleDeleteShoppingItem({
-        itemId
-      });
+      try {
+        await handleDeleteShoppingItem({
+          itemId: editingShoppingItemId
+        });
+
+        closeShoppingEditModal();
+
+      } catch (error) {
+        console.error('商品の削除に失敗しました:', error);
+      }
     });
-  });
+  }
 
   // 購入済み商品をまとめて削除
   const clearPurchasedButton = document.querySelector(

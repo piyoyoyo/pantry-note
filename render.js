@@ -311,6 +311,28 @@ export function renderApp({
           <!-- 商品編集モーダル -->
           <div id="shopping-edit-modal" class="shopping-edit-modal" hidden>
             <div class="shopping-edit-content">
+              <div class="shopping-edit-header">
+                <div class="shopping-menu-container hidden">
+                  <button
+                    id="shopping-menu-button"
+                    class="shopping-menu-button"
+                    type="button"
+                    aria-label="メニュー"
+                  >
+                    ⋯
+                  </button>
+
+                  <div id="shopping-menu" class="shopping-menu hidden">
+                    <button
+                      id="delete-shopping-button"
+                      class="delete-shopping-button"
+                      type="button"
+                    >
+                      この商品を削除
+                    </button>
+                  </div>
+                </div>
+              </div>
               <form id="shopping-edit-form">
                 <label for="shopping-edit-name">商品名</label>
                 <input

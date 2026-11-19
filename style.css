@@ -1056,6 +1056,62 @@ h1 span {
   white-space: nowrap;
 }
 
+/* 買い物リストの3点メニュー */
+.shopping-menu-container {
+  position: relative;
+}
+
+.shopping-menu-container.hidden {
+  display: none;
+}
+
+.shopping-menu-button {
+  width: 40px;
+  height: 40px;
+  position: absolute;
+  top: -30px;
+  right: 0;
+  border: 1px solid #e5e8df;
+  border-radius: 50%;
+  background: #fff;
+  color: #687c65;
+  font-size: 21px;
+  cursor: pointer;
+}
+
+.shopping-menu {
+  position: absolute;
+  top: 10px;
+  right: 0;
+  z-index: 5;
+  width: 170px;
+  padding: 6px;
+  background: #fff;
+  border: 1px solid #e8e9e1;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+.shopping-menu.hidden {
+  display: none;
+}
+
+.delete-shopping-button {
+  width: 100%;
+  padding: 12px;
+  border: 0;
+  border-radius: 8px;
+  background: #fff;
+  color: #343b35;
+  text-align: left;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.delete-shopping-button:hover {
+  background: #f2f4ed;
+}
+
 /* 買うもの・購入済みの見出し */
 .shopping-heading {
   display: flex;
@@ -1160,21 +1216,6 @@ h1 span {
   flex-shrink: 0;
 }
 
-.shopping-edit-button,
-.shopping-delete-button {
-  border: none;
-  border-radius: 7px;
-  padding: 7px 10px;
-  background: #f2f2f2;
-  color: #666;
-  font-size: 12px;
-  cursor: pointer;
-}
-
-.shopping-delete-button {
-  font-size: 18px;
-}
-
 /* 購入済みカード */
 .shopping-card.purchased {
   background: #f7f8f7;
@@ -1255,7 +1296,7 @@ h1 span {
 .shopping-edit-content {
   width: 100%;
   max-width: 400px;
-  padding: 24px;
+  padding: 44px 24px 24px;
   border-radius: 16px;
   background: #fff;
   box-sizing: border-box;
