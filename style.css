@@ -737,6 +737,10 @@ h1 span {
   background: #edf2e9;
 }
 
+.meal-date-navigation button#today-meal-date {
+  border-width: thick;
+}
+
 /* 献立リスト */
 .meal-list {
   margin-top: 12px;
@@ -746,7 +750,7 @@ h1 span {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px;
+  padding: 12px 12px 12px 6px;
   margin-bottom: 8px;
   background: #f7f8f4;
   border-radius: 9px;
