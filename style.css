@@ -336,6 +336,11 @@ h1 span {
   color: #c0392b;
 }
 
+/* 在庫なしの食品の期限バッジは非表示 */
+.food-status.stock-none + .food-status {
+  display: none;
+}
+
 .food-status.stock-none {
   background-color: #e5e5e5;
   color: #777;
