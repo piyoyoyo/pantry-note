@@ -3,7 +3,8 @@ export function bindShoppingEvents({ state, actions }) {
     handleAddShoppingItem,
     handleUpdateShoppingStatus,
     handleUpdateShoppingItem,
-    handleDeleteShoppingItem
+    handleDeleteShoppingItem,
+    handleClearPurchasedShoppingItems
   } = actions;
 
   const shoppingLists = [
@@ -158,4 +159,32 @@ export function bindShoppingEvents({ state, actions }) {
       });
     });
   });
+
+  // 購入済み商品をまとめて削除
+  const clearPurchasedButton = document.querySelector(
+    '#clear-purchased-button'
+  );
+
+  if (clearPurchasedButton) {
+    clearPurchasedButton.addEventListener('click', async () => {
+      // 購入済み商品があるか確認
+      const purchasedItems = state.shoppingItems.filter(
+        item => item.isPurchased
+      );
+
+      if (purchasedItems.length === 0) {
+        alert('購入済みの商品はありません');
+        return;
+      }
+
+      // 削除確認
+      const confirmed = confirm(
+        `購入済みの商品 ${purchasedItems.length}件をまとめて削除しますか？`
+      );
+
+      if (!confirmed) return;
+
+      await handleClearPurchasedShoppingItems();
+    });
+  }
 }

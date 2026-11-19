@@ -3,7 +3,8 @@ import {
   createShoppingItemData,
   updateShoppingStatusData,
   saveShoppingItemData,
-  removeShoppingItemData
+  removeShoppingItemData,
+  clearPurchasedShoppingItemsData
 } from './dataController';
 
 // Firestoreから買い物リストを取得して画面を更新
@@ -145,5 +146,32 @@ export async function handleDeleteShoppingItem({
   } catch (error) {
     console.error('商品の削除に失敗しました:', error);
     alert('商品を削除できませんでした');
+  }
+}
+
+// 購入済み商品をまとめて削除
+export async function handleClearPurchasedShoppingItems({
+  currentUser,
+  currentHouseholdId,
+  loadShoppingItems
+}) {
+  if (!currentUser) {
+    console.error('ユーザー認証が完了していません');
+    return;
+  }
+
+  try {
+    const deleteCount = await clearPurchasedShoppingItemsData(
+      currentHouseholdId
+    );
+
+    console.log(`${deleteCount}件の購入済み商品を削除しました`);
+
+    // 最新の買い物リストを取得
+    await loadShoppingItems();
+
+  } catch (error) {
+    console.error('購入済み商品の一括削除に失敗しました:', error);
+    alert('購入済み商品を削除できませんでした');
   }
 }

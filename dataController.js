@@ -18,7 +18,8 @@ import {
   addShoppingItem,
   deleteShoppingItem,
   updateShoppingItem,
-  updateShoppingItemStatus
+  updateShoppingItemStatus,
+  deletePurchasedShoppingItems
 } from './shopping';
 
 import { getMealDateString } from './utils';
@@ -106,4 +107,9 @@ export async function saveShoppingItemData(householdId, itemId, updatedItem) {
 // 商品の購入状態を更新
 export async function updateShoppingStatusData(householdId, itemId, isPurchased) {
   await updateShoppingItemStatus(householdId, itemId, isPurchased);
+}
+
+// 購入済み商品をまとめて削除
+export async function clearPurchasedShoppingItemsData(householdId) {
+  return await deletePurchasedShoppingItems(householdId);
 }

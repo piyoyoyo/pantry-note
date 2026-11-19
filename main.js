@@ -25,7 +25,8 @@ import {
   handleAddShoppingItem as handleAddShoppingItemController,
   handleUpdateShoppingStatus as handleUpdateShoppingStatusController,
   handleUpdateShoppingItem as handleUpdateShoppingItemController,
-  handleDeleteShoppingItem as handleDeleteShoppingItemController
+  handleDeleteShoppingItem as handleDeleteShoppingItemController,
+  handleClearPurchasedShoppingItems as handleClearPurchasedShoppingItemsController
 } from './shoppingController';
 import { renderIngredientTags } from './mealView';
 import { renderFoods } from './foodView';
@@ -131,6 +132,15 @@ async function handleDeleteShoppingItem({ itemId }) {
     currentUser: state.currentUser,
     currentHouseholdId: state.currentHouseholdId,
     itemId,
+    loadShoppingItems
+  });
+}
+
+// 購入済み商品をまとめて削除
+async function handleClearPurchasedShoppingItems() {
+  await handleClearPurchasedShoppingItemsController({
+    currentUser: state.currentUser,
+    currentHouseholdId: state.currentHouseholdId,
     loadShoppingItems
   });
 }
@@ -332,6 +342,7 @@ function bindAppEvents() {
       handleUpdateShoppingStatus: handleUpdateShoppingStatus,
       handleUpdateShoppingItem: handleUpdateShoppingItem,
       handleDeleteShoppingItem: handleDeleteShoppingItem,
+      handleClearPurchasedShoppingItems: handleClearPurchasedShoppingItems,
     }
   });
 }

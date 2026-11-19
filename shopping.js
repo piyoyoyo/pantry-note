@@ -7,7 +7,8 @@ import {
   updateDoc,
   query,
   orderBy,
-  serverTimestamp
+  serverTimestamp,
+  writeBatch
 } from 'firebase/firestore';
 
 import { db } from './firebase';
@@ -86,4 +87,29 @@ export async function updateShoppingItemStatus(householdId, itemId, isPurchased)
   await updateDoc(itemRef, {
     isPurchased
   });
+}
+
+// 購入済み商品をまとめて削除
+export async function deletePurchasedShoppingItems(householdId) {
+  const shoppingRef = getShoppingCollection(householdId);
+  const q = query(shoppingRef);
+
+  const snapshot = await getDocs(q);
+
+  const batch = writeBatch(db);
+
+  let deleteCount = 0;
+
+  snapshot.docs.forEach(itemDoc => {
+    if (itemDoc.data().isPurchased) {
+      batch.delete(itemDoc.ref);
+      deleteCount++;
+    }
+  });
+
+  if (deleteCount > 0) {
+    await batch.commit();
+  }
+
+  return deleteCount;
 }
