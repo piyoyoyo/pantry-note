@@ -1129,7 +1129,6 @@ h1 span {
 .shopping-card {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: 12px;
   padding: 14px 16px;
   border: 1px solid #e8e8e8;
@@ -1193,6 +1192,7 @@ h1 span {
   flex-shrink: 0;
   accent-color: #72977b;
   cursor: pointer;
+  border-radius: 100%;
 }
 
 /* =========================

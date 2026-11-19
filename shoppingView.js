@@ -31,7 +31,10 @@ export function renderShoppingList(shoppingItems) {
   // 未購入商品を表示
   shoppingList.innerHTML = unpurchasedItems.length
     ? unpurchasedItems.map(item => `
-        <article class="shopping-card">
+        <article
+          class="shopping-card"
+          data-id="${escapeHTML(item.id)}"
+        >
           <input
             type="checkbox"
             class="shopping-check-button"
@@ -47,25 +50,6 @@ export function renderShoppingList(shoppingItems) {
               ${escapeHTML(item.quantity || '')}
             </div>
           </div>
-
-          <div class="shopping-card-actions">
-            <button
-              class="shopping-edit-button"
-              data-id="${escapeHTML(item.id)}"
-              type="button"
-            >
-              編集
-            </button>
-
-            <button
-              class="shopping-delete-button"
-              data-id="${escapeHTML(item.id)}"
-              type="button"
-              aria-label="${escapeHTML(item.name)}を削除"
-            >
-              ×
-            </button>
-          </div>
         </article>
       `).join('')
     : '<p class="empty">買い物リストはまだありません。</p>';
@@ -73,7 +57,10 @@ export function renderShoppingList(shoppingItems) {
   // 購入済み商品を表示
   purchasedList.innerHTML = purchasedItems.length
     ? purchasedItems.map(item => `
-        <article class="shopping-card purchased">
+        <article
+          class="shopping-card purchased"
+          data-id="${escapeHTML(item.id)}"
+        >
           <input
             type="checkbox"
             class="shopping-check-button"
@@ -89,17 +76,6 @@ export function renderShoppingList(shoppingItems) {
             <div class="shopping-item-quantity">
               ${escapeHTML(item.quantity || '')}
             </div>
-          </div>
-
-          <div class="shopping-card-actions">
-            <button
-              class="shopping-delete-button"
-              data-id="${escapeHTML(item.id)}"
-              type="button"
-              aria-label="${escapeHTML(item.name)}を削除"
-            >
-              ×
-            </button>
           </div>
         </article>
       `).join('')

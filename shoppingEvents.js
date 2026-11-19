@@ -61,17 +61,20 @@ export function bindShoppingEvents({ state, actions }) {
       openShoppingModal();
     });
 
-  // 編集ボタン
+  // 商品カードをクリックして編集
   shoppingLists.forEach(list => {
     if (!list) return;
 
     list.addEventListener('click', event => {
-      const editButton = event.target.closest('.shopping-edit-button');
+      // チェックボックスをクリックした場合は編集しない
+      if (event.target.closest('.shopping-check-button')) return;
 
-      if (!editButton) return;
+      const card = event.target.closest('.shopping-card');
+
+      if (!card) return;
 
       const item = state.shoppingItems.find(
-        item => item.id === editButton.dataset.id
+        item => item.id === card.dataset.id
       );
 
       if (!item) return;
