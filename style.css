@@ -1081,7 +1081,7 @@ h1 span {
 
 .shopping-menu {
   position: absolute;
-  top: 10px;
+  top: -30px;
   right: 0;
   z-index: 5;
   width: 170px;
