@@ -180,6 +180,12 @@ export function bindFoodEvents({ state, actions }) {
 
       if (!food) return;
 
+      const confirmed = confirm(
+        `${food.name}を買い物リストに追加しますか？`
+      );
+
+      if (!confirmed) return;
+
       await handleAddShoppingItem({
         name: food.name,
         quantity: ''
