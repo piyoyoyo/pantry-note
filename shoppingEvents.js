@@ -2,7 +2,8 @@ export function bindShoppingEvents({ state, actions }) {
   const {
     handleAddShoppingItem,
     handleUpdateShoppingStatus,
-    handleUpdateShoppingItem
+    handleUpdateShoppingItem,
+    handleDeleteShoppingItem
   } = actions;
 
   const shoppingLists = [
@@ -126,5 +127,35 @@ export function bindShoppingEvents({ state, actions }) {
     if (event.target === editModal) {
       closeShoppingEditModal();
     }
+  });
+
+  // 商品削除ボタン
+  shoppingLists.forEach(list => {
+    if (!list) return;
+
+    list.addEventListener('click', async event => {
+      const deleteButton = event.target.closest('.shopping-delete-button');
+
+      if (!deleteButton) return;
+
+      const itemId = deleteButton.dataset.id;
+
+      const item = state.shoppingItems.find(
+        item => item.id === itemId
+      );
+
+      if (!item) return;
+
+      // 削除確認
+      const confirmed = confirm(
+        `「${item.name}」を削除しますか？`
+      );
+
+      if (!confirmed) return;
+
+      await handleDeleteShoppingItem({
+        itemId
+      });
+    });
   });
 }
