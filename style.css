@@ -458,13 +458,6 @@ h1 span {
   font-size: 18px;
 }
 
-.close-button {
-  border: 0;
-  background: none;
-  font-size: 25px;
-  color: #888;
-}
-
 .food-menu-container {
   display: flex;
   flex-direction: column;
@@ -824,11 +817,6 @@ h1 span {
   background: #829b83;
   color: white;
   font-size: 12px;
-}
-
-.meal-form .meal-cancel-button {
-  background: #f0f1ed;
-  color: #687c65;
 }
 
 /* 献立登録モーダル */

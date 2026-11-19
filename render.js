@@ -449,11 +449,6 @@ export function renderApp({
         <div class="modal-card meal-modal-card">
           <div class="modal-header">
             <h2>${editingMealId ? '献立を編集' : '献立を登録'}</h2>
-            <button
-              id="close-meal-modal"
-              class="close-button"
-              type="button"
-            >×</button>
           </div>
 
           <form id="meal-form">
@@ -522,12 +517,6 @@ export function renderApp({
             </div>
 
             <div class="meal-modal-actions">
-              <button
-                id="cancel-meal-modal"
-                type="button"
-                class="meal-cancel-button"
-              >キャンセル</button>
-
               <button type="submit" class="submit-button">
                 保存する
               </button>

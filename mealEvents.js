@@ -197,15 +197,15 @@ export function bindMealEvents({ state, actions }) {
     render();
   }
 
-  // 閉じるボタン
-  const closeMealModalButton = document.querySelector('#close-meal-modal');
-  if (closeMealModalButton) {
-    closeMealModalButton.addEventListener('click', closeMealModal);
-  }
+  // モーダル背景をクリックしたら閉じる
+  const mealModal = document.querySelector('#meal-modal');
 
-  // キャンセルボタン
-  const cancelMealButton = document.querySelector('#cancel-meal-modal');
-  if (cancelMealButton) {
-    cancelMealButton.addEventListener('click', closeMealModal);
+  if (mealModal) {
+    mealModal.addEventListener('click', event => {
+      // モーダル本体をクリックした場合は閉じない
+      if (event.target !== mealModal) return;
+
+      closeMealModal();
+    });
   }
 }
