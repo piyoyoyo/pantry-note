@@ -68,14 +68,14 @@ export async function handleDeleteFood({
 }) {
   if (!currentUser) {
     console.error('ユーザー認証が完了していません');
-    return;
+    return false;
   }
 
   // 削除前に確認
   const confirmed = confirm('この食品を削除しますか？');
 
   if (!confirmed) {
-    return;
+    return false;
   }
 
   try {
@@ -86,9 +86,12 @@ export async function handleDeleteFood({
     // 最新の食品一覧を取得
     await loadFoods();
 
+    return true;
+
   } catch (error) {
     console.error('食品の削除に失敗しました:', error);
     alert('食品を削除できませんでした');
+    return false;
   }
 }
 

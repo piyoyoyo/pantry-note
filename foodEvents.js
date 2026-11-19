@@ -58,7 +58,10 @@ export function bindFoodEvents({ state, actions }) {
   if (addButton) {
     addButton.addEventListener('click', () => {
       const modal = document.querySelector('#modal');
-
+      const deleteFoodButton = document.querySelector('#delete-food-button');
+      if (deleteFoodButton) {
+        deleteFoodButton.hidden = true;
+      }
       if (modal) {
         modal.classList.remove('hidden');
       }
@@ -117,18 +120,7 @@ export function bindFoodEvents({ state, actions }) {
     });
   }
 
-  // 食品の削除
   const foodList = document.querySelector('#food-list');
-
-  if (foodList) {
-    foodList.addEventListener('click', event => {
-      const button = event.target.closest('.delete-button');
-
-      if (!button) return;
-
-      handleDeleteFood(button.dataset.id);
-    });
-  }
 
   // 食品カードをクリックして編集
   if (foodList) {
@@ -163,8 +155,35 @@ export function bindFoodEvents({ state, actions }) {
 
       modalTitle.textContent = '食品を編集';
       submitButton.textContent = '更新する';
+      const deleteFoodButton = document.querySelector('#delete-food-button');
+
+      if (deleteFoodButton) {
+        deleteFoodButton.hidden = false;
+      }
 
       modal.classList.remove('hidden');
+    });
+  }
+
+  // 編集モーダル内の食品削除
+  const deleteFoodButton = document.querySelector('#delete-food-button');
+
+  if (deleteFoodButton) {
+    deleteFoodButton.addEventListener('click', async () => {
+      if (!state.editingFoodId) return;
+
+      const deleted = await handleDeleteFood(state.editingFoodId);
+
+      if (deleted) {
+        state.editingFoodId = null;
+
+        document.querySelector('#food-form').reset();
+        document.querySelector('.modal-header h2').textContent = '食品を追加';
+        document.querySelector('.submit-button').textContent = '登録する';
+
+        deleteFoodButton.hidden = true;
+        document.querySelector('#modal').classList.add('hidden');
+      }
     });
   }
 

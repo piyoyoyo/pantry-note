@@ -418,6 +418,15 @@ export function renderApp({
 
             <button class="submit-button" type="submit">登録する</button>
           </form>
+
+          <button
+            id="delete-food-button"
+            class="delete-food-button"
+            type="button"
+            hidden
+          >
+            この食品を削除
+          </button>
         </div>
       </div>
 

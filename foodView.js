@@ -65,15 +65,6 @@ export function renderFoods(
               >
                 ＋ 買い物リストに追加
               </button>
-
-              <button
-                class="delete-button"
-                data-id="${escapeHTML(food.id)}"
-                type="button"
-                aria-label="${escapeHTML(food.name)}を削除"
-              >
-                ×
-              </button>
             </div>
           </article>
         `;

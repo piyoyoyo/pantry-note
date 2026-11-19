@@ -475,23 +475,6 @@ h1 span {
   border-radius: 12px;
 }
 
-.delete-button {
-  border: none;
-  background: transparent;
-  color: #999;
-  font-size: 22px;
-  cursor: pointer;
-  padding: 6px 10px;
-  margin-left: 4px;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-
-.delete-button:hover {
-  background: #f5eeee;
-  color: #c65c5c;
-}
-
 .food-actions {
   display: flex;
   align-items: center;
@@ -533,21 +516,6 @@ h1 span {
 
 .edit-button:hover {
   background: #edf2e9;
-}
-
-.delete-button {
-  border: none;
-  background: transparent;
-  color: #999;
-  font-size: 22px;
-  cursor: pointer;
-  padding: 6px 10px;
-  border-radius: 50%;
-}
-
-.delete-button:hover {
-  background: #f5eeee;
-  color: #c65c5c;
 }
 
 /* 家の作成画面 */
